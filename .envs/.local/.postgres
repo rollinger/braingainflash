@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=memo
+POSTGRES_USER=wgmBKmRvXoYwameqiVfbgDcbWWVhfOMH
+POSTGRES_PASSWORD=fIJalYIzq1ehEkhluf1znSxrTKKI0pTPsZL3h9EGilQkJo7mjnPlhXYjqq9ckZy5
