@@ -41,9 +41,7 @@ LOCALE_PATHS = [str(ROOT_DIR / "locale")]
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
-DATABASES = {
-    "default": env.db("DATABASE_URL", default="postgres:///memo")
-}
+DATABASES = {"default": env.db("DATABASE_URL", default="postgres:///memo")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 
 # URLS
@@ -79,7 +77,8 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "memo.users.apps.UsersConfig",
-    # Your stuff: custom apps go here
+    # Memorizer App
+    "memo.memorizer.apps.MemorizeConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
