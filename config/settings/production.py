@@ -1,14 +1,16 @@
-import logging
+# import logging
 import os
 
-import sentry_sdk
+# import sentry_sdk
 from google.oauth2 import service_account
-from sentry_sdk.integrations.celery import CeleryIntegration
-from sentry_sdk.integrations.django import DjangoIntegration
-from sentry_sdk.integrations.logging import LoggingIntegration
 
 from .base import *  # noqa
 from .base import ROOT_DIR, env
+
+# from sentry_sdk.integrations.celery import CeleryIntegration
+# from sentry_sdk.integrations.django import DjangoIntegration
+# from sentry_sdk.integrations.logging import LoggingIntegration
+
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -68,6 +70,8 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
 # https://django-storages.readthedocs.io/en/latest/#installation
 INSTALLED_APPS += ["storages"]  # noqa F405
 # Google Cloud Storage Bucket
+# FIX: Only needs the path to json, not wrapped in  from_service_account_file()
+# https://django-storages.readthedocs.io/en/latest/backends/gcloud.html
 GOOGLE_APPLICATION_CREDENTIALS = service_account.Credentials.from_service_account_file(
     os.path.join(ROOT_DIR, "memo-a-299214-d110bc46a6f7.json")
 )
@@ -186,6 +190,7 @@ LOGGING = {
 
 # Sentry
 # ------------------------------------------------------------------------------
+"""
 SENTRY_DSN = env("SENTRY_DSN")
 SENTRY_LOG_LEVEL = env.int("DJANGO_SENTRY_LOG_LEVEL", logging.INFO)
 
@@ -200,6 +205,7 @@ sentry_sdk.init(
     environment=env("SENTRY_ENVIRONMENT", default="production"),
     traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=0.0),
 )
+"""
 
 # Your stuff...
 # ------------------------------------------------------------------------------
