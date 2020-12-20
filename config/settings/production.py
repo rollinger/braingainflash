@@ -1,12 +1,14 @@
 import logging
+import os
 
 import sentry_sdk
+from google.oauth2 import service_account
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
 
 from .base import *  # noqa
-from .base import env
+from .base import ROOT_DIR, env
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -66,6 +68,9 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
 # https://django-storages.readthedocs.io/en/latest/#installation
 INSTALLED_APPS += ["storages"]  # noqa F405
 # Google Cloud Storage Bucket
+GOOGLE_APPLICATION_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    os.path.join(ROOT_DIR, "memo-a-299214-d110bc46a6f7.json")
+)
 GS_BUCKET_NAME = env("DJANGO_GCP_STORAGE_BUCKET_NAME")
 GS_DEFAULT_ACL = "publicRead"
 
