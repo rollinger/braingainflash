@@ -16,7 +16,10 @@ urlpatterns = [
     # User management
     path("users/", include("memo.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
-    # Your stuff: custom urls includes go here
+    #
+    # App url confs
+    #
+    path("memo/", include("memo.cardset.urls", namespace="memo")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # API URLS

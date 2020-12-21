@@ -1,11 +1,29 @@
+import uuid
+
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from jsonfield import JSONField
 from treebeard.ns_tree import NS_Node
 
 User = get_user_model()
+
+
+class UUIDMixin(models.Model):
+    """
+    Adds unique uuid to Model and streamlines get_absolute_url for reverse
+    """
+
+    class Meta:
+        abstract = True
+
+    unique_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+
+    def get_absolute_url(self):
+        # Interface must be specified in the sub class
+        return super(UUIDMixin, self).get_absolute_url()
 
 
 class TimestampMixin(models.Model):
@@ -23,7 +41,7 @@ class TimestampMixin(models.Model):
         return super(TimestampMixin, self).save(*args, **kwargs)
 
 
-class MemoSet(NS_Node):
+class MemoSet(UUIDMixin, NS_Node):
     """
     A Set grouping a number of cards logically together. Supports subsets with the
     treebeard Nested Sets Node. https://django-treebeard.readthedocs.io/en/latest/ns_tree.html
@@ -38,8 +56,6 @@ class MemoSet(NS_Node):
     owner = models.ForeignKey(
         User,
         help_text=_("Memo Set is owned by this user"),
-        null=True,
-        blank=True,
         related_name="memosets",
         on_delete=models.CASCADE,
     )
@@ -51,7 +67,11 @@ class MemoSet(NS_Node):
     # TODO: is-template => able to fork the set including tree and cards
 
     def __str__(self):
-        return "%s: %s" % (self._meta.verbose_name, self.topic)
+        return "%s: %s (%s)" % (self._meta.verbose_name, self.topic, self.owner)
+
+    def get_absolute_url(self):
+        # Returns path to detail-view
+        return reverse("memoset.views.details", args=[str(self.unique_id)])
 
     def save(self, *args, **kwargs):
         return super(MemoSet, self).save(*args, **kwargs)
@@ -61,7 +81,7 @@ class MemoCardManager(models.Manager):
     pass
 
 
-class MemoCard(TimestampMixin, models.Model):
+class MemoCard(UUIDMixin, TimestampMixin, models.Model):
     """
     A card consisting of a question answer pairs to be memorize
     """
@@ -73,7 +93,7 @@ class MemoCard(TimestampMixin, models.Model):
     memoset = models.ForeignKey(
         MemoSet,
         help_text=_("Memo Card is assigned to this set"),
-        related_name="memocards",
+        related_name="cards",
         on_delete=models.CASCADE,
     )
     topic = models.CharField(
@@ -106,6 +126,10 @@ class MemoCard(TimestampMixin, models.Model):
 
     def __str__(self):
         return "%s: %s" % (self._meta.verbose_name, self.topic)
+
+    def get_absolute_url(self):
+        # Returns path to detail-view
+        return reverse("memocard.views.details", args=[str(self.unique_id)])
 
     def save(self, *args, **kwargs):
         return super(MemoCard, self).save(*args, **kwargs)

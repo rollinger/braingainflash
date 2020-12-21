@@ -1,0 +1,24 @@
+{% load static i18n %}
+
+<div class="col-sm-12 {% if not is_sub %}mb-3{% endif %}">
+  <img class="align-self-center float-left mr-3" width="25px"
+    src="{{STATIC_URL}}images/Memo_Brain.png" alt="Memo Set {{ set.topic }}">
+  <div class="media-body">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-6"><h3 class="mt-0">{{ set.topic }}</h3></div>
+        <div class="col-sm-6">{% trans "Actions" %}</div>
+      </div>
+      <div class="row" id="accordion">
+        {% for card in set.cards.all %}
+          {% include "cardset/partials/_memocard_media.html" with card=card %}
+        {% endfor %}
+      </div>
+      <div class="row">
+        {% for subset in set.get_children %}
+          {% include "cardset/partials/_memoset_media.html" with set=subset is_sub=True %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>

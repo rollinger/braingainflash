@@ -1,0 +1,26 @@
+{% load static i18n %}
+
+
+<div class="card col-sm-12">
+  <div class="card-header" id="{{ card.unique_id }}" data-toggle="collapse"
+    data-target="#card-{{ card.unique_id }}" aria-expanded="true" aria-controls="collapseOne">
+    <img class="align-self-center float-left mr-3" width="25px"
+      src="{{STATIC_URL}}images/Memo_Bulb.png" alt="Memo Card {{ card.topic }}">
+    <h5 class="mb-0">{{ card.topic }}</h5>
+  </div>
+
+  <div id="card-{{ card.unique_id }}" class="collapse" aria-labelledby="{{ card.unique_id }}" data-parent="#accordion">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-sm-6">
+          <strong>{% trans "Question: " %}</strong>{{ card.question_text }}<br>
+          <strong>{% trans "Answer: " %}</strong>{{ card.answer_text }}
+        </div>
+        <div class="col-sm-6">
+          {% trans "Actions" %}<br>
+          {% trans "Statistics" %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

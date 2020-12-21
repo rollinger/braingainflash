@@ -35,6 +35,7 @@ class MemoSetAdmin(TreeAdmin):
     ]
     readonly_fields = [
         "id",
+        "unique_id",
     ]
     fieldsets = (
         (
@@ -52,6 +53,7 @@ class MemoSetAdmin(TreeAdmin):
                 "classes": ("collapsible",),
                 "fields": (
                     "id",
+                    "unique_id",
                     "_position",
                     "_ref_node_id",
                 ),
@@ -76,6 +78,7 @@ class MemoCardAdmin(admin.ModelAdmin):
     list_display_links = ("topic",)
     readonly_fields = [
         "id",
+        "unique_id",
         "created_at",
         "updated_at",
     ]
@@ -112,7 +115,7 @@ class MemoCardAdmin(admin.ModelAdmin):
             "System Information",
             {
                 "classes": ("collapsible",),
-                "fields": ("id", "created_at", "updated_at"),
+                "fields": ("id", "unique_id", "created_at", "updated_at"),
             },
         ),
     )

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %} {% trans "My Memo Sets" %} {% endblock %}
+
+
+
+{% block content %}
+<div class="container">
+
+  <div class="row">
+    <div class="col-sm-12">
+      <h1>{% trans "My Memo Sets" %}</h1>
+    </div>
+  </div>
+
+  <div class="row">
+    {% for set in rootlist %}
+      {% include "cardset/partials/_memoset_media.html" with set=set is_sub=False %}
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock content %}
+
+{% comment %}
+{% endcomment %}
