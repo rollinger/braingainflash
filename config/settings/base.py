@@ -73,12 +73,13 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
+    "treebeard",
 ]
 
 LOCAL_APPS = [
     "memo.users.apps.UsersConfig",
     # Memorizer App
-    "memo.memorizer.apps.MemorizeConfig",
+    "memo.cardset.apps.CardSetConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
