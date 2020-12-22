@@ -5,7 +5,8 @@
   <div class="card-header" id="{{ card.unique_id }}" data-toggle="collapse"
     data-target="#card-{{ card.unique_id }}" aria-expanded="true" aria-controls="collapseOne">
     <img class="align-self-center float-left mr-3" width="25px"
-      src="{{STATIC_URL}}images/Memo_Bulb.png" alt="Memo Card {{ card.topic }}">
+      src="{{STATIC_URL}}{% if card.score == 100.0 %}images/Memo_Bulb_On.png{% else %}images/Memo_Bulb_Off.png{% endif %}"
+      alt="Memo Card {{ card.topic }}">
     <h5 class="mb-0">{{ card.topic }}</h5>
   </div>
 
