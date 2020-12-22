@@ -6,7 +6,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from jsonfield import JSONField
-from treebeard.ns_tree import NS_Node
+from treebeard.ns_tree import NS_Node, NS_NodeManager
 
 User = get_user_model()
 
@@ -41,6 +41,11 @@ class TimestampMixin(models.Model):
         return super(TimestampMixin, self).save(*args, **kwargs)
 
 
+class MemoSetManager(NS_NodeManager):
+    def get_by_unique_id(self, unique_id):
+        return self.filter(unique_id=uuid.UUID(str(unique_id))).first()
+
+
 class MemoSet(UUIDMixin, NS_Node):
     """
     A Set grouping a number of cards logically together. Supports subsets with the
@@ -60,18 +65,24 @@ class MemoSet(UUIDMixin, NS_Node):
         on_delete=models.CASCADE,
     )
     topic = models.CharField(
-        _("Topic"), help_text=_("Topic of Memo Card"), max_length=255
+        _("Topic"), help_text=_("Topic of Memo Set"), max_length=255
     )
 
     # TODO: pause-toogle
     # TODO: is-template => able to fork the set including tree and cards
 
+    objects = MemoSetManager()
+
     def __str__(self):
         return "%s: %s (%s)" % (self._meta.verbose_name, self.topic, self.owner)
 
+    @classmethod
+    def get_rootlist_for(cls, user):
+        return cls.get_root_nodes().filter(owner=user)
+
     def get_absolute_url(self):
-        # Returns path to detail-view
-        return reverse("memoset.views.details", args=[str(self.unique_id)])
+        # Returns path to update-view
+        return reverse("memoset_update_view", kwargs={"unique_id": self.unique_id})
 
     def save(self, *args, **kwargs):
         return super(MemoSet, self).save(*args, **kwargs)
@@ -128,8 +139,8 @@ class MemoCard(UUIDMixin, TimestampMixin, models.Model):
         return "%s: %s" % (self._meta.verbose_name, self.topic)
 
     def get_absolute_url(self):
-        # Returns path to detail-view
-        return reverse("memocard.views.details", args=[str(self.unique_id)])
+        # Returns path to update-view
+        return reverse("memocard_update_view", kwargs={"unique_id": self.unique_id})
 
     def save(self, *args, **kwargs):
         return super(MemoCard, self).save(*args, **kwargs)

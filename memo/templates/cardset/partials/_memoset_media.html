@@ -7,7 +7,19 @@
     <div class="container">
       <div class="row">
         <div class="col-sm-6"><h3 class="mt-0">{{ set.topic }}</h3></div>
-        <div class="col-sm-6">{% trans "Actions" %}</div>
+        <div class="col-sm-6">
+          <div class="btn-group" role="group" aria-label="Basic example">
+            <a href="{% url 'cardset:memoset_create_view' unique_id=set.unique_id %}" role="button" class="btn btn-light" title="">
+              {% trans 'Create' %}
+            </a>
+            <a href="{% url 'cardset:memoset_update_view' unique_id=set.unique_id %}" role="button" class="btn btn-primary" title="">
+              {% trans 'Update' %}
+            </a>
+            <a href="{% url 'cardset:memoset_delete_view' unique_id=set.unique_id %}" role="button" class="btn btn-danger" title="">
+              {% trans 'Delete' %}
+            </a>
+          </div>
+        </div>
       </div>
       <div class="row" id="accordion">
         {% for card in set.cards.all %}

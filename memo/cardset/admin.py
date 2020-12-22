@@ -55,6 +55,7 @@ class MemoSetAdmin(TreeAdmin):
                     "id",
                     "unique_id",
                     "_position",
+                    # TODO: Turn the _ref_node_id in a autocomplete field...
                     "_ref_node_id",
                 ),
             },
