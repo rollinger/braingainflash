@@ -10,13 +10,13 @@ from memo.cardset.views import (  # memocard_detail_view,; memoset_detail_view,
 app_name = "cardset"
 
 urlpatterns = [
-    # Sets
+    # Main List View
     path(
         "manage/set/root/list",
         view=memoset_root_list_view,
         name="memoset_root_list_view",
     ),
-    # Current Workpoint: CUD for Set
+    # MemoSet CRUD operations
     path(
         "manage/set/create",
         view=memoset_create_view,
@@ -37,6 +37,8 @@ urlpatterns = [
         view=memoset_delete_view,
         name="memoset_delete_view",
     ),
+    # Current Workpoint: Add Basic Workflow MemoCard CRUD to frontend
+    # TODO: ...
 ]
 
 """
