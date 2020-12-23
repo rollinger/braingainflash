@@ -4,33 +4,44 @@
   <img class="align-self-center float-left mr-3" width="25px"
     src="{{STATIC_URL}}images/Memo_Brain.png" alt="Memo Set {{ set.topic }}">
   <div class="media-body">
+
     <div class="container">
-      <div class="row">
-        <div class="col-sm-6"><h3 class="mt-0">{{ set.topic }}</h3></div>
-        <div class="col-sm-6">
-          <div class="btn-group" role="group" aria-label="Basic example">
-            <a href="{% url 'cardset:memoset_create_view' unique_id=set.unique_id %}" role="button" class="btn btn-light" title="">
-              {% trans 'Create' %}
-            </a>
-            <a href="{% url 'cardset:memoset_update_view' unique_id=set.unique_id %}" role="button" class="btn btn-primary" title="">
+
+      <div class="row align-items-end">
+        <div class="col-sm-8"><h3 class="mt-0">{{ set.topic }}</h3></div>
+        <div class="col-sm-2">
+          <div class="btn-group float-right" role="group" aria-label="Basic example">
+            <a href="{% url 'cardset:memoset_update_view' unique_id=set.unique_id %}"
+            role="button" class="btn btn-sm btn-primary" title="{% trans 'Update' %} {{set.topic}}">
               {% trans 'Update' %}
             </a>
-            <a href="{% url 'cardset:memoset_delete_view' unique_id=set.unique_id %}" role="button" class="btn btn-danger" title="">
+            <a href="{% url 'cardset:memoset_delete_view' unique_id=set.unique_id %}"
+            role="button" class="btn btn-sm btn-danger" title="{% trans 'Delete' %} {{set.topic}}">
               {% trans 'Delete' %}
             </a>
           </div>
         </div>
+        <div class="col-sm-2">
+          <a href="{% url 'cardset:memocard_create_view' unique_id=set.unique_id %}"
+          role="button" class="btn btn-block btn-success" title="{% trans 'Add Card to' %} {{set.topic}}">
+            {% trans 'Add Card' %}
+          </a>
+        </div>
       </div>
-      <div class="row" id="accordion">
+
+      <div class="row accordion" id="cartset-accordion-{{set.unique_id}}">
         {% for card in set.cards.all %}
           {% include "cardset/partials/_memocard_media.html" with card=card %}
         {% endfor %}
       </div>
+
       <div class="row">
         {% for subset in set.get_children %}
           {% include "cardset/partials/_memoset_media.html" with set=subset is_sub=True %}
         {% endfor %}
       </div>
+
     </div>
+
   </div>
 </div>

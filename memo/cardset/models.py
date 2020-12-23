@@ -58,6 +58,8 @@ class MemoSet(UUIDMixin, NS_Node):
         verbose_name = _("Set")
         verbose_name_plural = _("Sets")
 
+    # TODO: add fk to studygroup to enable colaboration
+    # TODO: refactor owner in "creator"
     owner = models.ForeignKey(
         User,
         help_text=_("Memo Set is owned by this user"),

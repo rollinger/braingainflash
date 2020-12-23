@@ -4,16 +4,18 @@ from cardset.models import MemoCard, MemoSet
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import (
+from django.views.generic import (  # DetailView;
     CreateView,
     DeleteView,
-    DetailView,
     ListView,
     UpdateView,
 )
 from django.views.generic.edit import ModelFormMixin
 
 
+#
+# Memo Sets
+#
 @method_decorator(login_required, name="dispatch")
 class RootListMemoSetView(ListView):
     model = MemoSet
@@ -91,15 +93,37 @@ class DeleteMemoSetView(DeleteView):
 memoset_delete_view = DeleteMemoSetView.as_view()
 
 
-class MemoSetDetailView(DetailView):
-    model = MemoSet
-
-
-memoset_detail_view = MemoSetDetailView.as_view()
-
-
-class MemoCardDetailView(DetailView):
+#
+# Memo Cards
+#
+@method_decorator(login_required, name="dispatch")
+class CreateMemoCardView(CreateView):
     model = MemoCard
+    slug_field = "unique_id"
+    slug_url_kwarg = "unique_id"
+    success_url = reverse_lazy("cardset:memoset_root_list_view")
 
 
-memocard_detail_view = MemoCardDetailView.as_view()
+memocard_create_view = CreateMemoCardView.as_view()
+
+
+@method_decorator(login_required, name="dispatch")
+class UpdateMemoCardView(UpdateView):
+    model = MemoCard
+    slug_field = "unique_id"
+    slug_url_kwarg = "unique_id"
+    success_url = reverse_lazy("cardset:memoset_root_list_view")
+
+
+memocard_update_view = CreateMemoCardView.as_view()
+
+
+@method_decorator(login_required, name="dispatch")
+class DeleteMemoCardView(DeleteView):
+    model = MemoCard
+    slug_field = "unique_id"
+    slug_url_kwarg = "unique_id"
+    success_url = reverse_lazy("cardset:memoset_root_list_view")
+
+
+memocard_delete_view = DeleteMemoSetView.as_view()

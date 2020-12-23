@@ -1,6 +1,9 @@
 from django.urls import path
 
 from memo.cardset.views import (  # memocard_detail_view,; memoset_detail_view,
+    memocard_create_view,
+    memocard_delete_view,
+    memocard_update_view,
     memoset_create_view,
     memoset_delete_view,
     memoset_root_list_view,
@@ -39,21 +42,19 @@ urlpatterns = [
     ),
     # Current Workpoint: Add Basic Workflow MemoCard CRUD to frontend
     # TODO: ...
+    path(
+        "manage/card/<uuid:unique_id>/create",
+        view=memocard_create_view,
+        name="memocard_create_view",
+    ),
+    path(
+        "manage/card/<uuid:unique_id>/update",
+        view=memocard_update_view,
+        name="memocard_update_view",
+    ),
+    path(
+        "manage/card/<uuid:unique_id>/delete",
+        view=memocard_delete_view,
+        name="memocard_delete_view",
+    ),
 ]
-
-"""
-
-
-
-path(
-    "manage/set/<uuid:unique_id>/detail",
-    view=memoset_detail_view,
-    name="memoset.views.detail",
-),
-# Cards
-path(
-    "manage/card/<uuid:unique_id>/detail",
-    view=memocard_detail_view,
-    name="memoset.views.detail",
-),
-"""
