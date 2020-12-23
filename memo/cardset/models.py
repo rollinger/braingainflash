@@ -60,12 +60,17 @@ class MemoSet(UUIDMixin, NS_Node):
 
     # TODO: add fk to studygroup to enable colaboration
     # TODO: refactor owner in "creator"
-    owner = models.ForeignKey(
+    creator = models.ForeignKey(
         User,
         help_text=_("Memo Set is owned by this user"),
         related_name="memosets",
         on_delete=models.CASCADE,
     )
+
+    @property
+    def owner(self):
+        return self.creator
+
     topic = models.CharField(
         _("Topic"), help_text=_("Topic of Memo Set"), max_length=255
     )
@@ -80,7 +85,7 @@ class MemoSet(UUIDMixin, NS_Node):
 
     @classmethod
     def get_rootlist_for(cls, user):
-        return cls.get_root_nodes().filter(owner=user)
+        return cls.get_root_nodes().filter(creator=user)
 
     def get_absolute_url(self):
         # Returns path to update-view
@@ -103,6 +108,15 @@ class MemoCard(UUIDMixin, TimestampMixin, models.Model):
         verbose_name = _("Card")
         verbose_name_plural = _("Cards")
 
+    creator = models.ForeignKey(
+        User,
+        help_text=_("Memo Set is owned by this user"),
+        null=True,
+        blank=True,
+        related_name="memocards",
+        on_delete=models.CASCADE,
+    )
+
     memoset = models.ForeignKey(
         MemoSet,
         help_text=_("Memo Card is assigned to this set"),
@@ -116,6 +130,47 @@ class MemoCard(UUIDMixin, TimestampMixin, models.Model):
     question_text = models.TextField(_("Question (Text)"), max_length=2000)
     answer_text = models.TextField(_("Answer (Text)"), max_length=2000)
     # TODO: audio-pair, image-pair
+
+    objects = MemoCardManager()
+
+    def __str__(self):
+        return "%s: %s" % (self._meta.verbose_name, self.topic)
+
+    def get_absolute_url(self):
+        # Returns path to update-view
+        return reverse("memocard_update_view", kwargs={"unique_id": self.unique_id})
+
+    def save(self, *args, **kwargs):
+        return super(MemoCard, self).save(*args, **kwargs)
+
+
+class MemoCardPerformanceManager(models.Manager):
+    pass
+
+
+class MemoCardPerformance(TimestampMixin, models.Model):
+    """
+    Card statistic & performance for a user on a card
+    """
+
+    class Meta:
+        verbose_name = _("Card Performance")
+        verbose_name_plural = _("Card Performances")
+
+    owner = models.ForeignKey(
+        User,
+        help_text=_("User of the card performance"),
+        related_name="memo_performances",
+        on_delete=models.CASCADE,
+    )
+    memocard = models.ForeignKey(
+        MemoCard,
+        help_text=_("Card of the performance"),
+        related_name="memo_performances",
+        on_delete=models.CASCADE,
+    )
+
+    # TODO: pause-toogle training for the user and card
 
     # Data contains the memorization data for memorization statistics in json format.
     # See: https://github.com/rpkilby/jsonfield
@@ -133,16 +188,11 @@ class MemoCard(UUIDMixin, TimestampMixin, models.Model):
         default=0.0,
         validators=[MinValueValidator(0.0), MaxValueValidator(100.0)],
     )
-    # TODO: pause-toogle
 
-    objects = MemoCardManager()
+    objects = MemoCardPerformanceManager()
 
     def __str__(self):
-        return "%s: %s" % (self._meta.verbose_name, self.topic)
-
-    def get_absolute_url(self):
-        # Returns path to update-view
-        return reverse("memocard_update_view", kwargs={"unique_id": self.unique_id})
+        return _("%s's Performance on %s: %s") % (self.owner, self.card, self.score)
 
     def save(self, *args, **kwargs):
-        return super(MemoCard, self).save(*args, **kwargs)
+        return super(MemoCardPerformance, self).save(*args, **kwargs)

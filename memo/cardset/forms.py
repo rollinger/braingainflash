@@ -7,11 +7,11 @@ from treebeard.forms import MoveNodeForm, movenodeform_factory
 # See: https://django-treebeard.readthedocs.io/en/latest/forms.html
 class MemoSetTreebeardForm(MoveNodeForm):
     def __init__(self, *args, **kwargs):
-        self.owner = kwargs.pop("owner", None)
+        self.creator = kwargs.pop("creator", None)
         selected_parent = kwargs.pop("selected_parent", "0")
         super(MemoSetTreebeardForm, self).__init__(*args, **kwargs)
-        self.fields["owner"].initial = self.owner
-        self.fields["owner"].widget = forms.HiddenInput()
+        self.fields["creator"].initial = self.creator
+        self.fields["creator"].widget = forms.HiddenInput()
         self.fields["_ref_node_id"].initial = selected_parent
 
     def mk_dropdown_tree(self, model, for_node=None):
@@ -19,7 +19,7 @@ class MemoSetTreebeardForm(MoveNodeForm):
         forked: https://github.com/django-treebeard/django-treebeard/blob/master/treebeard/forms.py
         """
         options = [(0, _("-- root --"))]
-        for node in model.get_rootlist_for(self.owner).all():
+        for node in model.get_rootlist_for(self.creator).all():
             self.add_subtree(for_node, node, options)
         return options
 

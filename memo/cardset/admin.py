@@ -2,18 +2,15 @@ from django.contrib import admin
 from treebeard.admin import TreeAdmin
 from treebeard.forms import movenodeform_factory
 
-from .models import MemoCard, MemoSet
+from .models import MemoCard, MemoCardPerformance, MemoSet
 
 
 class MemoCardInline(admin.TabularInline):
     model = MemoCard
     show_change_link = True
-    ordering = ("-score",)
+    ordering = ("-created_at",)
     extra = 1
-    fields = (
-        "score",
-        "topic",
-    )
+    fields = ("topic",)
     # autocomplete_fields = ['source']
     # verbose_name_plural = "Predisposed by:"
 
@@ -24,18 +21,21 @@ class MemoSetAdmin(TreeAdmin):
     save_on_top = True
     list_display = (
         "topic",
-        "owner",
+        "creator",
     )
     list_display_links = ("topic",)
     # list_filter = ("is_template",)
     # list_editable = ("is_template",)
-    search_fields = ["topic"]
+    search_fields = ["topic", "creator"]
     autocomplete_fields = [
-        "owner",
+        "creator",
     ]
     readonly_fields = [
         "id",
         "unique_id",
+    ]
+    inlines = [
+        MemoCardInline,
     ]
     fieldsets = (
         (
@@ -43,7 +43,7 @@ class MemoSetAdmin(TreeAdmin):
             {
                 "fields": (
                     "topic",
-                    "owner",
+                    "creator",
                 )
             },
         ),
@@ -61,20 +61,34 @@ class MemoSetAdmin(TreeAdmin):
             },
         ),
     )
-    inlines = [
-        MemoCardInline,
+
+
+class MemoCardPerformanceInline(admin.TabularInline):
+    model = MemoCardPerformance
+    show_change_link = True
+    ordering = ("-created_at",)
+    extra = 0
+    fields = (
+        "memocard",
+        "owner",
+        "score",
+    )
+    readonly_fields = [
+        "memocard",
+        "owner",
+        "score",
     ]
+    # autocomplete_fields = ['source']
+    # verbose_name_plural = "Predisposed by:"
 
 
 @admin.register(MemoCard)
 class MemoCardAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = (
-        "id",
         "memoset",
         "topic",
-        "score",
-        "get_owner",
+        "creator",
     )
     list_display_links = ("topic",)
     readonly_fields = [
@@ -84,6 +98,9 @@ class MemoCardAdmin(admin.ModelAdmin):
         "updated_at",
     ]
     autocomplete_fields = ["memoset"]
+    inlines = [
+        MemoCardPerformanceInline,
+    ]
     fieldsets = (
         (
             None,
@@ -91,8 +108,8 @@ class MemoCardAdmin(admin.ModelAdmin):
                 "fields": (
                     "topic",
                     "memoset",
-                    "score",
-                )  # 'get_owner',
+                    "creator",
+                )
             },
         ),
         (
@@ -106,13 +123,6 @@ class MemoCardAdmin(admin.ModelAdmin):
             },
         ),
         (
-            "Training Data",
-            {
-                "classes": ("extrapretty",),
-                "fields": ("data",),
-            },
-        ),
-        (
             "System Information",
             {
                 "classes": ("collapsible",),
@@ -120,9 +130,3 @@ class MemoCardAdmin(admin.ModelAdmin):
             },
         ),
     )
-
-    def get_owner(self, obj):
-        return obj.memoset.owner
-
-    get_owner.admin_order_field = "owner"  # Allows column order sorting
-    get_owner.short_description = "Owner"  # Renames column head

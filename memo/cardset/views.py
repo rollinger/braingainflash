@@ -24,7 +24,7 @@ class RootListMemoSetView(ListView):
 
     def get_queryset(self, *args, **kwargs):
         # Returns root list for user
-        return MemoSet.get_root_nodes().filter(owner=self.request.user)
+        return MemoSet.get_root_nodes().filter(creator=self.request.user)
 
     def get_context_data(self, **kwargs):
         # Optional additional context data
@@ -40,7 +40,7 @@ class MemoSetModelFormMixin(ModelFormMixin):
 
     def get_form_kwargs(self):
         kwargs = super(MemoSetModelFormMixin, self).get_form_kwargs()
-        kwargs.update({"owner": self.request.user})
+        kwargs.update({"creator": self.request.user})
         if "unique_id" in self.kwargs:
             kwargs.update(
                 {
