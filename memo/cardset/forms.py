@@ -1,4 +1,4 @@
-from cardset.models import MemoSet
+from cardset.models import MemoCard, MemoSet
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from treebeard.forms import MoveNodeForm, movenodeform_factory
@@ -25,3 +25,10 @@ class MemoSetTreebeardForm(MoveNodeForm):
 
 
 MemoSetTreebeardFormFactory = movenodeform_factory(MemoSet, form=MemoSetTreebeardForm)
+
+
+class MemoCardForm(forms.ModelForm):
+    class Meta:
+        model = MemoCard
+        fields = ["creator", "memoset", "topic", "question_text", "answer_text"]
+        widgets = {"creator": forms.HiddenInput(), "memoset": forms.HiddenInput()}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %} {% trans "Delete Card" %} {% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <div class="row mt-3">
+    <div class="col-sm-12">
+      <h1>{% trans "Delete Card: " %} "{{ object.topic }}"</h1>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-12">
+      <form method="post">{% csrf_token %}
+        <p>Are you sure you want to delete "{{ object.topic }}"? </p>
+        <input class="btn btn-danger" type="submit" value={% trans "Confirm" %}>
+    </form>
+    </div>
+  </div>
+
+</div>
+{% endblock content %}

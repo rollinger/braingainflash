@@ -3,6 +3,8 @@ import uuid
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from jsonfield import JSONField
@@ -192,7 +194,21 @@ class MemoCardPerformance(TimestampMixin, models.Model):
     objects = MemoCardPerformanceManager()
 
     def __str__(self):
-        return _("%s's Performance on %s: %s") % (self.owner, self.card, self.score)
+        return _("%s's Performance on %s: %s") % (self.owner, self.memocard, self.score)
 
     def save(self, *args, **kwargs):
         return super(MemoCardPerformance, self).save(*args, **kwargs)
+
+
+#
+# SIGNALS
+#
+
+# MEMO CARD CREATION (post save)
+@receiver(post_save, sender=MemoCard)
+def memocard_created(sender, instance, **kwargs):
+    if kwargs["created"]:
+        # Add MemoCardPerformance Instance with the MemoCard.creator as the owner
+        performance_instance, created = MemoCardPerformance.objects.get_or_create(
+            owner=instance.creator, memocard=instance
+        )

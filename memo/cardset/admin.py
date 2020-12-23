@@ -65,6 +65,7 @@ class MemoSetAdmin(TreeAdmin):
 
 class MemoCardPerformanceInline(admin.TabularInline):
     model = MemoCardPerformance
+    fk_name = "memocard"
     show_change_link = True
     ordering = ("-created_at",)
     extra = 0
@@ -74,9 +75,9 @@ class MemoCardPerformanceInline(admin.TabularInline):
         "score",
     )
     readonly_fields = [
-        "memocard",
-        "owner",
-        "score",
+        # "memocard",
+        # "owner",
+        # "score",
     ]
     # autocomplete_fields = ['source']
     # verbose_name_plural = "Predisposed by:"

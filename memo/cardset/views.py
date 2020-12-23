@@ -1,5 +1,5 @@
 # from django.shortcuts import render
-from cardset.forms import MemoSetTreebeardFormFactory
+from cardset.forms import MemoCardForm, MemoSetTreebeardFormFactory
 from cardset.models import MemoCard, MemoSet
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
@@ -63,6 +63,8 @@ class MemoSetModelFormMixin(ModelFormMixin):
 class CreateMemoSetView(MemoSetModelFormMixin, CreateView):
     model = MemoSet
     form_class = MemoSetTreebeardFormFactory
+    template_name = "cardset/memoset_create_form.html"
+    success_url = reverse_lazy("cardset:memoset_root_list_view")
 
 
 memoset_create_view = CreateMemoSetView.as_view()
@@ -74,9 +76,8 @@ class UpdateMemoSetView(MemoSetModelFormMixin, UpdateView):
     form_class = MemoSetTreebeardFormFactory
     slug_field = "unique_id"
     slug_url_kwarg = "unique_id"
-
-    def get_success_url(self):
-        return reverse("cardset:memoset_root_list_view")
+    template_name = "cardset/memoset_update_form.html"
+    success_url = reverse_lazy("cardset:memoset_root_list_view")
 
 
 memoset_update_view = UpdateMemoSetView.as_view()
@@ -99,9 +100,22 @@ memoset_delete_view = DeleteMemoSetView.as_view()
 @method_decorator(login_required, name="dispatch")
 class CreateMemoCardView(CreateView):
     model = MemoCard
+    form_class = MemoCardForm
     slug_field = "unique_id"
     slug_url_kwarg = "unique_id"
+    template_name = "cardset/memocard_create_form.html"
     success_url = reverse_lazy("cardset:memoset_root_list_view")
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data["memoset"] = MemoSet.objects.get_by_unique_id(self.kwargs["unique_id"])
+        return data
+
+    def get_initial(self):
+        return {
+            "creator": self.request.user,
+            "memoset": MemoSet.objects.get_by_unique_id(self.kwargs["unique_id"]),
+        }
 
 
 memocard_create_view = CreateMemoCardView.as_view()
@@ -110,12 +124,14 @@ memocard_create_view = CreateMemoCardView.as_view()
 @method_decorator(login_required, name="dispatch")
 class UpdateMemoCardView(UpdateView):
     model = MemoCard
+    form_class = MemoCardForm
     slug_field = "unique_id"
     slug_url_kwarg = "unique_id"
+    template_name = "cardset/memocard_update_form.html"
     success_url = reverse_lazy("cardset:memoset_root_list_view")
 
 
-memocard_update_view = CreateMemoCardView.as_view()
+memocard_update_view = UpdateMemoCardView.as_view()
 
 
 @method_decorator(login_required, name="dispatch")
@@ -126,4 +142,4 @@ class DeleteMemoCardView(DeleteView):
     success_url = reverse_lazy("cardset:memoset_root_list_view")
 
 
-memocard_delete_view = DeleteMemoSetView.as_view()
+memocard_delete_view = DeleteMemoCardView.as_view()
