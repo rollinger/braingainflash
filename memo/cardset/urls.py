@@ -1,6 +1,6 @@
 from django.urls import path
 
-from memo.cardset.views import (  # memocard_detail_view,; memoset_detail_view,
+from memo.cardset.views import (  # memocard_detail_view,; memoset_detail_view,; CRUD Views; Gain Views
     memocard_create_view,
     memocard_delete_view,
     memocard_update_view,
@@ -8,6 +8,7 @@ from memo.cardset.views import (  # memocard_detail_view,; memoset_detail_view,
     memoset_delete_view,
     memoset_root_list_view,
     memoset_update_view,
+    train_gain_view,
 )
 
 app_name = "cardset"
@@ -56,5 +57,10 @@ urlpatterns = [
         "manage/card/<uuid:unique_id>/delete",
         view=memocard_delete_view,
         name="memocard_delete_view",
+    ),
+    path(
+        "train/gain",
+        view=train_gain_view,
+        name="train_gain_view",
     ),
 ]

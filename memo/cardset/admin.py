@@ -98,6 +98,7 @@ class MemoCardAdmin(admin.ModelAdmin):
         "created_at",
         "updated_at",
     ]
+    search_fields = ["topic", "creator"]
     autocomplete_fields = ["memoset"]
     inlines = [
         MemoCardPerformanceInline,
@@ -131,3 +132,22 @@ class MemoCardAdmin(admin.ModelAdmin):
             },
         ),
     )
+
+
+@admin.register(MemoCardPerformance)
+class MemoCardPerformanceAdmin(admin.ModelAdmin):
+    save_on_top = True
+    list_display = (
+        "id",
+        "memocard",
+        "owner",
+        "score",
+    )
+    list_display_links = ("memocard",)
+    readonly_fields = [
+        "id",
+        # "unique_id",
+        "created_at",
+        "updated_at",
+    ]
+    autocomplete_fields = ["owner", "memocard"]

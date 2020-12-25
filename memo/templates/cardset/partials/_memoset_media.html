@@ -10,7 +10,7 @@
       <div class="row align-items-end">
         <div class="col-sm-8"><h3 class="mt-0">{{ set.topic }}</h3></div>
         <div class="col-sm-2">
-          <div class="btn-group float-right" role="group" aria-label="Basic example">
+          <div class="btn-group float-right" role="group" aria-label="Actions for the set">
             <a href="{% url 'cardset:memoset_update_view' unique_id=set.unique_id %}"
             role="button" class="btn btn-sm btn-primary" title="{% trans 'Update' %} {{set.topic}}">
               {% trans 'Update' %}

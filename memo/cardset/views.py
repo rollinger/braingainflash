@@ -1,12 +1,13 @@
 # from django.shortcuts import render
-from cardset.forms import MemoCardForm, MemoSetTreebeardFormFactory
-from cardset.models import MemoCard, MemoSet
+from cardset.forms import MemoCardForm, MemoSetTreebeardFormFactory, TrainGainForm
+from cardset.models import MemoCard, MemoCardPerformance, MemoSet
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import (  # DetailView;
     CreateView,
     DeleteView,
+    FormView,
     ListView,
     UpdateView,
 )
@@ -143,3 +144,34 @@ class DeleteMemoCardView(DeleteView):
 
 
 memocard_delete_view = DeleteMemoCardView.as_view()
+
+
+@method_decorator(login_required, name="dispatch")
+class TrainGainView(FormView):
+    form_class = TrainGainForm
+    template_name = "cardset/train_gain_view.html"
+    success_url = reverse_lazy("cardset:train_gain_view")
+
+    def get(self, request, *args, **kwargs):
+        # Get the random object and prepare form initial and context_data
+        obj = MemoCardPerformance.objects.get_random_object_for(user=self.request.user)
+        self.extra_context = {
+            "card_performance": obj,
+            "auto_redirect_timeout": obj.learning_timeout,
+        }
+        self.initial["card_performance_id"] = obj.pk
+        return super().get(self, request, *args, **kwargs)
+
+    def form_valid(self, form):
+        # Add the training data to the MemoCardPerformance object and redirect
+        card_performance = MemoCardPerformance.objects.get(
+            pk=form.cleaned_data["card_performance_id"]
+        )
+        card_performance.add_learning_datapoint(
+            form.cleaned_data["outcome_int"], form.cleaned_data["duration_sec"]
+        )
+        card_performance.save()
+        return super().form_valid(form)
+
+
+train_gain_view = TrainGainView.as_view()

@@ -1,3 +1,4 @@
+import random
 import uuid
 
 from django.contrib.auth import get_user_model
@@ -112,7 +113,7 @@ class MemoCard(UUIDMixin, TimestampMixin, models.Model):
 
     creator = models.ForeignKey(
         User,
-        help_text=_("Memo Set is owned by this user"),
+        help_text=_("Memo Set is created by this user"),
         null=True,
         blank=True,
         related_name="memocards",
@@ -147,7 +148,10 @@ class MemoCard(UUIDMixin, TimestampMixin, models.Model):
 
 
 class MemoCardPerformanceManager(models.Manager):
-    pass
+    def get_random_object_for(self, user):
+        # returns a random card performance object
+        # TODO: exclude paused ones
+        return random.choice(self.filter(owner=user).order_by("?"))
 
 
 class MemoCardPerformance(TimestampMixin, models.Model):
@@ -158,6 +162,7 @@ class MemoCardPerformance(TimestampMixin, models.Model):
     class Meta:
         verbose_name = _("Card Performance")
         verbose_name_plural = _("Card Performances")
+        unique_together = ["owner", "memocard"]
 
     owner = models.ForeignKey(
         User,
@@ -177,10 +182,15 @@ class MemoCardPerformance(TimestampMixin, models.Model):
     # Data contains the memorization data for memorization statistics in json format.
     # See: https://github.com/rpkilby/jsonfield
     # Data Format:
-    # { 'learning': [(datetime, outcome_int, duration_sec),...],
-    #   'recalling': [(datetime, outcome_int, duration_sec),...]
+    # { 'learning': [(datetime, outcome_int, duration_ms),...],
+    #   'recalling': [(datetime, outcome_int, duration_ms),...]
     # }
-    data = JSONField(_("Memorization Data"), null=True, blank=True)
+    INITIAL_DATA = {"learning": [], "recalling": []}
+    data = JSONField(_("Memorization Data"), default=INITIAL_DATA)
+
+    learning_timeout = models.PositiveSmallIntegerField(
+        _("Learning Timeout in seconds"), default=30
+    )
 
     score = models.DecimalField(
         _("Memorization Score"),
@@ -195,6 +205,14 @@ class MemoCardPerformance(TimestampMixin, models.Model):
 
     def __str__(self):
         return _("%s's Performance on %s: %s") % (self.owner, self.memocard, self.score)
+
+    def add_learning_datapoint(self, outcome_int, duration_sec):
+        # Adds a learning data point; .save() must be called seperately
+        self.data["learning"].append((outcome_int, duration_sec))
+
+    def add_recalling_datapoint(self, outcome_int, duration_sec):
+        # Adds a learning data point; .save() must be called seperately
+        self.data["recalling"].append((outcome_int, duration_sec))
 
     def save(self, *args, **kwargs):
         return super(MemoCardPerformance, self).save(*args, **kwargs)

@@ -1,4 +1,4 @@
-from cardset.models import MemoCard, MemoSet
+from cardset.models import MemoCard, MemoSet  # MemoCardPerformance,
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from treebeard.forms import MoveNodeForm, movenodeform_factory
@@ -32,3 +32,17 @@ class MemoCardForm(forms.ModelForm):
         model = MemoCard
         fields = ["creator", "memoset", "topic", "question_text", "answer_text"]
         widgets = {"creator": forms.HiddenInput(), "memoset": forms.HiddenInput()}
+
+
+class TrainGainForm(forms.Form):
+    card_performance_id = forms.IntegerField()  # forms.UUIDField()
+    outcome_int = forms.IntegerField(initial=1)
+    duration_sec = forms.IntegerField(initial=0)
+
+    class Meta:
+        fields = ["card_performance_id", "outcome_int", "duration_sec"]
+        widgets = {
+            "card_performance_id": forms.HiddenInput(),
+            "outcome_int": forms.HiddenInput(),
+            "duration_sec": forms.HiddenInput(),
+        }

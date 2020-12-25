@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %} {% trans "Train Brain" %} {% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <div class="row mt-3">
+    <div class="col-sm-12">
+      <h1>{% trans "Train Brain" %}</h1>
+    </div>
+  </div>
+
+  <div class="row mb-3 justify-content-center">
+    <div class="col-sm-8">
+      <center><strong>{% trans "Question:" %}</strong></center>
+        <br>
+        {{ card_performance.memocard.question_text }}
+    </div>
+  </div>
+
+  <div class="row mb-3 justify-content-center">
+    <div class="col-sm-8">
+      <center><strong>{% trans "Answer:" %}</strong></center>
+        <br>
+        {{ card_performance.memocard.answer_text }}
+    </div>
+  </div>
+
+  <div class="row mb-3 justify-content-end">
+    <div class="col-sm-4">
+
+      <div class="btn-group" role="group" aria-label="Basic example">
+        <a href="{#% url 'cardset:memocard_update_view' unique_id=card_performance.memocard.unique_id %#}"
+        role="button" class="btn btn-md btn-primary" title="{% trans 'Update Card' %}">
+          {% trans 'Update Card' %}
+        </a>
+        <form method="post" name="nextCard">{% csrf_token %}
+          {{ form.as_p }}
+          <input type="submit" class="btn btn-md btn-success"
+          title="{% trans 'Submit training and get next card' %}" value="{% trans 'Next Card' %}">
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+{% endblock content %}
+
+{% block javascript %}
+
+  <script type="text/javascript">
+    var seconds = document.getElementById("id_duration_sec").value;
+    var countdown = setInterval(function() {
+      seconds++;
+      document.getElementById("id_duration_sec").value = seconds;
+      if (seconds >= {{ auto_redirect_timeout }}) document.nextCard.submit();
+    }, 1000);
+  </script>
+{% endblock javascript %}
