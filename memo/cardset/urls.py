@@ -8,6 +8,7 @@ from memo.cardset.views import (  # memocard_detail_view,; memoset_detail_view,;
     memoset_delete_view,
     memoset_root_list_view,
     memoset_update_view,
+    test_gain_view,
     train_gain_view,
 )
 
@@ -62,5 +63,10 @@ urlpatterns = [
         "train/gain",
         view=train_gain_view,
         name="train_gain_view",
+    ),
+    path(
+        "test/gain",
+        view=test_gain_view,
+        name="test_gain_view",
     ),
 ]

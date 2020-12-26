@@ -1,3 +1,4 @@
+import datetime
 import random
 import uuid
 
@@ -176,10 +177,15 @@ class MemoCardPerformance(TimestampMixin, models.Model):
         related_name="memo_performances",
         on_delete=models.CASCADE,
     )
+    learning_timeout = models.PositiveSmallIntegerField(
+        _("Learning Timeout"), help_text=_("Learning Timeout in seconds"), default=120
+    )
 
     # TODO: pause-toogle training for the user and card
     # TODO: add priority (low,normal,high) to card_performance
-    # TODO:
+
+    # is_paused
+    # priority
 
     # Data contains the memorization data for memorization statistics in json format.
     # See: https://github.com/rpkilby/jsonfield
@@ -190,13 +196,30 @@ class MemoCardPerformance(TimestampMixin, models.Model):
     INITIAL_DATA = {"learning": [], "recalling": []}
     data = JSONField(_("Memorization Data"), default=INITIAL_DATA)
 
-    learning_timeout = models.PositiveSmallIntegerField(
-        _("Learning Timeout in seconds"), default=30
+    recall_total_time = models.PositiveIntegerField(
+        _("Total Recall Time"), help_text=_("Total time spend on testing"), default=0
+    )
+    recall_trials = models.PositiveIntegerField(
+        _("Total Recall Trials"), help_text=_("Total recalls tried"), default=0
+    )
+    recall_score = models.DecimalField(
+        _("Recall Score"),
+        help_text=_("Recall Score of the Memo Card for the User"),
+        max_digits=4,
+        decimal_places=1,
+        default=0.0,
+        validators=[MinValueValidator(0.0), MaxValueValidator(100.0)],
     )
 
-    score = models.DecimalField(
-        _("Memorization Score"),
-        help_text=_("Memorization Score of the Memo Card"),
+    learn_total_time = models.PositiveIntegerField(
+        _("Total Learn Time"), help_text=_("Total time spend on learning"), default=0
+    )
+    learn_trials = models.PositiveIntegerField(
+        _("Total Learn Trials"), help_text=_("Total learnings tried"), default=0
+    )
+    learn_score = models.DecimalField(
+        _("Learn Score"),
+        help_text=_("Learn Score of the Memo Card for the User"),
         max_digits=4,
         decimal_places=1,
         default=0.0,
@@ -206,22 +229,51 @@ class MemoCardPerformance(TimestampMixin, models.Model):
     objects = MemoCardPerformanceManager()
 
     def __str__(self):
-        return _("%s's Performance on %s: %s") % (self.owner, self.memocard, self.score)
+        return _("%s's Performance on %s: %s") % (
+            self.owner,
+            self.memocard,
+            self.recall_score,
+        )
 
     def set_initial_data(self):
-        # Sets the data to initial value; .save() must be called seperately
+        # Sets the data to initial value; .save() must be called separately
         self.data = self.INITIAL_DATA
 
+    def recalculate_scores(self):
+        #
+        # TODO: Develop good algorithm what constitutes a learning/recall score
+        #
+        # Calculate Learning
+        # learn_score = successful_trials / FIXED_TRIALS
+        learn_trials = 0
+        learn_total_time = 0
+        for data_point in self.data["learning"]:
+            learn_trials += 1
+            learn_total_time += data_point[2]
+        self.learn_trials = learn_trials
+        self.learn_total_time = learn_total_time
+        # self.learn_score
+        # Calculate Testing
+        # recall_score = sucessful_recalls /
+        recall_trials = 0
+        recall_total_time = 0
+        for data_point in self.data["recalling"]:
+            recall_trials += 1
+            recall_total_time += 1
+
     def add_learning_datapoint(self, outcome_int, duration_sec):
-        # Adds a learning data point; .save() must be called seperately
-        self.data["learning"].append((outcome_int, duration_sec))
+        # Adds a learning data point; .save() must be called separately
+        timestamp = datetime.datetime.now()
+        self.data["learning"].append((timestamp, outcome_int, duration_sec))
 
     def add_recalling_datapoint(self, outcome_int, duration_sec):
-        # Adds a learning data point; .save() must be called seperately
-        self.data["recalling"].append((outcome_int, duration_sec))
+        # Adds a learning data point; .save() must be called separately
+        timestamp = datetime.datetime.now()
+        self.data["recalling"].append((timestamp, outcome_int, duration_sec))
 
     def save(self, *args, **kwargs):
-        # TODO: call recalculate_scores
+        # Calculates all scores on save
+        self.recalculate_scores()
         return super(MemoCardPerformance, self).save(*args, **kwargs)
 
 

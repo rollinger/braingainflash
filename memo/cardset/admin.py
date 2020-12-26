@@ -141,16 +141,60 @@ class MemoCardPerformanceAdmin(admin.ModelAdmin):
         "id",
         "memocard",
         "owner",
-        "score",
+        "recall_score",
+        "learn_score",
+        "learning_timeout",
     )
     list_display_links = ("memocard",)
+    list_editable = ("learning_timeout",)
     readonly_fields = [
         "id",
         # "unique_id",
         "created_at",
         "updated_at",
+        "data",
+        "recall_score",
+        "recall_trials",
+        "recall_total_time",
+        "learn_score",
+        "learn_trials",
+        "learn_total_time",
     ]
     autocomplete_fields = ["owner", "memocard"]
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "memocard",
+                    "owner",
+                    "learning_timeout",
+                )
+            },
+        ),
+        (
+            "Performance Data",
+            {
+                "classes": ("extrapretty",),
+                "fields": (
+                    "data",
+                    (
+                        "recall_score",
+                        "recall_trials",
+                        "recall_total_time",
+                    ),
+                    ("learn_score", "learn_trials", "learn_total_time"),
+                ),
+            },
+        ),
+        (
+            "System Information",
+            {
+                "classes": ("collapsible",),
+                "fields": ("id", "created_at", "updated_at"),
+            },
+        ),
+    )
     actions = ["reset_data"]
 
     def reset_data(self, request, queryset):

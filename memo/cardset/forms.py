@@ -35,10 +35,8 @@ class MemoCardForm(forms.ModelForm):
 
 
 class TrainGainForm(forms.Form):
-    card_performance_id = forms.IntegerField(
-        widget=forms.HiddenInput()
-    )  # forms.UUIDField()
-    outcome_int = forms.IntegerField(initial=1, widget=forms.HiddenInput())
+    card_performance_id = forms.IntegerField(widget=forms.HiddenInput())
+    outcome_int = forms.IntegerField(initial=0, widget=forms.HiddenInput())
     duration_sec = forms.IntegerField(initial=0, widget=forms.HiddenInput())
 
     class Meta:

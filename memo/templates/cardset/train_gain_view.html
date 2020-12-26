@@ -28,20 +28,32 @@
     </div>
   </div>
 
-  <div class="row mb-3 justify-content-end">
-    <div class="col-sm-4">
+  <div class="row mb-3 justify-content-between">
 
-      <div class="btn-group" role="group" aria-label="Basic example">
-        <a href="{#% url 'cardset:memocard_update_view' unique_id=card_performance.memocard.unique_id %#}"
-        role="button" class="btn btn-md btn-primary" title="{% trans 'Update Card' %}">
-          {% trans 'Update Card' %}
-        </a>
-        <form method="post" name="nextCard">{% csrf_token %}
-          {{ form.as_p }}
-          <input type="submit" class="btn btn-md btn-success"
-          title="{% trans 'Submit training and get next card' %}" value="{% trans 'Next Card' %}">
-        </form>
+    <div class="col-sm-3">
+      <a href="{% url 'cardset:memocard_update_view' unique_id=card_performance.memocard.unique_id %}"
+      role="button" class="btn btn-md btn-primary" title="{% trans 'Update Card' %}">
+        {% trans 'Update Card' %}
+      </a>
+    </div>
+
+    <div class="col-sm-3">
+
+      <div class="btn-group mr-2" role="group" aria-label="Rate Performance">
+        <button type="button" class="btn btn-md btn-warning"
+          onclick="document.getElementById('id_outcome_int').value = 0; document.performance_rating.submit()">
+          {% trans 'Yet to learn...' %}
+        </button>
+        <button type="button" class="btn btn-md btn-success"
+          onclick="document.getElementById('id_outcome_int').value = 1; document.performance_rating.submit()">
+          {% trans 'Memorized!' %}
+        </button>
       </div>
+
+      <form method="post" name="performance_rating">
+        {% csrf_token %}
+        {{ form.as_p }}
+      </form>
 
     </div>
   </div>
@@ -56,7 +68,7 @@
     var countdown = setInterval(function() {
       seconds++;
       document.getElementById("id_duration_sec").value = seconds;
-      if (seconds >= {{ auto_redirect_timeout }}) document.nextCard.submit();
+      if (seconds >= {{ auto_redirect_timeout }}) document.performance_rating.submit();
     }, 1000);
   </script>
 {% endblock javascript %}
