@@ -151,3 +151,11 @@ class MemoCardPerformanceAdmin(admin.ModelAdmin):
         "updated_at",
     ]
     autocomplete_fields = ["owner", "memocard"]
+    actions = ["reset_data"]
+
+    def reset_data(self, request, queryset):
+        for obj in queryset:
+            obj.set_initial_data()
+            obj.save()
+
+    reset_data.short_description = "Reset data to initial value"

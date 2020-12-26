@@ -178,6 +178,8 @@ class MemoCardPerformance(TimestampMixin, models.Model):
     )
 
     # TODO: pause-toogle training for the user and card
+    # TODO: add priority (low,normal,high) to card_performance
+    # TODO:
 
     # Data contains the memorization data for memorization statistics in json format.
     # See: https://github.com/rpkilby/jsonfield
@@ -206,6 +208,10 @@ class MemoCardPerformance(TimestampMixin, models.Model):
     def __str__(self):
         return _("%s's Performance on %s: %s") % (self.owner, self.memocard, self.score)
 
+    def set_initial_data(self):
+        # Sets the data to initial value; .save() must be called seperately
+        self.data = self.INITIAL_DATA
+
     def add_learning_datapoint(self, outcome_int, duration_sec):
         # Adds a learning data point; .save() must be called seperately
         self.data["learning"].append((outcome_int, duration_sec))
@@ -215,6 +221,7 @@ class MemoCardPerformance(TimestampMixin, models.Model):
         self.data["recalling"].append((outcome_int, duration_sec))
 
     def save(self, *args, **kwargs):
+        # TODO: call recalculate_scores
         return super(MemoCardPerformance, self).save(*args, **kwargs)
 
 
