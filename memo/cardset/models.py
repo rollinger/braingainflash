@@ -170,9 +170,9 @@ LEARNING_PRIORITY = (
 )
 
 
-class MemoCardPerformance(TimestampMixin, models.Model):
+class MemoCardPerformance(UUIDMixin, TimestampMixin, models.Model):
     """
-    Card statistic & performance for a user on a card
+    Card statistics & performance for a user on a card
     """
 
     class Meta:

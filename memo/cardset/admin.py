@@ -140,6 +140,7 @@ class MemoCardPerformanceAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = (
         "id",
+        "unique_id",
         "memocard",
         "owner",
         "recall_score",
@@ -160,7 +161,7 @@ class MemoCardPerformanceAdmin(admin.ModelAdmin):
     )
     readonly_fields = [
         "id",
-        # "unique_id",
+        "unique_id",
         "created_at",
         "updated_at",
         "data",
@@ -210,7 +211,7 @@ class MemoCardPerformanceAdmin(admin.ModelAdmin):
             "System Information",
             {
                 "classes": ("collapsible",),
-                "fields": ("id", "created_at", "updated_at"),
+                "fields": ("id", "unique_id", "created_at", "updated_at"),
             },
         ),
     )
