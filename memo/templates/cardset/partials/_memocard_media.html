@@ -1,6 +1,10 @@
-{% load static i18n cardset_tags %}
+{% load static i18n rules cardset_tags %}
 
 {% card_performance request.user card as performance %}
+
+{% test_rule 'can_delete_memocard' request.user card as can_delete_memocard %}
+{% test_rule 'can_update_memocard' request.user card as can_update_memocard %}
+
 
 <div class="card col-sm-12">
   <div class="card-header" id="toggle-{{ card.unique_id }}">
@@ -28,14 +32,36 @@
           <div class="row">
             <div class="col-sm-12">
               <div class="btn-group float-right" role="group" aria-label="Basic example">
-                <a href="{% url 'cardset:memocard_update_view' unique_id=card.unique_id %}" role="button"
-                class="btn btn-sm btn-primary" title="{% trans 'Update' %} {{card.topic}}">
-                  {% trans 'Update' %}
+
+                <a role="button"
+                {% if not can_update_memocard %}
+                  class="btn btn-sm btn-primary disabled"
+                  aria-disabled="true"
+                {% else %}
+                  href="{% url 'cardset:memocard_update_view' unique_id=card.unique_id %}"
+                  class="btn btn-sm btn-primary"
+                  title="{% trans 'Change card content' %}"
+                {% endif %}>
+                  {% trans 'Content' %}
                 </a>
-                <a href="{% url 'cardset:memocard_delete_view' unique_id=card.unique_id %}"
-                role="button" class="btn btn-sm btn-danger" title="{% trans 'Delete' %} {{card.topic}}">
+
+                <a href="{% url 'cardset:memocard_update_view' unique_id=card.unique_id %}" role="button"
+                class="btn btn-sm btn-primary" title="{% trans 'Change Settings' %}">
+                  {% trans 'Settings' %}
+                </a>
+
+                <a role="button"
+                {% if not can_delete_memocard %}
+                  class="btn btn-sm btn-danger disabled"
+                  aria-disabled="true"
+                {% else %}
+                  href="{% url 'cardset:memocard_delete_view' unique_id=card.unique_id %}"
+                  class="btn btn-sm btn-danger"
+                  title="{% trans 'Delete' %} {{card.topic}}"
+                {% endif %}>
                   {% trans 'Delete' %}
                 </a>
+
               </div>
             </div>
           </div>
@@ -49,6 +75,17 @@
                 <div class="col-sm-6">
                   <center><strong>{% trans "Recall Score" %}</strong><br>
                   <h3>{{performance.recall_score}} %</h3></center>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+
+                  {% if can_delete_memocard %}
+                    You can delete this card!
+                  {% else %}
+                    You can NOT delete or update this card!
+                  {% endif %}
+                  {{ can_update_memocard }}
                 </div>
               </div>
             </div>

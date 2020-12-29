@@ -2,6 +2,7 @@ import datetime
 import random
 import uuid
 
+import rules
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -332,12 +333,16 @@ class MemoCardPerformance(UUIDMixin, TimestampMixin, models.Model):
 #
 # RULES Permissions
 # https://github.com/dfunckt/django-rules
-# import rules
-# @rules.predicate
-# def is_owner(user, ):
-#    return book.author == user
-# rules.add_perm("app_label.add_book", rules.is_staff)
-# rules.add_perm("app_label.read_book", rules.is_authenticated)
+
+
+@rules.predicate
+def is_creator(user, obj):
+    # print("%s => %s == %s => %s"%(obj, obj.creator, user, (obj.creator == user)))
+    return obj.creator == user
+
+
+rules.add_rule("can_delete_memocard", is_creator)
+rules.add_rule("can_update_memocard", is_creator)
 
 
 #

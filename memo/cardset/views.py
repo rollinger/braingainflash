@@ -13,6 +13,7 @@ from django.views.generic import (  # DetailView;
     UpdateView,
 )
 from django.views.generic.edit import ModelFormMixin
+from rules.contrib.views import PermissionRequiredMixin as PermissionRulesRequiredMixin
 
 
 #
@@ -126,9 +127,10 @@ memocard_create_view = CreateMemoCardView.as_view()
 
 
 @method_decorator(login_required, name="dispatch")
-class UpdateMemoCardView(UpdateView):
+class UpdateMemoCardView(PermissionRulesRequiredMixin, UpdateView):
     model = MemoCard
     form_class = MemoCardForm
+    permission_required = "can_delete_memocard"
     slug_field = "unique_id"
     slug_url_kwarg = "unique_id"
     template_name = "cardset/memocard_update_form.html"
