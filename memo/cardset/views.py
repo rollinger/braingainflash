@@ -2,6 +2,7 @@
 from cardset.forms import MemoCardForm, MemoSetTreebeardFormFactory, TrainGainForm
 from cardset.models import MemoCard, MemoCardPerformance, MemoSet
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import (  # DetailView;
@@ -56,8 +57,10 @@ class MemoSetModelFormMixin(ModelFormMixin):
             kwargs.update({"selected_parent": "0"})
         return kwargs
 
+    """
     def get_success_url(self):
         return reverse("cardset:memoset_root_list_view")
+    """
 
 
 @method_decorator(login_required, name="dispatch")
@@ -154,7 +157,12 @@ class TrainGainView(FormView):
 
     def get(self, request, *args, **kwargs):
         # Get the random object and prepare form initial and context_data
-        obj = MemoCardPerformance.objects.get_random_object_for(user=self.request.user)
+        # obj = MemoCardPerformance.objects.get_random_object_for(user=self.request.user)
+        obj = MemoCardPerformance.objects.get_least_learned_object_for(
+            user=self.request.user
+        )
+        if not obj:
+            return HttpResponseRedirect(reverse("cardset:memoset_root_list_view"))
         self.extra_context = {
             "card_performance": obj,
             "auto_redirect_timeout": obj.learning_timeout,
@@ -186,6 +194,8 @@ class TestGainView(FormView):
     def get(self, request, *args, **kwargs):
         # Get the random object and prepare form initial and context_data
         obj = MemoCardPerformance.objects.get_random_object_for(user=self.request.user)
+        if not obj:
+            return HttpResponseRedirect(reverse("cardset:memoset_root_list_view"))
         self.extra_context = {
             "card_performance": obj,
             "auto_redirect_timeout": obj.learning_timeout,

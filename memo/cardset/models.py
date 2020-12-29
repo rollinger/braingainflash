@@ -152,7 +152,11 @@ class MemoCardPerformanceManager(models.Manager):
     def get_random_object_for(self, user):
         # returns a random card performance object
         # TODO: exclude paused ones
-        return random.choice(self.filter(owner=user).order_by("?"))
+        return self.filter(owner=user).order_by("?").first()
+
+    def get_least_learned_object_for(self, user, limit=5):
+        # returns one of the least learned card performance objects
+        return random.choice(self.filter(owner=user).order_by("learn_score")[0:limit])
 
 
 class MemoCardPerformance(TimestampMixin, models.Model):
@@ -243,23 +247,34 @@ class MemoCardPerformance(TimestampMixin, models.Model):
         #
         # TODO: Develop good algorithm what constitutes a learning/recall score
         #
+        # TODO: Implement moving averagelater
+        # N_LAST_TRIALS_FOR_SCORE = 7
         # Calculate Learning
-        # learn_score = successful_trials / FIXED_TRIALS
+        # learn_score = learn_total_outcome / N_LAST_TRIALS_FOR_SCORE
         learn_trials = 0
+        learn_total_outcome = 0
         learn_total_time = 0
         for data_point in self.data["learning"]:
             learn_trials += 1
+            learn_total_outcome += data_point[1]  # 0 or 1
             learn_total_time += data_point[2]
         self.learn_trials = learn_trials
         self.learn_total_time = learn_total_time
-        # self.learn_score
-        # Calculate Testing
-        # recall_score = sucessful_recalls /
+        if learn_trials > 0:
+            self.learn_score = float(learn_total_outcome / learn_trials) * 100
+        # Calculate Recalling
+        # recall_score = learn_total_outcome / N_LAST_TRIALS_FOR_SCORE
         recall_trials = 0
+        recall_total_outcome = 0
         recall_total_time = 0
         for data_point in self.data["recalling"]:
             recall_trials += 1
-            recall_total_time += 1
+            recall_total_outcome += data_point[1] / 5.0  # 0 to 5 normalized to 0-1
+            recall_total_time += data_point[2]
+        self.recall_trials = recall_trials
+        self.recall_total_time = recall_total_time
+        if recall_trials > 0:
+            self.recall_score = float(recall_total_outcome / recall_trials) * 100
 
     def add_learning_datapoint(self, outcome_int, duration_sec):
         # Adds a learning data point; .save() must be called separately

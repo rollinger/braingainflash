@@ -159,6 +159,10 @@ class MemoCardPerformanceAdmin(admin.ModelAdmin):
         "learn_score",
         "learn_trials",
         "learn_total_time",
+        "owner",
+        "memocard",
+        "memocard_question_text",
+        "memocard_answer_text",
     ]
     autocomplete_fields = ["owner", "memocard"]
     fieldsets = (
@@ -166,8 +170,8 @@ class MemoCardPerformanceAdmin(admin.ModelAdmin):
             None,
             {
                 "fields": (
-                    "memocard",
-                    "owner",
+                    ("owner", "memocard"),
+                    ("memocard_question_text", "memocard_answer_text"),
                     "learning_timeout",
                 )
             },
@@ -195,6 +199,17 @@ class MemoCardPerformanceAdmin(admin.ModelAdmin):
             },
         ),
     )
+
+    def memocard_question_text(self, obj):
+        return obj.memocard.question_text
+
+    memocard_question_text.short_description = "Question"
+
+    def memocard_answer_text(self, obj):
+        return obj.memocard.answer_text
+
+    memocard_answer_text.short_description = "Answer"
+
     actions = ["reset_data"]
 
     def reset_data(self, request, queryset):
