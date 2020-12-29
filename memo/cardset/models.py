@@ -14,6 +14,10 @@ from treebeard.ns_tree import NS_Node, NS_NodeManager
 
 User = get_user_model()
 
+# 1) Model definitions
+# 2) Rules permissions
+# 3) Signal handling
+
 
 class UUIDMixin(models.Model):
     """
@@ -156,11 +160,24 @@ class MemoCardPerformanceManager(models.Manager):
     def get_random_object_for(self, user):
         # returns a random card performance object
         # TODO: exclude paused ones
-        return self.filter(owner=user).order_by("?").first()
+        # return self.filter(owner=user).order_by("?").first()
+        return self.for_user(user).active().get_random_from()
 
-    def get_least_learned_object_for(self, user, limit=5):
+    def get_least_learned_object_for(self, user, limit=7):
         # returns one of the least learned card performance objects
-        return random.choice(self.filter(owner=user).order_by("learn_score")[0:limit])
+        return random.choice(
+            self.filter(owner=user, is_paused=False).order_by(
+                "-priority", "learn_score"
+            )[0:limit]
+        )
+
+    def get_least_recalled_object_for(self, user, limit=7):
+        # returns one of the least learned card performance objects
+        return random.choice(
+            self.filter(owner=user, is_paused=False).order_by(
+                "-priority", "recall_score"
+            )[0:limit]
+        )
 
 
 LEARNING_PRIORITY = (
@@ -255,6 +272,10 @@ class MemoCardPerformance(UUIDMixin, TimestampMixin, models.Model):
             self.recall_score,
         )
 
+    def get_absolute_url(self):
+        # Returns path to update-view
+        pass  # return reverse("memoset_update_view", kwargs={"unique_id": self.unique_id})
+
     def set_initial_data(self):
         # Sets the data to initial value; .save() must be called separately
         self.data = self.INITIAL_DATA
@@ -306,6 +327,17 @@ class MemoCardPerformance(UUIDMixin, TimestampMixin, models.Model):
         # Calculates all scores on save
         self.recalculate_scores()
         return super(MemoCardPerformance, self).save(*args, **kwargs)
+
+
+#
+# RULES Permissions
+# https://github.com/dfunckt/django-rules
+# import rules
+# @rules.predicate
+# def is_owner(user, ):
+#    return book.author == user
+# rules.add_perm("app_label.add_book", rules.is_staff)
+# rules.add_perm("app_label.read_book", rules.is_authenticated)
 
 
 #

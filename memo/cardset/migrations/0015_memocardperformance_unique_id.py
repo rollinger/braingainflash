@@ -3,6 +3,9 @@
 from django.db import migrations, models
 import uuid
 
+#
+# See for migrations 15,16,17
+# https://docs.djangoproject.com/en/3.0/howto/writing-migrations/#migrations-that-add-unique-fields
 
 class Migration(migrations.Migration):
 

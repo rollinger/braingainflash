@@ -156,8 +156,7 @@ class TrainGainView(FormView):
     success_url = reverse_lazy("cardset:train_gain_view")
 
     def get(self, request, *args, **kwargs):
-        # Get the random object and prepare form initial and context_data
-        # obj = MemoCardPerformance.objects.get_random_object_for(user=self.request.user)
+        # Get the least learned object and prepare form initial and context_data
         obj = MemoCardPerformance.objects.get_least_learned_object_for(
             user=self.request.user
         )
@@ -192,8 +191,10 @@ class TestGainView(FormView):
     success_url = reverse_lazy("cardset:test_gain_view")
 
     def get(self, request, *args, **kwargs):
-        # Get the random object and prepare form initial and context_data
-        obj = MemoCardPerformance.objects.get_random_object_for(user=self.request.user)
+        # Get the least recalled object and prepare form initial and context_data
+        obj = MemoCardPerformance.objects.get_least_recalled_object_for(
+            user=self.request.user
+        )
         if not obj:
             return HttpResponseRedirect(reverse("cardset:memoset_root_list_view"))
         self.extra_context = {

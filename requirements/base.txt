@@ -24,3 +24,4 @@ djangorestframework==3.12.2  # https://github.com/encode/django-rest-framework
 django-cors-headers==3.6.0 # https://github.com/adamchainz/django-cors-headers
 django-treebeard==4.3.1 # https://django-treebeard.readthedocs.io/en/latest/index.html
 jsonfield==3.1.0 # https://github.com/rpkilby/jsonfield
+rules # https://github.com/dfunckt/django-rules
