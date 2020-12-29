@@ -72,7 +72,8 @@ class MemoCardPerformanceInline(admin.TabularInline):
     fields = (
         "memocard",
         "owner",
-        "score",
+        "recall_score",
+        "learn_score",
     )
     readonly_fields = [
         # "memocard",
@@ -144,9 +145,19 @@ class MemoCardPerformanceAdmin(admin.ModelAdmin):
         "recall_score",
         "learn_score",
         "learning_timeout",
+        "is_paused",
+        "priority",
     )
     list_display_links = ("memocard",)
-    list_editable = ("learning_timeout",)
+    list_editable = (
+        "learning_timeout",
+        "is_paused",
+        "priority",
+    )
+    list_filter = (
+        "is_paused",
+        "priority",
+    )
     readonly_fields = [
         "id",
         # "unique_id",
@@ -172,7 +183,11 @@ class MemoCardPerformanceAdmin(admin.ModelAdmin):
                 "fields": (
                     ("owner", "memocard"),
                     ("memocard_question_text", "memocard_answer_text"),
-                    "learning_timeout",
+                    (
+                        "learning_timeout",
+                        "is_paused",
+                        "priority",
+                    ),
                 )
             },
         ),
@@ -199,6 +214,11 @@ class MemoCardPerformanceAdmin(admin.ModelAdmin):
             },
         ),
     )
+
+    def model_str(self, obj):
+        return str(obj)
+
+    model_str.short_description = "Card Performance"
 
     def memocard_question_text(self, obj):
         return obj.memocard.question_text

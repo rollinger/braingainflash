@@ -17,28 +17,28 @@ app_name = "cardset"
 urlpatterns = [
     # Main List View
     path(
-        "manage/set/root/list",
+        "manage/brains",
         view=memoset_root_list_view,
         name="memoset_root_list_view",
     ),
     # MemoSet CRUD operations
     path(
-        "manage/set/create",
+        "manage/brain/create",
         view=memoset_create_view,
         name="memoset_create_view",
     ),
     path(
-        "manage/set/<uuid:unique_id>/create",
+        "manage/brain/<uuid:unique_id>/create",
         view=memoset_create_view,
         name="memoset_create_view",
     ),
     path(
-        "manage/set/<uuid:unique_id>/update",
+        "manage/brain/<uuid:unique_id>/update",
         view=memoset_update_view,
         name="memoset_update_view",
     ),
     path(
-        "manage/set/<uuid:unique_id>/delete",
+        "manage/brain/<uuid:unique_id>/delete",
         view=memoset_delete_view,
         name="memoset_delete_view",
     ),
@@ -60,12 +60,12 @@ urlpatterns = [
         name="memocard_delete_view",
     ),
     path(
-        "train/gain",
+        "train-gain",
         view=train_gain_view,
         name="train_gain_view",
     ),
     path(
-        "test/gain",
+        "test-gain",
         view=test_gain_view,
         name="test_gain_view",
     ),

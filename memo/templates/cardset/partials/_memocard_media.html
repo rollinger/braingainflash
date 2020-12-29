@@ -9,7 +9,7 @@
       data-toggle="collapse" data-target="#content-{{ card.unique_id }}" aria-expanded="true"
       aria-controls="collapseOne">
         <img class="align-self-center float-left mr-3" width="25px"
-          src="{{STATIC_URL}}{% if performance.score == 100.0 %}images/Memo_Bulb_On.png{% else %}images/Memo_Bulb_Off.png{% endif %}"
+          src="{{STATIC_URL}}{% if performance.recall_score == 100.0 %}images/Memo_Bulb_On.png{% else %}images/Memo_Bulb_Off.png{% endif %}"
           alt="Memo Card {{ card.topic }}">
         {{ card.topic }}
       </button>
@@ -41,7 +41,16 @@
           </div>
           <div class="row">
             <div class="col-sm-12">
-              {% trans "Statistics" %}
+              <div class="row">
+                <div class="col-sm-6">
+                  <center><strong>{% trans "Learn Score" %}</strong><br>
+                  <h3>{{performance.learn_score}} %</h3></center>
+                </div>
+                <div class="col-sm-6">
+                  <center><strong>{% trans "Recall Score" %}</strong><br>
+                  <h3>{{performance.recall_score}} %</h3></center>
+                </div>
+              </div>
             </div>
           </div>
         </div>

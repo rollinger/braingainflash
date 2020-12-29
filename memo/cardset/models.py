@@ -128,7 +128,11 @@ class MemoCard(UUIDMixin, TimestampMixin, models.Model):
         on_delete=models.CASCADE,
     )
     topic = models.CharField(
-        _("Topic"), help_text=_("Topic of Memo Card"), max_length=255
+        _("Topic"),
+        help_text=_("Topic of Memo Card"),
+        max_length=255,
+        null=True,
+        blank=True,
     )
     # Card Content
     question_text = models.TextField(_("Question (Text)"), max_length=2000)
@@ -159,6 +163,13 @@ class MemoCardPerformanceManager(models.Manager):
         return random.choice(self.filter(owner=user).order_by("learn_score")[0:limit])
 
 
+LEARNING_PRIORITY = (
+    (0, _("Low")),
+    (1, _("Normal")),
+    (2, _("High")),
+)
+
+
 class MemoCardPerformance(TimestampMixin, models.Model):
     """
     Card statistic & performance for a user on a card
@@ -181,15 +192,20 @@ class MemoCardPerformance(TimestampMixin, models.Model):
         related_name="memo_performances",
         on_delete=models.CASCADE,
     )
+    # Learning Settings
     learning_timeout = models.PositiveSmallIntegerField(
         _("Learning Timeout"), help_text=_("Learning Timeout in seconds"), default=120
     )
-
-    # TODO: pause-toogle training for the user and card
-    # TODO: add priority (low,normal,high) to card_performance
-
-    # is_paused
-    # priority
+    is_paused = models.BooleanField(
+        _("Paused"),
+        help_text=_("Learning of associated card is paused."),
+        default=False,
+    )
+    priority = models.PositiveSmallIntegerField(
+        _("Learning Priority"),
+        choices=LEARNING_PRIORITY,
+        default=1,
+    )
 
     # Data contains the memorization data for memorization statistics in json format.
     # See: https://github.com/rpkilby/jsonfield
