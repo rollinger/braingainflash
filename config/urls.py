@@ -6,6 +6,12 @@ from django.views import defaults as default_views
 from django.views.generic import TemplateView
 from rest_framework.authtoken.views import obtain_auth_token
 
+
+def trigger_error(request):
+    division_by_zero = 1 / 0
+    return division_by_zero
+
+
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
     path(
@@ -20,6 +26,8 @@ urlpatterns = [
     # App url confs
     #
     path("memo/", include("memo.cardset.urls", namespace="memo")),
+    # Convenience Paths
+    path("sentry-debug/", trigger_error),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # API URLS

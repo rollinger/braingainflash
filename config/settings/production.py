@@ -1,16 +1,15 @@
 # import logging
+import logging
 import os
 
-# import sentry_sdk
+import sentry_sdk
 from google.oauth2 import service_account
+from sentry_sdk.integrations.celery import CeleryIntegration
+from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.logging import LoggingIntegration
 
 from .base import *  # noqa
 from .base import ROOT_DIR, env
-
-# from sentry_sdk.integrations.celery import CeleryIntegration
-# from sentry_sdk.integrations.django import DjangoIntegration
-# from sentry_sdk.integrations.logging import LoggingIntegration
-
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -190,7 +189,6 @@ LOGGING = {
 
 # Sentry
 # ------------------------------------------------------------------------------
-"""
 SENTRY_DSN = env("SENTRY_DSN")
 SENTRY_LOG_LEVEL = env.int("DJANGO_SENTRY_LOG_LEVEL", logging.INFO)
 
@@ -205,7 +203,7 @@ sentry_sdk.init(
     environment=env("SENTRY_ENVIRONMENT", default="production"),
     traces_sample_rate=env.float("SENTRY_TRACES_SAMPLE_RATE", default=0.0),
 )
-"""
+
 
 # Your stuff...
 # ------------------------------------------------------------------------------
