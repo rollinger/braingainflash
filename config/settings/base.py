@@ -74,7 +74,7 @@ THIRD_PARTY_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
     "treebeard",
-    "rules",
+    "rules.apps.AutodiscoverRulesConfig",
     "ckeditor",
 ]
 
@@ -95,9 +95,9 @@ MIGRATION_MODULES = {"sites": "memo.contrib.sites.migrations"}
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#authentication-backends
 AUTHENTICATION_BACKENDS = [
-    "rules.permissions.ObjectPermissionBackend",  # https://github.com/dfunckt/django-rules
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
+    "rules.permissions.ObjectPermissionBackend",  # https://github.com/dfunckt/django-rules
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
 AUTH_USER_MODEL = "users.User"

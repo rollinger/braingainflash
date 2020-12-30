@@ -2,7 +2,6 @@ import datetime
 import random
 import uuid
 
-import rules
 from ckeditor.fields import RichTextField
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -343,22 +342,6 @@ class MemoCardPerformance(UUIDMixin, TimestampMixin, models.Model):
         # Calculates all scores on save
         self.recalculate_scores()
         return super(MemoCardPerformance, self).save(*args, **kwargs)
-
-
-#
-# RULES Permissions
-# https://github.com/dfunckt/django-rules
-
-
-@rules.predicate
-def is_creator(user, obj):
-    # print("%s => %s == %s => %s"%(obj, obj.creator, user, (obj.creator == user)))
-    return obj.creator == user
-
-
-rules.add_rule("can_delete_memocard", is_creator)
-rules.add_rule("can_update_memocard", is_creator)
-rules.add_rule("can_update_memocardperformance", is_creator)
 
 
 #

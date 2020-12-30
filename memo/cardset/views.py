@@ -150,7 +150,7 @@ memocard_update_view = UpdateMemoCardView.as_view()
 class DeleteMemoCardView(PermissionRulesRequiredMixin, DeleteView):
     # PermissionRulesRequiredMixin DOES NOT WORK YET... diff test_rule / has_perm???
     model = MemoCard
-    permission_required = "can_delete_memocard"
+    permission_required = "cardset.delete_memocard"
     slug_field = "unique_id"
     slug_url_kwarg = "unique_id"
     success_url = reverse_lazy("cardset:memoset_root_list_view")
