@@ -4,6 +4,7 @@ from memo.cardset.views import (  # memocard_detail_view,; memoset_detail_view,;
     memocard_create_view,
     memocard_delete_view,
     memocard_update_view,
+    memocardperformance_update_view,
     memoset_create_view,
     memoset_delete_view,
     memoset_root_list_view,
@@ -59,6 +60,13 @@ urlpatterns = [
         view=memocard_delete_view,
         name="memocard_delete_view",
     ),
+    # Update Settings
+    path(
+        "manage/settings/<uuid:unique_id>/update",
+        view=memocardperformance_update_view,
+        name="memocardperformance_update_view",
+    ),
+    # Test & Train interface
     path(
         "train-gain",
         view=train_gain_view,

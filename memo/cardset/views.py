@@ -1,5 +1,10 @@
 # from django.shortcuts import render
-from cardset.forms import MemoCardForm, MemoSetTreebeardFormFactory, TrainGainForm
+from cardset.forms import (
+    MemoCardForm,
+    MemoCardPerformanceForm,
+    MemoSetTreebeardFormFactory,
+    TrainGainForm,
+)
 from cardset.models import MemoCard, MemoCardPerformance, MemoSet
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
@@ -128,9 +133,10 @@ memocard_create_view = CreateMemoCardView.as_view()
 
 @method_decorator(login_required, name="dispatch")
 class UpdateMemoCardView(PermissionRulesRequiredMixin, UpdateView):
+    # PermissionRulesRequiredMixin DOES NOT WORK YET... diff test_rule / has_perm???
     model = MemoCard
     form_class = MemoCardForm
-    permission_required = "can_delete_memocard"
+    permission_required = "can_update_memocard"
     slug_field = "unique_id"
     slug_url_kwarg = "unique_id"
     template_name = "cardset/memocard_update_form.html"
@@ -141,14 +147,31 @@ memocard_update_view = UpdateMemoCardView.as_view()
 
 
 @method_decorator(login_required, name="dispatch")
-class DeleteMemoCardView(DeleteView):
+class DeleteMemoCardView(PermissionRulesRequiredMixin, DeleteView):
+    # PermissionRulesRequiredMixin DOES NOT WORK YET... diff test_rule / has_perm???
     model = MemoCard
+    permission_required = "can_delete_memocard"
     slug_field = "unique_id"
     slug_url_kwarg = "unique_id"
     success_url = reverse_lazy("cardset:memoset_root_list_view")
 
 
 memocard_delete_view = DeleteMemoCardView.as_view()
+
+
+@method_decorator(login_required, name="dispatch")
+class UpdateMemoCardPerformanceView(PermissionRulesRequiredMixin, UpdateView):
+    # PermissionRulesRequiredMixin DOES NOT WORK YET... diff test_rule / has_perm???
+    model = MemoCardPerformance
+    form_class = MemoCardPerformanceForm
+    permission_required = "can_update_memocardperformance"
+    slug_field = "unique_id"
+    slug_url_kwarg = "unique_id"
+    template_name = "cardset/memocardperformance_update_form.html"
+    success_url = reverse_lazy("cardset:memoset_root_list_view")
+
+
+memocardperformance_update_view = UpdateMemoCardPerformanceView.as_view()
 
 
 @method_decorator(login_required, name="dispatch")

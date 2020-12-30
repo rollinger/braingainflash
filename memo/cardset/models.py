@@ -273,9 +273,23 @@ class MemoCardPerformance(UUIDMixin, TimestampMixin, models.Model):
             self.recall_score,
         )
 
+    @property
+    def creator(self):
+        # returns the owner as the creator (used in rules permission)
+        return self.owner
+
+    @property
+    def is_active(self):
+        # returns if it is paused or active
+        if self.is_paused:
+            return _("Paused")
+        return _("Active")
+
     def get_absolute_url(self):
         # Returns path to update-view
-        pass  # return reverse("memoset_update_view", kwargs={"unique_id": self.unique_id})
+        return reverse(
+            "memocardperformance_update_view", kwargs={"unique_id": self.unique_id}
+        )
 
     def set_initial_data(self):
         # Sets the data to initial value; .save() must be called separately
@@ -343,6 +357,7 @@ def is_creator(user, obj):
 
 rules.add_rule("can_delete_memocard", is_creator)
 rules.add_rule("can_update_memocard", is_creator)
+rules.add_rule("can_update_memocardperformance", is_creator)
 
 
 #

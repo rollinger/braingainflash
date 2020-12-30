@@ -45,8 +45,8 @@
                   {% trans 'Content' %}
                 </a>
 
-                <a href="{% url 'cardset:memocard_update_view' unique_id=card.unique_id %}" role="button"
-                class="btn btn-sm btn-primary" title="{% trans 'Change Settings' %}">
+                <a href="{% url 'cardset:memocardperformance_update_view' unique_id=performance.unique_id %}"
+                role="button" class="btn btn-sm btn-primary" title="{% trans 'Change Settings' %}">
                   {% trans 'Settings' %}
                 </a>
 
@@ -78,14 +78,14 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-sm-12">
-
-                  {% if can_delete_memocard %}
-                    You can delete this card!
-                  {% else %}
-                    You can NOT delete or update this card!
-                  {% endif %}
-                  {{ can_update_memocard }}
+                <div class="col-sm-4">
+                  {% trans "Status" %}:<br>{{performance.is_active}}
+                </div>
+                <div class="col-sm-4">
+                  {% trans "Learning Priority" %}:<br>{{performance.get_priority_display}}
+                </div>
+                <div class="col-sm-4">
+                  {% trans "Learning Timeout" %}:<br>{{performance.learning_timeout}} {% trans "seconds" %}
                 </div>
               </div>
             </div>
