@@ -1,19 +1,28 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, reverse_lazy
 from django.views import defaults as default_views
-from django.views.generic import TemplateView
+from django.views.generic import RedirectView, TemplateView
 from rest_framework.authtoken.views import obtain_auth_token
 
 
-def trigger_error(request):
+def trigger_sentry_error(request):
     division_by_zero = 1 / 0
     return division_by_zero
 
 
+class HomeRedirectView(RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        # redirects authenticated users to their brain list
+        if self.request.user.is_authenticated:
+            return reverse_lazy("cardset:memoset_root_list_view")
+        return reverse_lazy("start")
+
+
 urlpatterns = [
-    path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
+    path("", HomeRedirectView.as_view(), name="home"),
+    path("start/", TemplateView.as_view(template_name="pages/home.html"), name="start"),
     path(
         "about/", TemplateView.as_view(template_name="pages/about.html"), name="about"
     ),
@@ -27,7 +36,7 @@ urlpatterns = [
     #
     path("memo/", include("memo.cardset.urls", namespace="memo")),
     # Convenience Paths
-    path("sentry-debug/", trigger_error),
+    path("sentry-debug/", trigger_sentry_error),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # API URLS

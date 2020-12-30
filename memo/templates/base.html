@@ -39,42 +39,78 @@
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand" href="{% url 'home' %}" title="{% trans 'Memo' %}">
+        <a class="navbar-brand" href="{% url 'home' %}" title="{% trans 'Brain Gain' %}">
           <img class="align-self-center float-left mr-3" width="50px"
             src="{{STATIC_URL}}images/Logo_v1_150x150.png">
         </a>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="{% url 'home' %}">BrainGain <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'cardset:train_gain_view' %}">{% trans "Train" %}</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'cardset:test_gain_view' %}">{% trans "Test" %}</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'cardset:memoset_root_list_view' %}">{% trans "Brain" %}</a>
-            </li>
             {% if request.user.is_authenticated %}
+              <!--
+              Authenticated Menu
+              -->
               <li class="nav-item">
-                {# URL provided by django-allauth/account/urls.py #}
-                <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">{% trans "My Profile" %}</a>
+                <a class="nav-link" href="{% url 'cardset:memoset_root_list_view' %}">
+                  {% trans "Brains" %}
+                  <span class="sr-only">(current)</span>
+                </a>
               </li>
-              <li class="nav-item">
-                {# URL provided by django-allauth/account/urls.py #}
-                <a class="nav-link" href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a>
+
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                  {% trans "Gain" %}
+                </a>
+                <div class="dropdown-menu">
+                  {# URL provided by memo/cardset/urls.py #}
+                  <a class="dropdown-item" href="{% url 'cardset:train_gain_view' %}">
+                    {% trans "Train Gain" %}
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  {# URL provided by django-allauth/account/urls.py #}
+                  <a class="dropdown-item" href="{% url 'cardset:test_gain_view' %}">
+                    {% trans "Test Gain" %}
+                  </a>
+                </div>
+              </li>
+
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                  {{ request.user.username }}
+                </a>
+                <div class="dropdown-menu">
+                  {# URL provided by django-allauth/account/urls.py #}
+                  <a class="dropdown-item" href="{% url 'users:detail' request.user.username %}">
+                    {% trans "Settings" %}
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  {# URL provided by django-allauth/account/urls.py #}
+                  <a class="dropdown-item" href="{% url 'account_logout' %}">
+                    {% trans "Sign Out" %}
+                  </a>
+                </div>
               </li>
             {% else %}
-              <li class="nav-item">
-                {# URL provided by django-allauth/account/urls.py #}
-                <a id="sign-up-link" class="nav-link" href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a>
+              <!--
+              Anonymous Menu
+              -->
+              <li class="nav-item active">
+                <a class="nav-link" href="{% url 'home' %}">
+                  {% trans "Brain Gain" %}
+                  <span class="sr-only">(current)</span>
+                </a>
               </li>
               <li class="nav-item">
                 {# URL provided by django-allauth/account/urls.py #}
-                <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">{% trans "Sign In" %}</a>
+                <a id="sign-up-link" class="nav-link" href="{% url 'account_signup' %}">
+                  {% trans "Sign Up" %}
+                </a>
+              </li>
+              <li class="nav-item">
+                {# URL provided by django-allauth/account/urls.py #}
+                <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">
+                  {% trans "Sign In" %}
+                </a>
               </li>
             {% endif %}
           </ul>
