@@ -3,6 +3,7 @@ import random
 import uuid
 
 import rules
+from ckeditor.fields import RichTextField
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -141,7 +142,7 @@ class MemoCard(UUIDMixin, TimestampMixin, models.Model):
     )
     # Card Content
     question_text = models.TextField(_("Question (Text)"), max_length=2000)
-    answer_text = models.TextField(_("Answer (Text)"), max_length=2000)
+    answer_text = RichTextField(_("Answer (Text)"), max_length=2000)
     # TODO: audio-pair, image-pair
 
     objects = MemoCardManager()

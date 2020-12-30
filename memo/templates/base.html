@@ -52,26 +52,19 @@
               -->
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'cardset:memoset_root_list_view' %}">
-                  {% trans "Brains" %}
+                  {% trans "Brain" %}
                   <span class="sr-only">(current)</span>
                 </a>
               </li>
-
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'cardset:train_gain_view' %}">
                   {% trans "Gain" %}
                 </a>
-                <div class="dropdown-menu">
-                  {# URL provided by memo/cardset/urls.py #}
-                  <a class="dropdown-item" href="{% url 'cardset:train_gain_view' %}">
-                    {% trans "Train Gain" %}
-                  </a>
-                  <div class="dropdown-divider"></div>
-                  {# URL provided by django-allauth/account/urls.py #}
-                  <a class="dropdown-item" href="{% url 'cardset:test_gain_view' %}">
-                    {% trans "Test Gain" %}
-                  </a>
-                </div>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'cardset:test_gain_view' %}">
+                  {% trans "Test" %}
+                </a>
               </li>
 
               <li class="nav-item dropdown">

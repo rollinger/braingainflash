@@ -15,8 +15,9 @@
   <div class="row">
     <div class="col-sm-12">
       <form method="post">{% csrf_token %}
+        {{ form.media }}
         {{ form.as_p }}
-        <input type="submit" value={% trans 'Create' %}>
+        <input type="submit" value={% trans 'Update' %}>
       </form>
     </div>
   </div>

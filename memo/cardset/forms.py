@@ -31,14 +31,16 @@ class MemoCardForm(forms.ModelForm):
     class Meta:
         model = MemoCard
         fields = ["creator", "memoset", "topic", "question_text", "answer_text"]
-        widgets = {"creator": forms.HiddenInput(), "memoset": forms.HiddenInput()}
+        widgets = {
+            "creator": forms.HiddenInput(),
+            "memoset": forms.HiddenInput(),
+        }
 
 
 class MemoCardPerformanceForm(forms.ModelForm):
     class Meta:
         model = MemoCardPerformance
         fields = ["is_paused", "priority", "learning_timeout"]
-        # widgets = {"creator": forms.HiddenInput(), "memoset": forms.HiddenInput()}
 
 
 class TrainGainForm(forms.Form):

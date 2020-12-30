@@ -25,8 +25,8 @@
     <div class="card-body">
       <div class="row">
         <div class="col-sm-6">
-          <strong>{% trans "Question: " %}</strong>{{ card.question_text }}<br>
-          <strong>{% trans "Answer: " %}</strong>{{ card.answer_text }}
+          <h5>{% trans "Question: " %}</h5><strong>{{ card.question_text }}</strong>
+          <h5>{% trans "Answer: " %}</h5>{{ card.answer_text|safe }}
         </div>
         <div class="col-sm-6">
           <div class="row">

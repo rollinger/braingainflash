@@ -75,6 +75,7 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "treebeard",
     "rules",
+    "ckeditor",
 ]
 
 LOCAL_APPS = [
@@ -313,5 +314,13 @@ REST_FRAMEWORK = {
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
 CORS_URLS_REGEX = r"^/api/.*$"
+# ckeditor configs
+# -------------------------------------------------------------------------------
+# ckeditor - https://github.com/django-ckeditor/django-ckeditor
+CKEDITOR_CONFIGS = {
+    "default": {
+        "toolbar": "Basic",
+    },
+}
 # Your stuff...
 # ------------------------------------------------------------------------------
