@@ -38,7 +38,18 @@ def is_group_deleteable(user, group):
     return False
 
 
+@rules.predicate
+def is_group_updateable(user, group):
+    # can update group if user has approved membership and is admin
+    if Membership.objects.filter(
+        group=group, member=user, approved=True, role="admin"
+    ).exists():
+        return True
+    return False
+
+
 # Study Group Permissions
 rules.add_rule("can_join_group", is_group_joinable)
 rules.add_rule("can_view_group", is_group_viewable)
 rules.add_rule("can_delete_group", is_group_deleteable)
+rules.add_rule("can_update_group", is_group_updateable)

@@ -5,6 +5,7 @@ from memo.studygroups.views import (
     group_directory_view,
     group_join_view,
     group_list_view,
+    group_update_view,
 )
 
 app_name = "studygroups"
@@ -30,5 +31,10 @@ urlpatterns = [
         "join/<uuid:unique_id>",
         view=group_join_view,
         name="group_join_view",
+    ),
+    path(
+        "edit/<uuid:unique_id>",
+        view=group_update_view,
+        name="group_update_view",
     ),
 ]

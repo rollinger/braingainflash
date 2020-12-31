@@ -23,10 +23,12 @@ class StudyGroup(UUIDMixin, TimestampMixin, models.Model):
     A study group of users co-learing a subject matter
     """
 
+    # TODO: Define primary language of study group
+
     class Meta:
         verbose_name = _("Study Group")
         verbose_name_plural = _("Study Groups")
-        ordering = ("-is_main_user_group",)
+        ordering = ("-is_main_user_group", "name")
 
     name = models.CharField(
         _("Group Title"),
