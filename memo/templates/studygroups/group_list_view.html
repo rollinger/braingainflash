@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %} {% trans "My Groups" %} {% endblock %}
+
+
+
+{% block content %}
+<div class="container">
+
+  <div class="row mt-3">
+    <div class="col-sm-12">
+      <h1>{% trans "My Groups" %}</h1>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+
+    {% for group in object_list %}
+      {% include "studygroups/partials/_group_card.html" with group=group %}
+    {% endfor %}
+
+    <div class="col-xs-12 col-md-6 col-lg-4 mt-3">
+      <div class="card mb-3 h-100 bg-light">
+        <div class="card-body d-flex align-items-center justify-content-center">
+          <a href="{% url 'studygroups:group_directory_view' %}" role="button" class="btn btn-success" title="Add new study group">
+            {% trans 'New Group' %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock content %}

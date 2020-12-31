@@ -26,6 +26,7 @@ class MemoSetAdmin(TreeAdmin):
     search_fields = ["topic", "creator"]
     autocomplete_fields = [
         "creator",
+        "studygroup",
     ]
     readonly_fields = [
         "id",
@@ -40,7 +41,7 @@ class MemoSetAdmin(TreeAdmin):
             {
                 "fields": (
                     "topic",
-                    "creator",
+                    ("studygroup", "creator"),
                 )
             },
         ),

@@ -11,15 +11,15 @@ class MembershipInline(admin.TabularInline):
     fields = (
         "member",
         "role",
+        "approved",
         "created_at",
         "updated_at",
     )
     readonly_fields = [
-        "member",
         "created_at",
         "updated_at",
     ]
-    # autocomplete_fields = ['source']
+    autocomplete_fields = ["member"]
     # verbose_name_plural = "Predisposed by:"
 
 
@@ -29,11 +29,16 @@ class StudyGroupAdmin(admin.ModelAdmin):
     list_display = (
         "name",
         "slug",
-        "join_mode",
+        "auto_approve_new_member",
         "is_main_user_group",
+        "is_publicly_available",
     )
     list_display_links = ("name",)
-    list_filter = ("join_mode", "is_main_user_group")
+    list_filter = (
+        "auto_approve_new_member",
+        "is_main_user_group",
+        "is_publicly_available",
+    )
     readonly_fields = [
         "id",
         "unique_id",
@@ -65,7 +70,10 @@ class StudyGroupAdmin(admin.ModelAdmin):
             "Group Settings",
             {
                 "classes": ("extrapretty",),
-                "fields": (("join_mode", "new_member_role"),),
+                "fields": (
+                    ("auto_approve_new_member", "new_member_role"),
+                    ("is_main_user_group", "is_publicly_available"),
+                ),
             },
         ),
         (

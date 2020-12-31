@@ -8,15 +8,9 @@ from utils.abstract_models import TimestampMixin, UUIDMixin
 User = get_user_model()
 
 STUDYGROUP_ROLES = (
-    (0, _("Viewer")),  # view_perm
-    (1, _("Editor")),  # view_perm, update_perm
-    (2, _("Admin")),  # view_perm, update_perm, create_perm, delete_perm
-)
-
-STUDYGROUP_JOIN_MODE = (
-    (0, _("Public")),  # free public join
-    (1, _("Managed")),  # managed join
-    (2, _("Private")),  # join is closed
+    ("viewer", _("Viewer")),  # view_perm
+    ("editor", _("Editor")),  # view_perm, update_perm
+    ("admin", _("Admin")),  # view_perm, update_perm, create_perm, delete_perm
 )
 
 
@@ -32,6 +26,7 @@ class StudyGroup(UUIDMixin, TimestampMixin, models.Model):
     class Meta:
         verbose_name = _("Study Group")
         verbose_name_plural = _("Study Groups")
+        ordering = ("-is_main_user_group",)
 
     name = models.CharField(
         _("Group Title"),
@@ -52,25 +47,33 @@ class StudyGroup(UUIDMixin, TimestampMixin, models.Model):
         help_text=_("If this is the main user group"),
         default=False,
     )
-
-    join_mode = models.PositiveSmallIntegerField(
-        _("Join Group Mode"),
-        help_text=_("How new members can join"),
-        choices=STUDYGROUP_JOIN_MODE,
-        default=2,
+    is_publicly_available = models.BooleanField(
+        _("Publicly available"),
+        help_text=_("Study Group can be joined over the directory"),
+        default=True,
     )
 
-    new_member_role = models.PositiveSmallIntegerField(
+    new_member_role = models.CharField(
         _("Default member role"),
         help_text=_("Default role of new member"),
+        max_length=20,
         choices=STUDYGROUP_ROLES,
-        default=0,
+        default="viewer",
+    )
+
+    auto_approve_new_member = models.BooleanField(
+        _("Automatic Approval"),
+        help_text=_("New members are approved automatically"),
+        default=False,
     )
 
     objects = StudyGroupManager()
 
     def __str__(self):
         return "%s" % (self.name)
+
+    def is_member(self, user):
+        return True
 
     def get_absolute_url(self):
         # Returns path to update-view
@@ -102,6 +105,12 @@ class Membership(UUIDMixin, TimestampMixin, models.Model):
         on_delete=models.CASCADE,
     )
 
+    approved = models.BooleanField(
+        _("Approved"),
+        help_text=_("Membership is approved"),
+        default=False,
+    )
+
     group = models.ForeignKey(
         StudyGroup,
         help_text=_("Study Group of the relation"),
@@ -109,11 +118,12 @@ class Membership(UUIDMixin, TimestampMixin, models.Model):
         on_delete=models.CASCADE,
     )
 
-    role = models.PositiveSmallIntegerField(
+    role = models.CharField(
         _("Role"),
         help_text=_("Member's role in study group"),
+        max_length=20,
         choices=STUDYGROUP_ROLES,
-        default=0,
+        default="viewer",
     )
 
     objects = MembershipManager()

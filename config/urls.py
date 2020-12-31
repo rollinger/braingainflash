@@ -7,11 +7,6 @@ from django.views.generic import RedirectView, TemplateView
 from rest_framework.authtoken.views import obtain_auth_token
 
 
-def trigger_sentry_error(request):
-    division_by_zero = 1 / 0
-    return division_by_zero
-
-
 class HomeRedirectView(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         # redirects authenticated users to their brain list
@@ -34,9 +29,8 @@ urlpatterns = [
     #
     # App url confs
     #
+    path("studygroup/", include("memo.studygroups.urls", namespace="studygroup")),
     path("memo/", include("memo.cardset.urls", namespace="memo")),
-    # Convenience Paths
-    path("sentry-debug/", trigger_sentry_error),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # API URLS
