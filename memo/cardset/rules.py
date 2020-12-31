@@ -8,7 +8,7 @@ import rules
 def is_creator(user, obj):
     if not obj:
         return False
-    print("%s => %s == %s => %s" % (obj, obj.creator, user, (obj.creator == user)))
+    # print("%s => %s == %s => %s" % (obj, obj.creator, user, (obj.creator == user)))
     return obj.creator == user
 
 

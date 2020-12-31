@@ -19,10 +19,7 @@ class MemoCardInline(admin.TabularInline):
 class MemoSetAdmin(TreeAdmin):
     form = movenodeform_factory(MemoSet)
     save_on_top = True
-    list_display = (
-        "topic",
-        "creator",
-    )
+    list_display = ("topic", "creator", "studygroup")
     list_display_links = ("topic",)
     # list_filter = ("is_template",)
     # list_editable = ("is_template",)

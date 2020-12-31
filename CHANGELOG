@@ -1,0 +1,26 @@
+== Alpha ==
+
+== Proof of Concept ==
+OK Add Basic Workflow MemoSet CRUD to frontend
+OK General Main Brain on user.create signal
+OK Add Logo
+OK Add Basic Workflow MemoCard CRUD to frontend
+OK Fix accordion collapse and style errors in memoset_root_list_view
+OK Make template tag for getting the performance model based on the request user and a memocard
+OK Implement Basic Gain Workflow
+    OK Training (cycle cards)
+    OK Recall (test cards)
+OK Connect sentry
+OK Add fields to CardPerformance {
+        OK unique_id:
+        OK priority: (low,normal,high) (sort in qs)
+        OK is_paused: False (exclude from qs)}
+    OK Redo Queryset methods
+OK View for update PerformanceSettings
+    OK Add prio and is_paused to card edit to card performance edit
+OK BUGFIX:
+    OK /memo/manage/set/root/list => rename in /memo/manage/brains and cleanup html
+    OK Add statistics scores to cards
+    OK Home Link => Brain if authenticated else Home page (stub)
+    OK Card editor should accept breakline and other formatters
+    OK Reorder menu
