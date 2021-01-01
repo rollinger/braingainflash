@@ -1,8 +1,17 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
-from django.views.generic import CreateView, ListView, RedirectView, UpdateView
+from django.utils.translation import ugettext_lazy as _
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    ListView,
+    RedirectView,
+    UpdateView,
+)
+from studygroups.forms import StudyGroupForm
 from studygroups.models import Membership, StudyGroup
 
 
@@ -75,32 +84,39 @@ class StudyGroupUpdateView(UpdateView):
     model = StudyGroup
     slug_field = "unique_id"
     slug_url_kwarg = "unique_id"
-    fields = [
-        "name",
-        "description",
-    ]
+    form_class = StudyGroupForm
     template_name = "studygroups/group_update_view.html"
     success_url = reverse_lazy("studygroups:group_list_view")
-
-    def get(self, request, *args, **kwargs):
-        # Set reduced fields set if is_main_user_group
-        self.object = self.get_object()
-        if not self.object.is_main_user_group:
-            self.fields = [
-                "name",
-                "description",
-                "is_publicly_available",
-                "auto_approve_new_member",
-                "new_member_role",
-            ]
-        return super().get(request, *args, **kwargs)
 
 
 group_update_view = StudyGroupUpdateView.as_view()
 
 
-class JoinStudyGroupRedirectView(RedirectView):
+@method_decorator(login_required, name="dispatch")
+class StudyGroupDeleteView(DeleteView):
+    model = StudyGroup
+    slug_field = "unique_id"
+    slug_url_kwarg = "unique_id"
+    template_name = "studygroups/group_confirm_delete.html"
     success_url = reverse_lazy("studygroups:group_list_view")
+
+
+group_delete_view = StudyGroupDeleteView.as_view()
+
+
+@method_decorator(login_required, name="dispatch")
+class StudyGroupDetailView(DeleteView):
+    model = StudyGroup
+    slug_field = "slug"
+    slug_url_kwarg = "slug"
+    template_name = "studygroups/group_detail_view.html"
+
+
+group_detail_view = StudyGroupDetailView.as_view()
+
+
+class JoinStudyGroupRedirectView(RedirectView):
+    url = reverse_lazy("studygroups:group_list_view")
 
     def get(self, request, *args, **kwargs):
         # Get or create a membership and sets a message
@@ -113,6 +129,75 @@ class JoinStudyGroupRedirectView(RedirectView):
                 role=study_group.new_member_role,
                 approved=study_group.auto_approve_new_member,
             )
+        approval = ""
+        if study_group.auto_approve_new_member:
+            approval = _("Your were approved immediately.")
+        else:
+            approval = _("Please be patient and wait for approval.")
+        messages.add_message(
+            self.request,
+            messages.SUCCESS,
+            _('You joined the study group "{group_name}". {approval}').format(
+                group_name=study_group.name, approval=approval
+            ),
+        )
+        return super().get(request, *args, **kwargs)
 
 
 group_join_view = JoinStudyGroupRedirectView.as_view()
+
+
+class LeaveStudyGroupRedirectView(RedirectView):
+    url = reverse_lazy("studygroups:group_list_view")
+
+    def get(self, request, *args, **kwargs):
+        # Deletes the membership and sets a message
+        study_group = StudyGroup.objects.get(unique_id=self.kwargs["unique_id"])
+        if study_group.is_member(request.user):
+            Membership.objects.get(
+                member=self.request.user,
+                group=study_group,
+            ).delete()
+            messages.add_message(
+                self.request,
+                messages.WARNING,
+                _('You left the study group "{group_name}".').format(
+                    group_name=study_group.name,
+                ),
+            )
+        return super().get(request, *args, **kwargs)
+
+
+group_leave_view = LeaveStudyGroupRedirectView.as_view()
+
+
+class ManageMembershipRedirectView(RedirectView):
+    def get(self, request, *args, **kwargs):
+        # Manage the membership and sets a message
+        unique_id = self.kwargs["unique_id"]
+        verb = self.kwargs["verb"]
+        membership = Membership.objects.get(unique_id=unique_id)
+        # Set redirect url
+        self.url = reverse_lazy(
+            "studygroups:group_detail_view", kwargs={"slug": membership.group.slug}
+        )
+        # Change membership verbs: [approve, block, make_viewer, make_editor, make_admin]
+        # and save changes
+        if membership:
+            if verb == "approve":
+                membership.approved = True
+                membership.blocked = False
+            elif verb == "block":
+                membership.approved = False
+                membership.blocked = True
+            elif verb == "make_viewer":
+                membership.role = "viewer"
+            elif verb == "make_editor":
+                membership.role = "editor"
+            elif verb == "make_admin":
+                membership.role = "admin"
+            membership.save()
+        return super().get(request, *args, **kwargs)
+
+
+membership_manage_view = ManageMembershipRedirectView.as_view()

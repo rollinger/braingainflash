@@ -1,60 +1,70 @@
 {% load static rules i18n %}
 
 {% test_rule 'can_join_group' request.user group as can_join_group %}
+{% test_rule 'can_leave_group' request.user group as can_leave_group %}
 {% test_rule 'can_view_group' request.user group as can_view_group %}
 {% test_rule 'can_update_group' request.user group as can_update_group %}
 {% test_rule 'can_delete_group' request.user group as can_delete_group %}
 
 
-<div class="col-xs-12 col-md-6 col-lg-4 mt-3">
-  <div class="card mb-3 h-100
-    {% if group.is_main_user_group == True %}text-white bg-dark{% else %}bg-light{% endif %}">
-    {% if can_view_group %}
-      <a href="{% url 'studygroups:group_join_view' unique_id=group.unique_id %}"
-      class="" style="text-decoration: none; color:inherit;" title="{% trans 'View Study Group' %}">
-        <div class="card-header">{{ group.name }}</div>
-      </a>
-    {% else %}
+<div class="card mb-3 {% if not detail_view %}h-100{% endif %}
+  {% if group.is_main_user_group == True %}text-white bg-dark{% else %}bg-light{% endif %}">
+  {% if can_view_group and not detail_view %}
+    <a href="{% url 'studygroups:group_detail_view' slug=group.slug %}"
+    class="" style="text-decoration: none; color:inherit;" title="{% trans 'View Study Group' %}">
       <div class="card-header">{{ group.name }}</div>
-    {% endif %}
-    <div class="card-body">
-      <p class="card-text">
+    </a>
+  {% else %}
+    <div class="card-header">{{ group.name }}</div>
+  {% endif %}
+  <div class="card-body">
+    <p class="card-text">
+      {% if detail_view %}
+        {{ group.description|safe }}
+      {% else %}
         {{ group.description|safe|truncatewords:7 }}
-      </p>
-    </div>
-    <div class="card-footer">
-      <div class="btn-group float-right" role="group" aria-label="Study Group Actions">
+      {% endif %}
+    </p>
+  </div>
+  <div class="card-footer">
+    <div class="btn-group float-right" role="group" aria-label="Study Group Actions">
 
-        {% if can_join_group %}
-          <a href="{% url 'studygroups:group_join_view' unique_id=group.unique_id %}"
-          role="button" class="btn btn-sm btn-primary" title="{% trans 'Join Study Group' %}">
-            {% trans 'Join' %}
-          </a>
-        {% endif %}
+      {% if can_view_group and not detail_view %}
+        <a href="{% url 'studygroups:group_detail_view' slug=group.slug %}"
+        role="button" class="btn btn-sm btn-primary" title="{% trans 'View Study Group' %}">
+          {% trans 'View' %}
+        </a>
+      {% endif %}
 
-        {% if can_view_group %}
-          <a href="{% url 'studygroups:group_join_view' unique_id=group.unique_id %}"
-          role="button" class="btn btn-sm btn-primary" title="{% trans 'View Study Group' %}">
-            {% trans 'View' %}
-          </a>
-        {% endif %}
+      {% if can_join_group %}
+        <a href="{% url 'studygroups:group_join_view' unique_id=group.unique_id %}"
+        role="button" class="btn btn-sm btn-success" title="{% trans 'Join Study Group' %}">
+          {% trans 'Join' %}
+        </a>
+      {% endif %}
 
-        {% if can_update_group %}
-          <a href="{% url 'studygroups:group_update_view' unique_id=group.unique_id %}"
-          role="button" class="btn btn-sm btn-info" title="{% trans 'Edit Study Group' %}">
-            {% trans 'Edit' %}
-          </a>
-        {% endif %}
+      {% if can_leave_group %}
+        <a href="{% url 'studygroups:group_leave_view' unique_id=group.unique_id %}"
+        role="button" class="btn btn-sm btn-warning" title="{% trans 'Leave Study Group' %}">
+          {% trans 'Leave' %}
+        </a>
+      {% endif %}
 
-        {% if can_delete_group %}
-          <a href="{% url 'studygroups:group_join_view' unique_id=group.unique_id %}"
-          role="button" class="btn btn-sm btn-danger" title="{% trans 'Delete Study Group' %}">
-            {% trans 'Delete' %}
-          </a>
-        {% endif %}
+      {% if can_update_group %}
+        <a href="{% url 'studygroups:group_update_view' unique_id=group.unique_id %}"
+        role="button" class="btn btn-sm btn-info" title="{% trans 'Edit Study Group' %}">
+          {% trans 'Edit' %}
+        </a>
+      {% endif %}
+
+      {% if can_delete_group %}
+        <a href="{% url 'studygroups:group_delete_view' unique_id=group.unique_id %}"
+        role="button" class="btn btn-sm btn-danger" title="{% trans 'Delete Study Group' %}">
+          {% trans 'Delete' %}
+        </a>
+      {% endif %}
 
 
-      </div>
     </div>
   </div>
 </div>

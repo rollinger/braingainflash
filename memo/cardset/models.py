@@ -46,8 +46,6 @@ class MemoSet(UUIDMixin, NS_Node):
         on_delete=models.CASCADE,
     )
 
-    # TODO: creator for sets is not needed anymore!
-    # the studygroup is the parent
     creator = models.ForeignKey(
         User,
         help_text=_("Memo Set is owned by this user"),

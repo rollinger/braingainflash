@@ -12,6 +12,7 @@ class MembershipInline(admin.TabularInline):
         "member",
         "role",
         "approved",
+        "blocked",
         "created_at",
         "updated_at",
     )

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %} {% trans "Study Group" %} {% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <div class="row mt-3">
+    <div class="col-sm-8">
+      <h1>{{ object.name }}</h1>
+    </div>
+    <div class="col-xs-12 col-md-6 col-lg-4 mt-3">
+      {% include "studygroups/partials/_group_card.html" with group=object detail_view=True %}
+      {% if not object.is_main_user_group %}
+        {% include "studygroups/partials/_group_manage_member_card.html" with group=object %}
+      {% endif %}
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-sm-12">
+
+    </div>
+  </div>
+
+</div>
+{% endblock content %}

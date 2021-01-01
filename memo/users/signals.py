@@ -30,6 +30,6 @@ def user_created(sender, instance, **kwargs):
         # Add general MemoSet Instance to studygroup
         INITIAL_MEMOSET_NAME = _("General")
         initial_memoset = MemoSet(
-            studygroup=main_study_group, owner=instance, topic=INITIAL_MEMOSET_NAME
+            studygroup=main_study_group, creator=instance, topic=INITIAL_MEMOSET_NAME
         )
         MemoSet.add_root(instance=initial_memoset)

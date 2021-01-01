@@ -113,6 +113,12 @@ class Membership(UUIDMixin, TimestampMixin, models.Model):
         default=False,
     )
 
+    blocked = models.BooleanField(
+        _("Blocked"),
+        help_text=_("Membership is blocked"),
+        default=False,
+    )
+
     group = models.ForeignKey(
         StudyGroup,
         help_text=_("Study Group of the relation"),
@@ -132,6 +138,10 @@ class Membership(UUIDMixin, TimestampMixin, models.Model):
 
     def __str__(self):
         return "%s is %s in %s" % (self.member, self.get_role_display(), self.group)
+
+    def get_score(self):
+        # TODO: gets the recall score of all cards
+        return "%d %%" % (0)
 
     def get_absolute_url(self):
         # Returns path to update-view
