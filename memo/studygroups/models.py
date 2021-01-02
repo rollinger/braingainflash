@@ -99,12 +99,29 @@ class Membership(UUIDMixin, TimestampMixin, models.Model):
     class Meta:
         verbose_name = _("Membership")
         verbose_name_plural = _("Memberships")
+        unique_together = ("group", "member")
+        ordering = ("role", "member")
+
+    group = models.ForeignKey(
+        StudyGroup,
+        help_text=_("Study Group of the relation"),
+        related_name="memberships",
+        on_delete=models.CASCADE,
+    )
 
     member = models.ForeignKey(
         User,
         help_text=_("User of the relation"),
         related_name="memberships",
         on_delete=models.CASCADE,
+    )
+
+    role = models.CharField(
+        _("Role"),
+        help_text=_("Member's role in study group"),
+        max_length=20,
+        choices=STUDYGROUP_ROLES,
+        default="viewer",
     )
 
     approved = models.BooleanField(
@@ -117,21 +134,6 @@ class Membership(UUIDMixin, TimestampMixin, models.Model):
         _("Blocked"),
         help_text=_("Membership is blocked"),
         default=False,
-    )
-
-    group = models.ForeignKey(
-        StudyGroup,
-        help_text=_("Study Group of the relation"),
-        related_name="memberships",
-        on_delete=models.CASCADE,
-    )
-
-    role = models.CharField(
-        _("Role"),
-        help_text=_("Member's role in study group"),
-        max_length=20,
-        choices=STUDYGROUP_ROLES,
-        default="viewer",
     )
 
     objects = MembershipManager()
