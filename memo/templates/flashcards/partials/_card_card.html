@@ -1,0 +1,50 @@
+{% load static rules i18n flashcard_tags %}
+
+
+{% card_performance request.user card as card_performance %}
+
+{% test_rule 'can_update_card' request.user card as can_update_card %}
+{% test_rule 'can_update_performance' request.user card_performance as can_update_performance %}
+{% test_rule 'can_delete_card' request.user card as can_delete_card %}
+
+
+<div class="card mb-3 h-100 bg-light">
+  <div class="card-header">{{ card.topic }}</div>
+  <div class="card-body">
+    <p class="card-text">
+      {{ card.front_text|safe }}
+    </p>
+  </div>
+  <div class="card-footer">
+    <div class="btn-group float-right" role="group" aria-label="Study Group Actions">
+      <button id="card_actions" type="button"
+      class="btn btn-sm btn-dark dropdown-toggle" data-toggle="dropdown"
+      aria-haspopup="true" aria-expanded="false">
+        {% trans 'Actions' %}
+      </button>
+      <div class="dropdown-menu" aria-labelledby="card_actions">
+        {% if can_update_card %}
+          <a href="#"
+          class="dropdown-item" title="{% trans 'Edit Card' %}">
+            {% trans 'Edit' %}
+          </a>
+        {% endif %}
+
+        {% if can_update_performance %}
+          <a href="#"
+          class="dropdown-item" title="{% trans 'Settings' %}">
+            {% trans 'Settings' %}
+          </a>
+        {% endif %}
+
+        {% if can_delete_card %}
+          <a href="#"
+          class="dropdown-item" title="{% trans 'Delete Card' %}">
+            {% trans 'Delete' %}
+          </a>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 {% load static i18n %}
+{% load rules %}
+
+{% test_rule 'can_create_card' request.user object as can_create_card %}
+{% test_rule 'can_create_topic' request.user object as can_create_topic %}
+
 
 {% block title %} {% trans "Study Group" %} {% endblock %}
 
@@ -8,19 +13,31 @@
 
   <div class="row mt-3">
 
-    <div class="col-xs-12 col-md-6 col-lg-8 mt-3">
-      {% for set in object.cardsets.all %}
-        {{ set }}
-      {% endfor %}
+    <div class="col-xs-12 col-md-6 col-lg-4 mt-3">
+      {% include "studygroups/partials/_group_card.html" with group=object detail_view=True %}
+    </div>
 
+    {% if can_create_topic %}
+
+    {% endif %}
+
+    {% if can_create_card %}
+
+    {% endif %}
+
+    <div class="col-xs-12 col-md-6 col-lg-4 mt-3">
+      {% include "flashcards/partials/_create_topic_button.html" with group=object %}
     </div>
 
     <div class="col-xs-12 col-md-6 col-lg-4 mt-3">
-      {% include "studygroups/partials/_group_card.html" with group=object detail_view=True %}
-      {% if not object.is_main_user_group %}
-        {% include "studygroups/partials/_group_manage_member_card.html" with group=object %}
-      {% endif %}
+      {% include "flashcards/partials/_create_card_button.html" with group=object %}
     </div>
+
+    {% for card in object.cards.all %}
+      <div class="col-xs-12 col-md-6 col-lg-4 mt-3">
+        {% include "flashcards/partials/_card_card.html" with card=card %}
+      </div>
+    {% endfor %}
 
   </div>
 

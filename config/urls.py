@@ -11,7 +11,7 @@ class HomeRedirectView(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         # redirects authenticated users to their brain list
         if self.request.user.is_authenticated:
-            return reverse_lazy("cardset:memoset_root_list_view")
+            return reverse_lazy("studygroups:group_list_view")
         return reverse_lazy("start")
 
 
@@ -30,7 +30,7 @@ urlpatterns = [
     # App url confs
     #
     path("studygroup/", include("memo.studygroups.urls", namespace="studygroup")),
-    path("memo/", include("memo.cardset.urls", namespace="memo")),
+    path("flashcard/", include("memo.flashcards.urls", namespace="flashcard")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # API URLS

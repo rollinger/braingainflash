@@ -27,7 +27,16 @@
     </p>
   </div>
   <div class="card-footer">
+
     <div class="btn-group float-right" role="group" aria-label="Study Group Actions">
+
+      {# Group Actions on group list view #}
+      {% if can_join_group %}
+        <a href="{% url 'studygroups:group_join_view' unique_id=group.unique_id %}"
+        role="button" class="btn btn-sm btn-success" title="{% trans 'Join Study Group' %}">
+          {% trans 'Join' %}
+        </a>
+      {% endif %}
 
       {% if can_view_group and not detail_view %}
         <a href="{% url 'studygroups:group_detail_view' slug=group.slug %}"
@@ -36,35 +45,47 @@
         </a>
       {% endif %}
 
-      {% if can_join_group %}
-        <a href="{% url 'studygroups:group_join_view' unique_id=group.unique_id %}"
-        role="button" class="btn btn-sm btn-success" title="{% trans 'Join Study Group' %}">
-          {% trans 'Join' %}
-        </a>
+      {# Group Actions on group detail view #}
+      {% if can_view_group and detail_view %}
+        <button id="group_actions" type="button"
+        class="btn btn-sm btn-dark dropdown-toggle" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+          {% trans 'Actions' %}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="group_actions">
+          {% if can_update_group %}
+            <a href="{% url 'studygroups:group_update_view' unique_id=group.unique_id %}"
+            class="dropdown-item" title="{% trans 'Edit Study Group' %}">
+              {% trans 'Edit' %}
+            </a>
+          {% endif %}
+
+          {% if not group.is_main_user_group and detail_view %}
+            <a class="dropdown-item" href="#" data-toggle="modal"  title="{% trans 'View Member' %}"
+            data-target="#group_manage_member_modal">
+              {% trans 'Member' %}
+            </a>
+          {% endif %}
+
+          {% if can_delete_group %}
+            <a href="{% url 'studygroups:group_delete_view' unique_id=group.unique_id %}"
+            class="dropdown-item" title="{% trans 'Delete Study Group' %}">
+              {% trans 'Delete' %}
+            </a>
+          {% endif %}
+
+          {% if can_leave_group %}
+            <a href="{% url 'studygroups:group_leave_view' unique_id=group.unique_id %}"
+            class="dropdown-item" title="{% trans 'Leave Study Group' %}">
+              {% trans 'Leave' %}
+            </a>
+          {% endif %}
+        </div>
       {% endif %}
-
-      {% if can_leave_group %}
-        <a href="{% url 'studygroups:group_leave_view' unique_id=group.unique_id %}"
-        role="button" class="btn btn-sm btn-warning" title="{% trans 'Leave Study Group' %}">
-          {% trans 'Leave' %}
-        </a>
-      {% endif %}
-
-      {% if can_update_group %}
-        <a href="{% url 'studygroups:group_update_view' unique_id=group.unique_id %}"
-        role="button" class="btn btn-sm btn-info" title="{% trans 'Edit Study Group' %}">
-          {% trans 'Edit' %}
-        </a>
-      {% endif %}
-
-      {% if can_delete_group %}
-        <a href="{% url 'studygroups:group_delete_view' unique_id=group.unique_id %}"
-        role="button" class="btn btn-sm btn-danger" title="{% trans 'Delete Study Group' %}">
-          {% trans 'Delete' %}
-        </a>
-      {% endif %}
-
-
     </div>
   </div>
 </div>
+
+{% if not group.is_main_user_group %}
+  {% include "studygroups/partials/_group_manage_member_modal.html" with group=group %}
+{% endif %}

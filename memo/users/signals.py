@@ -1,8 +1,8 @@
-from cardset.models import MemoSet
 from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
+from flashcards.models import Topic
 from studygroups.models import Membership, StudyGroup
 
 User = get_user_model()
@@ -24,12 +24,12 @@ def user_created(sender, instance, **kwargs):
             is_publicly_available=False,
             auto_approve_new_member=False,
         )
+        # Create admin membership
         membership, created = Membership.objects.get_or_create(
             member=instance, group=main_study_group, role="admin", approved=True
         )
-        # Add general MemoSet Instance to studygroup
-        INITIAL_MEMOSET_NAME = _("General")
-        initial_memoset = MemoSet(
-            studygroup=main_study_group, creator=instance, topic=INITIAL_MEMOSET_NAME
+        # Add general Topic to studygroup
+        INITIAL_TOPIC_NAME = _("General")
+        general_topic, created = Topic.objects.get_or_create(
+            group=main_study_group, title=INITIAL_TOPIC_NAME
         )
-        MemoSet.add_root(instance=initial_memoset)

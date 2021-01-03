@@ -2,6 +2,7 @@ from ckeditor.fields import RichTextField
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from utils.abstract_models import TimestampMixin, UUIDMixin
 
@@ -79,7 +80,7 @@ class StudyGroup(UUIDMixin, TimestampMixin, models.Model):
 
     def get_absolute_url(self):
         # Returns path to update-view
-        pass  # return reverse("memocard_update_view", kwargs={"unique_id": self.unique_id})
+        return reverse("studygroups:group_detail_view", kwargs={"slug": self.slug})
 
     def save(self, *args, **kwargs):  # new
         if not self.slug:

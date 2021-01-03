@@ -56,6 +56,8 @@
                   <span class="sr-only">(current)</span>
                 </a>
               </li>
+
+              {% comment %}
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'cardset:memoset_root_list_view' %}">
                   {% trans "Brain" %}
@@ -67,11 +69,13 @@
                   {% trans "Gain" %}
                 </a>
               </li>
+
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'cardset:test_gain_view' %}">
                   {% trans "Test" %}
                 </a>
               </li>
+              {% endcomment %}
 
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
