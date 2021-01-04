@@ -260,13 +260,11 @@ LOGGING = {
     },
     "root": {"level": "INFO", "handlers": ["console"]},
     "loggers": {
-        """
-        'rules': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': True,
-         },
-        """
+        "rules": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
     },
 }
 

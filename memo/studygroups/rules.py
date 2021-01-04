@@ -38,6 +38,13 @@ def is_public_group(user, group):
 
 
 @rules.predicate
+def is_main_user_group(user, group):
+    # weather the group is main user space or not
+    # NOTE: user is needed here because rules uses positional *args
+    return group.is_main_user_group
+
+
+@rules.predicate
 def has_membership_object(user, group):
     # user has a approved membership in the group
     return check_group_member(user, group)
@@ -114,9 +121,13 @@ rules.add_perm(
 )
 
 # can_delete_group  => is_auth(user) & is_group_admin(user, group)
-rules.add_rule("can_delete_group", rules.is_authenticated & is_group_member_admin)
+rules.add_rule(
+    "can_delete_group",
+    rules.is_authenticated & is_group_member_admin & ~is_main_user_group,
+)
 rules.add_perm(
-    "studygroups.delete_studygroup", rules.is_authenticated & is_group_member_admin
+    "studygroups.delete_studygroup",
+    rules.is_authenticated & is_group_member_admin & ~is_main_user_group,
 )
 
 # manage_studygroup_memberships => is_auth(user) & is_group_admin(user, group)

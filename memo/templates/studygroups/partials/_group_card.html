@@ -8,6 +8,9 @@
 {% test_rule 'can_update_group' request.user group as can_update_group %}
 {% test_rule 'can_delete_group' request.user group as can_delete_group %}
 
+{% test_rule 'can_create_card' request.user group as can_create_card %}
+{% test_rule 'can_create_topic' request.user group as can_create_topic %}
+
 {% test_rule 'can_manage_member' request.user group as can_manage_member %}
 
 
@@ -61,12 +64,29 @@
           {% trans 'Actions' %}
         </button>
         <div class="dropdown-menu" aria-labelledby="group_actions">
+
+          {% if can_create_topic %}
+            <a href="{% url 'flashcards:topic_create_view' unique_group_id=group.unique_id %}"
+            class="dropdown-item" title="{% trans 'Add new topic' %}">
+              {% trans 'Add Topic' %}
+            </a>
+          {% endif %}
+
+          {% if can_create_card %}
+            <a href="{% url 'flashcards:card_create_view' unique_group_id=group.unique_id %}"
+            class="dropdown-item" title="{% trans 'Add new card' %}">
+              {% trans 'Add Card' %}
+            </a>
+          {% endif %}
+
           {% if can_update_group %}
             <a href="{% url 'studygroups:group_update_view' unique_id=group.unique_id %}"
             class="dropdown-item" title="{% trans 'Edit Study Group' %}">
-              {% trans 'Edit' %}
+              {% trans 'Edit Group' %}
             </a>
           {% endif %}
+
+          <div class="dropdown-divider"></div>
 
           {% if not group.is_main_user_group and detail_view %}
             <a class="dropdown-item" href="#" data-toggle="modal"  title="{% trans 'View Member' %}"

@@ -112,7 +112,7 @@ class StudyGroupUpdateView(CustomRulesPermissionRequiredMixin, UpdateView):
     slug_url_kwarg = "unique_id"
     form_class = StudyGroupForm
     template_name = "studygroups/group_update_view.html"
-    success_url = reverse_lazy("studygroups:group_list_view")
+    # success_url comes from object.get_absolute_url
 
 
 group_update_view = StudyGroupUpdateView.as_view()
