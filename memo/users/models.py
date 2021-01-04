@@ -18,3 +18,13 @@ class User(AbstractUser):
 
         """
         return reverse("users:detail", kwargs={"username": self.username})
+
+    def has_free_group_slot(self):
+        # How many groups are allowed in their plan and how much they have
+        # STUB TODO
+        return True
+
+    def has_free_card_slot(self):
+        # How many cards are allowed in their plan and how much they have
+        # STUB TODO
+        return True

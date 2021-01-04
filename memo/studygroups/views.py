@@ -1,3 +1,4 @@
+import rules
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -7,12 +8,23 @@ from django.utils.translation import ugettext_lazy as _
 from django.views.generic import (
     CreateView,
     DeleteView,
+    DetailView,
     ListView,
     RedirectView,
     UpdateView,
 )
+from rules.contrib.views import PermissionRequiredMixin
 from studygroups.forms import StudyGroupForm
 from studygroups.models import Membership, StudyGroup
+
+
+class CustomRulesPermissionRequiredMixin(PermissionRequiredMixin):
+    # Overrides the has_permission method to work with my perms
+    # (calling them directly rather than self.request.user.has_perms(perms, obj) )
+    # See: https://github.com/dfunckt/django-rules/blob/master/rules/contrib/views.py LINE 47
+    def has_permission(self):
+        obj = self.get_permission_object()
+        return rules.has_perm(self.permission_required, self.request.user, obj)
 
 
 @method_decorator(login_required, name="dispatch")
@@ -54,8 +66,9 @@ group_directory_view = StudyGroupDirectoryView.as_view()
 
 
 @method_decorator(login_required, name="dispatch")
-class StudyGroupCreateView(CreateView):
+class StudyGroupCreateView(CustomRulesPermissionRequiredMixin, CreateView):
     model = StudyGroup
+    permission_required = "studygroups.add_studygroup"
     fields = [
         "name",
         "description",
@@ -80,8 +93,21 @@ group_create_view = StudyGroupCreateView.as_view()
 
 
 @method_decorator(login_required, name="dispatch")
-class StudyGroupUpdateView(UpdateView):
+class StudyGroupDetailView(CustomRulesPermissionRequiredMixin, DetailView):
     model = StudyGroup
+    permission_required = "studygroups.view_studygroup"
+    slug_field = "slug"
+    slug_url_kwarg = "slug"
+    template_name = "studygroups/group_detail_view.html"
+
+
+group_detail_view = StudyGroupDetailView.as_view()
+
+
+@method_decorator(login_required, name="dispatch")
+class StudyGroupUpdateView(CustomRulesPermissionRequiredMixin, UpdateView):
+    model = StudyGroup
+    permission_required = "studygroups.edit_studygroup"
     slug_field = "unique_id"
     slug_url_kwarg = "unique_id"
     form_class = StudyGroupForm
@@ -93,8 +119,9 @@ group_update_view = StudyGroupUpdateView.as_view()
 
 
 @method_decorator(login_required, name="dispatch")
-class StudyGroupDeleteView(DeleteView):
+class StudyGroupDeleteView(CustomRulesPermissionRequiredMixin, DeleteView):
     model = StudyGroup
+    permission_required = "studygroups.edit_studygroup"
     slug_field = "unique_id"
     slug_url_kwarg = "unique_id"
     template_name = "studygroups/group_confirm_delete.html"
@@ -102,17 +129,6 @@ class StudyGroupDeleteView(DeleteView):
 
 
 group_delete_view = StudyGroupDeleteView.as_view()
-
-
-@method_decorator(login_required, name="dispatch")
-class StudyGroupDetailView(DeleteView):
-    model = StudyGroup
-    slug_field = "slug"
-    slug_url_kwarg = "slug"
-    template_name = "studygroups/group_detail_view.html"
-
-
-group_detail_view = StudyGroupDetailView.as_view()
 
 
 class JoinStudyGroupRedirectView(RedirectView):
@@ -129,16 +145,16 @@ class JoinStudyGroupRedirectView(RedirectView):
                 role=study_group.new_member_role,
                 approved=study_group.auto_approve_new_member,
             )
-        approval = ""
+        approval_msg = ""
         if study_group.auto_approve_new_member:
-            approval = _("Your were approved immediately.")
+            approval_msg = _("Your were approved immediately.")
         else:
-            approval = _("Please be patient and wait for approval.")
+            approval_msg = _("Please be patient and wait for approval.")
         messages.add_message(
             self.request,
             messages.SUCCESS,
             _('You joined the study group "{group_name}". {approval}').format(
-                group_name=study_group.name, approval=approval
+                group_name=study_group.name, approval_msg=approval_msg
             ),
         )
         return super().get(request, *args, **kwargs)
@@ -171,7 +187,14 @@ class LeaveStudyGroupRedirectView(RedirectView):
 group_leave_view = LeaveStudyGroupRedirectView.as_view()
 
 
-class ManageMembershipRedirectView(RedirectView):
+@method_decorator(login_required, name="dispatch")
+class ManageMembershipRedirectView(CustomRulesPermissionRequiredMixin, RedirectView):
+    permission_required = "studygroups.manage_studygroup_memberships"
+
+    def get_permission_object(self):
+        unique_id = self.kwargs["unique_id"]
+        return Membership.objects.get(unique_id=unique_id).group
+
     def get(self, request, *args, **kwargs):
         # Manage the membership and sets a message
         unique_id = self.kwargs["unique_id"]
@@ -197,6 +220,7 @@ class ManageMembershipRedirectView(RedirectView):
             elif verb == "make_admin":
                 membership.role = "admin"
             membership.save()
+        # Call super get leading to redirect
         return super().get(request, *args, **kwargs)
 
 

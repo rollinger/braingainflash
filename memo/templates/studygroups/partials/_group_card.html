@@ -2,9 +2,13 @@
 
 {% test_rule 'can_join_group' request.user group as can_join_group %}
 {% test_rule 'can_leave_group' request.user group as can_leave_group %}
+{% test_rule 'has_unapproved_membership' request.user group as has_unapproved_membership %}
+
 {% test_rule 'can_view_group' request.user group as can_view_group %}
 {% test_rule 'can_update_group' request.user group as can_update_group %}
 {% test_rule 'can_delete_group' request.user group as can_delete_group %}
+
+{% test_rule 'can_manage_member' request.user group as can_manage_member %}
 
 
 <div class="card mb-3 {% if not detail_view %}h-100{% endif %}
@@ -43,6 +47,10 @@
         role="button" class="btn btn-sm btn-primary" title="{% trans 'View Study Group' %}">
           {% trans 'View' %}
         </a>
+      {% endif %}
+
+      {% if has_unapproved_membership %}
+        <small>{% trans 'Please wait for approval...' %}</small>
       {% endif %}
 
       {# Group Actions on group detail view #}
@@ -86,6 +94,6 @@
   </div>
 </div>
 
-{% if not group.is_main_user_group %}
+{% if not group.is_main_user_group and detail_view %}
   {% include "studygroups/partials/_group_manage_member_modal.html" with group=group %}
 {% endif %}
