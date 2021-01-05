@@ -7,8 +7,8 @@ from flashcards.models import Card, Performance
 @receiver(post_save, sender=Card)
 def card_created(sender, instance, **kwargs):
     if kwargs["created"]:
-        # Add a Performance object for card and card creator
-        print("instance")
-        performance_object, created = Performance.objects.get_or_create(
-            owner=instance.creator, card=instance
-        )
+        # Adds a Performance object for card and every group member
+        for membership in instance.group.memberships.all():
+            p, c = Performance.objects.get_or_create(
+                owner=membership.member, card=instance
+            )

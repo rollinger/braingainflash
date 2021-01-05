@@ -138,7 +138,7 @@ class JoinStudyGroupRedirectView(RedirectView):
                 approved=study_group.auto_approve_new_member,
             )
         # Get or create performance objects for all cards|request.user
-        for card in study_group.cards:
+        for card in study_group.cards.all():
             p, c = Performance.objects.get_or_create(owner=request.user, card=card)
         # Set Message for joining
         approval_msg = ""
@@ -149,7 +149,7 @@ class JoinStudyGroupRedirectView(RedirectView):
         messages.add_message(
             self.request,
             messages.SUCCESS,
-            _('You joined the study group "{group_name}". {approval}').format(
+            _('You joined the study group "{group_name}". {approval_msg}').format(
                 group_name=study_group.name, approval_msg=approval_msg
             ),
         )
@@ -172,7 +172,7 @@ class LeaveStudyGroupRedirectView(RedirectView):
                 group=study_group,
             ).delete()
             # Delete performance objects for all cards|request.user
-            for card in study_group.cards:
+            for card in study_group.cards.all():
                 Performance.objects.filter(owner=request.user, card=card).delete()
             # Set Leave message
             messages.add_message(

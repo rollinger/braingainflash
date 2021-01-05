@@ -260,7 +260,7 @@ LOGGING = {
     },
     "root": {"level": "INFO", "handlers": ["console"]},
     "loggers": {
-        "rules": {
+        "DISABLED_rules": {
             "handlers": ["console"],
             "level": "DEBUG",
             "propagate": True,
