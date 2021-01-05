@@ -82,6 +82,14 @@ class CreateCardView(CreateView):
             "group": StudyGroup.objects.get(unique_id=self.kwargs["unique_group_id"]),
         }
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        # Limit choices to group topics
+        form.fields["topic"].queryset = Topic.objects.filter(
+            group__unique_id=self.kwargs["unique_group_id"]
+        )
+        return form
+
     def get_success_url(self):
         return StudyGroup.objects.get(
             unique_id=self.kwargs["unique_group_id"]
