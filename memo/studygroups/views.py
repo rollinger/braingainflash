@@ -38,6 +38,7 @@ group_list_view = StudyGroupListView.as_view()
 
 @method_decorator(login_required, name="dispatch")
 class StudyGroupDirectoryView(ListView):
+    paginate_by = 9
     model = StudyGroup
     template_name = "studygroups/group_directory_view.html"
 
