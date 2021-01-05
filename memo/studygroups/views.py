@@ -22,6 +22,7 @@ from utils.views import CustomRulesPermissionRequiredMixin
 class StudyGroupListView(ListView):
     model = StudyGroup
     template_name = "studygroups/group_list_view.html"
+    paginate_by = 2  # [multiples of 3 - 1 (2,5,8...)]
 
     def get_queryset(self, *args, **kwargs):
         # Returns group list for user
@@ -38,9 +39,9 @@ group_list_view = StudyGroupListView.as_view()
 
 @method_decorator(login_required, name="dispatch")
 class StudyGroupDirectoryView(ListView):
-    paginate_by = 9
     model = StudyGroup
     template_name = "studygroups/group_directory_view.html"
+    paginate_by = 3
 
     def get_queryset(self, *args, **kwargs):
         # Returns public group list user is not a member

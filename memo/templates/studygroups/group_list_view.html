@@ -14,9 +14,15 @@
     </div>
   </div>
 
+  <div class="row mt-3 justify-content-center">
+    {% include "utils/partials/_paginator.html" with page_obj=page_obj %}
+  </div>
+
   <div class="row mt-3">
 
-    {% for group in object_list %}
+    {# Pagination #}
+
+    {% for group in page_obj %}
       <div class="col-xs-12 col-md-6 col-lg-4 mt-3">
         {% include "studygroups/partials/_group_card.html" with group=group %}
       </div>
@@ -42,6 +48,10 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div class="row mt-3 justify-content-center">
+    {% include "utils/partials/_paginator.html" with page_obj=page_obj %}
   </div>
 
 </div>
