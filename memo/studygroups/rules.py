@@ -2,20 +2,54 @@
 # RULES Permissions for StudyGroup
 # https://github.com/dfunckt/django-rules
 import rules
-from studygroups.models import Membership
+
+# from studygroups.models import Membership
 
 #
 # Predicates
 #
 
 
+@rules.predicate()
+def get_membership_object(user, group):
+    membership = get_membership_object.context.get("membership")
+    if membership is None:
+        # retrieve and store in context if not present.
+        membership = group.memberships.filter(member=user).first()
+        get_membership_object.context["membership"] = membership
+        return True
+    else:
+        return True
+    return False
+
+
+def NEW_check_group_member(user, group, approved=None, role=None):
+    get_membership_object(user, group)
+    membership = check_group_member.context.get("membership", default=None)
+    check = False
+    if membership:
+        check = check | True
+    if approved:
+        check = check | (membership.approved == approved)
+    if role:
+        check = check | (membership.role == role)
+    return check
+
+
 def check_group_member(user, group, approved=None, role=None):
-    membership = Membership.objects.filter(group=group, member=user)
+    # membership = Membership.objects.filter(group=group, member=user)
+    membership = group.memberships.filter(member=user)
     if approved:
         membership = membership.filter(approved=approved)
     if role:
         membership = membership.filter(role=role)
     return membership.exists()
+
+
+@rules.predicate
+def has_membership_object(user, group):
+    # user has a approved membership in the group
+    return check_group_member(user, group)
 
 
 @rules.predicate
@@ -42,12 +76,6 @@ def is_main_user_group(user, group):
     # weather the group is main user space or not
     # NOTE: user is needed here because rules uses positional *args
     return group.is_main_user_group
-
-
-@rules.predicate
-def has_membership_object(user, group):
-    # user has a approved membership in the group
-    return check_group_member(user, group)
 
 
 @rules.predicate

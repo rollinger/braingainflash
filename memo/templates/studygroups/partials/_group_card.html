@@ -1,17 +1,17 @@
 {% load static rules i18n %}
 
+{% test_rule 'can_view_group' request.user group as can_view_group %}
+{% if can_view_group and detail_view %}
+  {% test_rule 'can_update_group' request.user group as can_update_group %}
+  {% test_rule 'can_delete_group' request.user group as can_delete_group %}
+  {% test_rule 'can_create_card' request.user group as can_create_card %}
+  {% test_rule 'can_create_topic' request.user group as can_create_topic %}
+  {% test_rule 'can_manage_member' request.user group as can_manage_member %}
+{% endif %}
+
 {% test_rule 'can_join_group' request.user group as can_join_group %}
 {% test_rule 'can_leave_group' request.user group as can_leave_group %}
 {% test_rule 'has_unapproved_membership' request.user group as has_unapproved_membership %}
-
-{% test_rule 'can_view_group' request.user group as can_view_group %}
-{% test_rule 'can_update_group' request.user group as can_update_group %}
-{% test_rule 'can_delete_group' request.user group as can_delete_group %}
-
-{% test_rule 'can_create_card' request.user group as can_create_card %}
-{% test_rule 'can_create_topic' request.user group as can_create_topic %}
-
-{% test_rule 'can_manage_member' request.user group as can_manage_member %}
 
 
 <div class="card mb-3 {% if not detail_view %}h-100{% endif %}

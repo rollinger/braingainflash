@@ -165,13 +165,13 @@ class Performance(UUIDMixin, TimestampMixin, models.Model):
     owner = models.ForeignKey(
         User,
         help_text=_("User of the card performance"),
-        related_name="memo_performances",
+        related_name="performances",
         on_delete=models.CASCADE,
     )
     card = models.ForeignKey(
         Card,
         help_text=_("Card of the performance"),
-        related_name="memo_performances",
+        related_name="performances",
         on_delete=models.CASCADE,
     )
     #

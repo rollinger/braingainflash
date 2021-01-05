@@ -1,4 +1,3 @@
-import rules
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -13,18 +12,10 @@ from django.views.generic import (
     RedirectView,
     UpdateView,
 )
-from rules.contrib.views import PermissionRequiredMixin
+from flashcards.models import Performance
 from studygroups.forms import StudyGroupForm
 from studygroups.models import Membership, StudyGroup
-
-
-class CustomRulesPermissionRequiredMixin(PermissionRequiredMixin):
-    # Overrides the has_permission method to work with my perms
-    # (calling them directly rather than self.request.user.has_perms(perms, obj) )
-    # See: https://github.com/dfunckt/django-rules/blob/master/rules/contrib/views.py LINE 47
-    def has_permission(self):
-        obj = self.get_permission_object()
-        return rules.has_perm(self.permission_required, self.request.user, obj)
+from utils.views import CustomRulesPermissionRequiredMixin
 
 
 @method_decorator(login_required, name="dispatch")
@@ -131,6 +122,7 @@ class StudyGroupDeleteView(CustomRulesPermissionRequiredMixin, DeleteView):
 group_delete_view = StudyGroupDeleteView.as_view()
 
 
+@method_decorator(login_required, name="dispatch")
 class JoinStudyGroupRedirectView(RedirectView):
     url = reverse_lazy("studygroups:group_list_view")
 
@@ -145,6 +137,10 @@ class JoinStudyGroupRedirectView(RedirectView):
                 role=study_group.new_member_role,
                 approved=study_group.auto_approve_new_member,
             )
+        # Get or create performance objects for all cards|request.user
+        for card in study_group.cards:
+            p, c = Performance.objects.get_or_create(owner=request.user, card=card)
+        # Set Message for joining
         approval_msg = ""
         if study_group.auto_approve_new_member:
             approval_msg = _("Your were approved immediately.")
@@ -163,6 +159,7 @@ class JoinStudyGroupRedirectView(RedirectView):
 group_join_view = JoinStudyGroupRedirectView.as_view()
 
 
+@method_decorator(login_required, name="dispatch")
 class LeaveStudyGroupRedirectView(RedirectView):
     url = reverse_lazy("studygroups:group_list_view")
 
@@ -174,6 +171,10 @@ class LeaveStudyGroupRedirectView(RedirectView):
                 member=self.request.user,
                 group=study_group,
             ).delete()
+            # Delete performance objects for all cards|request.user
+            for card in study_group.cards:
+                Performance.objects.filter(owner=request.user, card=card).delete()
+            # Set Leave message
             messages.add_message(
                 self.request,
                 messages.WARNING,
