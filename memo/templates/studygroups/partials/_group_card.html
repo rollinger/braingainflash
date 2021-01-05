@@ -4,8 +4,8 @@
 {% if can_view_group and detail_view %}
   {% test_rule 'can_update_group' request.user group as can_update_group %}
   {% test_rule 'can_delete_group' request.user group as can_delete_group %}
-  {% test_rule 'can_create_card' request.user group as can_create_card %}
-  {% test_rule 'can_create_topic' request.user group as can_create_topic %}
+  {% test_rule 'can_manage_card' request.user group as can_manage_card %}
+  {% test_rule 'can_manage_topic' request.user group as can_manage_topic %}
   {% test_rule 'can_manage_member' request.user group as can_manage_member %}
 {% endif %}
 
@@ -14,7 +14,7 @@
 {% test_rule 'has_unapproved_membership' request.user group as has_unapproved_membership %}
 
 
-<div class="card mb-3 {% if not detail_view %}h-100{% endif %}
+<div class="card mb-3 h-100
   {% if group.is_main_user_group == True %}text-white bg-dark{% else %}bg-light{% endif %}">
   {% if can_view_group and not detail_view %}
     <a href="{% url 'studygroups:group_detail_view' slug=group.slug %}"
@@ -61,18 +61,11 @@
         <button id="group_actions" type="button"
         class="btn btn-sm btn-dark dropdown-toggle" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
-          {% trans 'Actions' %}
+          {% trans 'Manage Group' %}
         </button>
         <div class="dropdown-menu" aria-labelledby="group_actions">
 
-          {% if can_create_topic %}
-            <a href="{% url 'flashcards:topic_create_view' unique_group_id=group.unique_id %}"
-            class="dropdown-item" title="{% trans 'Add new topic' %}">
-              {% trans 'Add Topic' %}
-            </a>
-          {% endif %}
-
-          {% if can_create_card %}
+          {% if can_manage_card %}
             <a href="{% url 'flashcards:card_create_view' unique_group_id=group.unique_id %}"
             class="dropdown-item" title="{% trans 'Add new card' %}">
               {% trans 'Add Card' %}
@@ -88,6 +81,13 @@
 
           <div class="dropdown-divider"></div>
 
+          {% if detail_view  %}
+            <a class="dropdown-item" href="#" data-toggle="modal"  title="{% trans 'Manage Topics' %}"
+            data-target="#group_manage_topics_modal">
+              {% trans 'Topics' %}
+            </a>
+          {% endif %}
+
           {% if not group.is_main_user_group and detail_view %}
             <a class="dropdown-item" href="#" data-toggle="modal"  title="{% trans 'View Member' %}"
             data-target="#group_manage_member_modal">
@@ -98,14 +98,14 @@
           {% if can_delete_group %}
             <a href="{% url 'studygroups:group_delete_view' unique_id=group.unique_id %}"
             class="dropdown-item" title="{% trans 'Delete Study Group' %}">
-              {% trans 'Delete' %}
+              {% trans 'Delete Group' %}
             </a>
           {% endif %}
 
           {% if can_leave_group %}
             <a href="{% url 'studygroups:group_leave_view' unique_id=group.unique_id %}"
             class="dropdown-item" title="{% trans 'Leave Study Group' %}">
-              {% trans 'Leave' %}
+              {% trans 'Leave Group' %}
             </a>
           {% endif %}
         </div>
@@ -115,5 +115,9 @@
 </div>
 
 {% if not group.is_main_user_group and detail_view %}
-  {% include "studygroups/partials/_group_manage_member_modal.html" with group=group %}
+  {% include "studygroups/partials/_group_manage_member_modal.html" with group=group can_manage_member=can_manage_member %}
+{% endif %}
+
+{% if detail_view %}
+  {% include "studygroups/partials/_group_manage_topics_modal.html" with group=group can_manage_topic=can_manage_topic%}
 {% endif %}

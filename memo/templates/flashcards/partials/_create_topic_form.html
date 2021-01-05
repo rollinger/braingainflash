@@ -1,0 +1,16 @@
+{% load static i18n %}
+
+<form method="post" action="{% url 'flashcards:topic_create_view' unique_group_id=group.unique_id%}">
+  {% csrf_token %}
+  <div class="form-row align-items-center">
+    <div class="col-auto">
+      <label class="sr-only" for="id_title">{% trans 'Titel' %}</label>
+      <input type="text" class="form-control mb-2" name="title" id="id_title"
+        placeholder="{% trans 'Titel of new Topic' %}">
+      <input type="hidden" name="group" value="{{group.pk}}" id="id_group">
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary mb-2">{% trans 'Create Topic' %}</button>
+    </div>
+  </div>
+</form>

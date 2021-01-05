@@ -2,80 +2,33 @@
 # RULES Permissions
 # https://github.com/dfunckt/django-rules
 import rules
-from studygroups.models import Membership
+from studygroups.rules import is_group_member_admin, is_group_member_editor
 
 
 @rules.predicate
-def is_topic_createable(user, group):
-    # returns if user is viewer in group
-    # PARAMS: user & group
-    if (
-        group
-        and Membership.objects.filter(group=group, member=user)
-        .filter(role__in=["editor", "admin"])
-        .exists()
-    ):
-        return True
+def can_manage_performance(user, performance):
+    # user is owner of performance object
+    if performance:
+        return performance.owner == user
     return False
 
 
-@rules.predicate
-def is_card_createable(user, group):
-    # returns if user is editor in group
-    # PARAMS: user & group
-    if (
-        group
-        and Membership.objects.filter(group=group, member=user)
-        .filter(role__in=["editor", "admin"])
-        .exists()
-    ):
-        return True
-    return False
+# can_manage_card  => is_auth(user) & is_group_editor(user, group) | is_group_admin(user, group)
+# create, update, delete
+can_manage_card_to_studygroups = (
+    rules.is_authenticated & is_group_member_admin | is_group_member_editor
+)
+rules.add_rule("can_manage_card", can_manage_card_to_studygroups)
+rules.add_perm("studygroups.manage_studygroup_card", can_manage_card_to_studygroups)
 
+# can_manage_topic => is_auth(user) & is_group_editor(user, group) | is_group_admin(user, group)
+# create, update, delete
+can_manage_topics_to_studygroups = (
+    rules.is_authenticated & is_group_member_admin | is_group_member_editor
+)
+rules.add_rule("can_manage_topic", can_manage_topics_to_studygroups)
+rules.add_perm("studygroups.manage_studygroup_topic", can_manage_topics_to_studygroups)
 
-@rules.predicate
-def is_card_updateable(user, card):
-    # can update card if user is admin or editor in group
-    if (
-        card
-        and Membership.objects.filter(group=card.group, member=user)
-        .filter(role__in=["editor", "admin"])
-        .exists()
-    ):
-        return True
-    return False
-
-
-@rules.predicate
-def is_card_deleteable(user, card):
-    # can delete card if user is admin in group or card.creator
-    if (
-        card
-        and Membership.objects.filter(group=card.group, member=user)
-        .filter(role="admin")
-        .exists()
-        or card
-        and card.creator == user
-    ):
-        return True
-    return False
-
-
-@rules.predicate
-def is_performance_updateable(user, performance):
-    # can update performance if user is the owner
-    if performance and performance.owner == user:
-        return True
-    return False
-
-
-# Card Permissions
-
-rules.add_rule("can_create_topic", is_topic_createable)
-
-rules.add_rule("can_create_card", is_card_createable)
-
-rules.add_rule("can_update_card", is_card_updateable)
-rules.add_rule("can_delete_card", is_card_deleteable)
-
-rules.add_rule("can_update_performance", is_performance_updateable)
+# can_manage_performance
+rules.add_rule("can_manage_performance", can_manage_performance)
+rules.add_perm("studygroups.manage_performance", can_manage_performance)

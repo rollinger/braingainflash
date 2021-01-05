@@ -164,17 +164,3 @@ rules.add_perm(
     "studygroups.manage_studygroup_memberships",
     rules.is_authenticated & is_group_member_admin,
 )
-
-# can_add_card      => is_auth(user) & is_group_editor(user, group) | is_group_admin(user, group)
-can_add_card_to_studygroups = (
-    rules.is_authenticated & is_group_member_admin | is_group_member_editor
-)
-rules.add_rule("can_add_card", can_add_card_to_studygroups)
-rules.add_perm("studygroups.add_studygroup_card", can_add_card_to_studygroups)
-
-# can_add_topic     => is_auth(user) & is_group_editor(user, group) | is_group_admin(user, group)
-can_add_topics_to_studygroups = (
-    rules.is_authenticated & is_group_member_admin | is_group_member_editor
-)
-rules.add_rule("can_add_topic", can_add_topics_to_studygroups)
-rules.add_perm("studygroups.add_studygroup_topic", can_add_topics_to_studygroups)

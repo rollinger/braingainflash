@@ -3,13 +3,22 @@
 
 {% card_performance request.user card as card_performance %}
 
-{% test_rule 'can_update_card' request.user card as can_update_card %}
-{% test_rule 'can_update_performance' request.user card_performance as can_update_performance %}
-{% test_rule 'can_delete_card' request.user card as can_delete_card %}
+{% test_rule 'can_manage_card' request.user card.group as can_manage_card %}
+{% test_rule 'can_manage_performance' request.user card_performance as can_manage_performance %}
 
 
 <div class="card mb-3 h-100 bg-light">
-  <div class="card-header">{{ card.topic }}</div>
+  <div class="card-header">
+    {% if card.topic %}
+      <span class="badge badge-pill badge-info">
+        {{ card.topic.title }}
+      </span>
+    {% else %}
+      <span class="badge badge-pill badge-light">
+        {% trans 'Uncategorized' %}
+      </span>
+    {% endif %}
+  </div>
   <div class="card-body">
     <p class="card-text">
       {{ card.front_text|safe }}
@@ -20,27 +29,25 @@
       <button id="card_actions" type="button"
       class="btn btn-sm btn-dark dropdown-toggle" data-toggle="dropdown"
       aria-haspopup="true" aria-expanded="false">
-        {% trans 'Actions' %}
+        {% trans 'Manage Card' %}
       </button>
       <div class="dropdown-menu" aria-labelledby="card_actions">
-        {% if can_update_card %}
+
+        {% if can_manage_card %}
           <a href="#"
           class="dropdown-item" title="{% trans 'Edit Card' %}">
             {% trans 'Edit' %}
           </a>
-        {% endif %}
-
-        {% if can_update_performance %}
-          <a href="#"
-          class="dropdown-item" title="{% trans 'Settings' %}">
-            {% trans 'Settings' %}
-          </a>
-        {% endif %}
-
-        {% if can_delete_card %}
           <a href="#"
           class="dropdown-item" title="{% trans 'Delete Card' %}">
             {% trans 'Delete' %}
+          </a>
+        {% endif %}
+
+        {% if can_manage_performance %}
+          <a href="#"
+          class="dropdown-item" title="{% trans 'Settings' %}">
+            {% trans 'Settings' %}
           </a>
         {% endif %}
       </div>

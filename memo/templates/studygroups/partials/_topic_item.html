@@ -1,0 +1,18 @@
+{% load static i18n %}
+
+
+<li class="list-group-item d-flex flex-row align-items-center justify-content-between ">
+
+  {% if can_manage_member %}
+    <div class="p-2">
+      {% include "flashcards/partials/_update_delete_topic_form.html" with topic=topic %}
+    </div>
+  {% else %}
+    <div class="p-2">
+      <span class="badge badge-pill badge-info">
+        {{ topic.title }}
+      </span>
+    </div>
+  {% endif %}
+
+</li>

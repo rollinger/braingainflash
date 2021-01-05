@@ -1,6 +1,14 @@
 from django.contrib import admin
+from flashcards.models import Topic
+from studygroups.models import Membership, StudyGroup
 
-from .models import Membership, StudyGroup
+
+class TopicsInline(admin.TabularInline):
+    model = Topic
+    fk_name = "group"
+    ordering = ("-title",)
+    extra = 0
+    fields = ("title",)
 
 
 class MembershipInline(admin.TabularInline):
@@ -53,6 +61,7 @@ class StudyGroupAdmin(admin.ModelAdmin):
     # autocomplete_fields = ["memoset"]
     inlines = [
         MembershipInline,
+        TopicsInline,
     ]
     fieldsets = (
         (

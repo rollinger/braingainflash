@@ -16,7 +16,7 @@
 
     {% comment %}
     {# CURRENTLY HIDDEN #}
-    {% test_rule 'can_create_topic' request.user object as can_create_topic %}
+    {% test_rule 'can_manage_topic' request.user object as can_create_topic %}
     {% if can_create_topic %}
       <div class="col-xs-12 col-md-6 col-lg-4 mt-3">
         {% include "flashcards/partials/_create_topic_button.html" with group=object %}
@@ -24,8 +24,9 @@
     {% endif %}
     {% endcomment %}
 
-    {% test_rule 'can_create_card' request.user object as can_create_card %}
-    {% if can_create_card %}
+
+    {% test_rule 'can_manage_card' request.user object as can_manage_card %}
+    {% if can_manage_card %}
       <div class="col-xs-12 col-md-6 col-lg-4 mt-3">
         {% include "flashcards/partials/_create_card_button.html" with group=object %}
       </div>

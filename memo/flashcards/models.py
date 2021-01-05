@@ -88,7 +88,7 @@ class Card(UUIDMixin, TimestampMixin, models.Model):
         related_name="cards",
         null=True,
         blank=True,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
     )
 
     creator = models.ForeignKey(

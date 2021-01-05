@@ -1,20 +1,24 @@
 {% load static rules i18n %}
 
 <!-- Modal -->
-<div class="modal fade" id="group_manage_member_modal" tabindex="-1" role="dialog"
+<div class="modal fade" id="group_manage_topics_modal" tabindex="-1" role="dialog"
   aria-labelledby="group_manage_member_modal" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">{% trans 'Member' %}</h5>
+        <h5 class="modal-title" id="exampleModalLabel">{% trans 'Topics' %}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
+        {% if can_manage_topic %}
+          {% include "flashcards/partials/_create_topic_form.html" with group=group %}
+        {% endif %}
+
         <ul class="list-group">
-          {% for membership in group.memberships.all %}
-              {% include "studygroups/partials/_member_item.html" with membership=membership can_manage_member=can_manage_member %}
+          {% for topic in group.topics.all %}
+            {% include "studygroups/partials/_topic_item.html" with topic=topic can_manage_topic=can_manage_topic %}
           {% endfor %}
         </ul>
       </div>
