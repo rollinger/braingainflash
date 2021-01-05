@@ -9,27 +9,53 @@
 
 <div class="card mb-3 h-100 bg-light">
   <div class="card-header">
-    {% if card.topic %}
-      <span class="badge badge-pill badge-info">
-        {{ card.topic.title }}
-      </span>
-    {% else %}
-      <span class="badge badge-pill badge-light">
-        {% trans 'Uncategorized' %}
-      </span>
-    {% endif %}
+
+    <ul class="nav nav-tabs justify-content-end" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">
+          {% if card.topic %}
+            <span class="badge badge-pill badge-info">
+              {{ card.topic.title }}
+            </span>
+          {% else %}
+            <span class="badge badge-pill badge-light">
+              {% trans 'Uncategorized' %}
+            </span>
+          {% endif %}
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" id="front-tab" data-toggle="tab" href="#front-{{card.id}}"
+        role="tab" aria-controls="front" aria-selected="true">{% trans 'Front' %}</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="back-tab" data-toggle="tab" href="#back-{{card.id}}"
+        role="tab" aria-controls="back" aria-selected="false">{% trans 'Back' %}</a>
+      </li>
+    </ul>
   </div>
   <div class="card-body">
-    <p class="card-text">
-      {{ card.front_text|safe }}
-    </p>
+
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="front-{{card.id}}" role="tabpanel" aria-labelledby="home-tab">
+        <p class="card-text">
+          <i>{% trans 'Question' %}:</i> {{ card.front_text|safe }}
+        </p>
+      </div>
+      <div class="tab-pane fade" id="back-{{card.id}}" role="tabpanel" aria-labelledby="profile-tab">
+        <p class="card-text">
+          <i>{% trans 'Answer' %}:</i> {{ card.back_text|safe }}
+        </p>
+      </div>
+    </div>
+
   </div>
   <div class="card-footer">
     <div class="btn-group float-right" role="group" aria-label="Study Group Actions">
       <button id="card_actions" type="button"
       class="btn btn-sm btn-dark dropdown-toggle" data-toggle="dropdown"
-      aria-haspopup="true" aria-expanded="false">
-        {% trans 'Manage Card' %}
+      aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage Card' %}">
+        {% trans 'Manage' %}
       </button>
       <div class="dropdown-menu" aria-labelledby="card_actions">
 

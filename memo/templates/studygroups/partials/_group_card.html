@@ -15,14 +15,18 @@
 
 
 <div class="card mb-3 h-100
-  {% if group.is_main_user_group == True %}text-white bg-dark{% else %}bg-light{% endif %}">
+  {% if group.is_main_user_group or detail_view%}
+  border-primary
+  {% else %}
+  border-secondary
+  {% endif %}">
   {% if can_view_group and not detail_view %}
     <a href="{% url 'studygroups:group_detail_view' slug=group.slug %}"
     class="" style="text-decoration: none; color:inherit;" title="{% trans 'View Study Group' %}">
-      <div class="card-header">{{ group.name }}</div>
+      <div class="card-header">{% trans 'Group' %}: {{ group.name }}</div>
     </a>
   {% else %}
-    <div class="card-header">{{ group.name }}</div>
+    <div class="card-header">{% trans 'Group' %}: {{ group.name }}</div>
   {% endif %}
   <div class="card-body">
     <p class="card-text">
@@ -60,8 +64,8 @@
       {% if can_view_group and detail_view %}
         <button id="group_actions" type="button"
         class="btn btn-sm btn-dark dropdown-toggle" data-toggle="dropdown"
-        aria-haspopup="true" aria-expanded="false">
-          {% trans 'Manage Group' %}
+        aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage Group' %}">
+          {% trans 'Manage' %}
         </button>
         <div class="dropdown-menu" aria-labelledby="group_actions">
 
