@@ -328,6 +328,8 @@ CORS_URLS_REGEX = r"^/api/.*$"
 CKEDITOR_CONFIGS = {
     "default": {
         "toolbar": "Basic",
+        "height": 300,
+        "width": 600,
     },
 }
 # Your stuff...

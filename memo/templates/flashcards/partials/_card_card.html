@@ -60,13 +60,10 @@
       <div class="dropdown-menu" aria-labelledby="card_actions">
 
         {% if can_manage_card %}
-          <a href="#"
-          class="dropdown-item" title="{% trans 'Edit Card' %}">
-            {% trans 'Edit' %}
-          </a>
-          <a href="#"
-          class="dropdown-item" title="{% trans 'Delete Card' %}">
-            {% trans 'Delete' %}
+          <a class="dropdown-item" href="#" data-toggle="modal"
+          title="{% trans 'Manage Card' %}" role="button"
+          data-target="#update_delete_card_{{card.id}}_modal">
+            {% trans 'Card' %}
           </a>
         {% endif %}
 
@@ -81,3 +78,7 @@
     </div>
   </div>
 </div>
+
+{% if can_manage_card %}
+  {% update_delete_card_modal card %}
+{% endif %}

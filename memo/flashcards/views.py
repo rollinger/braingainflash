@@ -60,7 +60,7 @@ class UpdateDeleteTopicView(CustomRulesPermissionRequiredMixin, UpdateView):
             self.object.delete()
             return HttpResponseRedirect(success_url)
         elif "update" in form.data:
-            self.object = form.save()
+            # self.object = form.save() # double execution
             return super().form_valid(form)
 
     def get_success_url(self):
@@ -97,6 +97,35 @@ class CreateCardView(CreateView):
 
 
 card_create_view = CreateCardView.as_view()
+
+
+@method_decorator(login_required, name="dispatch")
+class UpdateDeleteCardView(CustomRulesPermissionRequiredMixin, UpdateView):
+    model = Card
+    form_class = CardForm
+    slug_field = "unique_id"
+    slug_url_kwarg = "unique_id"
+    permission_required = "studygroups.manage_studygroup_card"
+    template_name = "flashcards/card_update_form.html"
+
+    def get_permission_object(self):
+        return self.get_object().group
+
+    def form_valid(self, form):
+        if "delete" in form.data:
+            self.object = self.get_object()
+            success_url = self.get_success_url()
+            self.object.delete()
+            return HttpResponseRedirect(success_url)
+        elif "update" in form.data:
+            # self.object = form.save() # double execution
+            return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.get_object().group.get_absolute_url()
+
+
+card_update_delete_view = UpdateDeleteCardView.as_view()
 
 
 # TODO

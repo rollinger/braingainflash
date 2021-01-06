@@ -3,6 +3,7 @@ from django.urls import path
 from memo.flashcards.views import (
     card_create_view,
     card_delete_view,
+    card_update_delete_view,
     card_update_view,
     performance_update_view,
     topic_create_view,
@@ -33,7 +34,12 @@ urlpatterns = [
         view=card_create_view,
         name="card_create_view",
     ),
-    # TODO
+    path(  # Handles update and delete
+        "manage/card/<uuid:unique_id>/update",
+        view=card_update_delete_view,
+        name="card_update_delete_view",
+    ),
+    # TODO / DELETE
     path(
         "manage/card/<uuid:unique_id>/update",
         view=card_update_view,
