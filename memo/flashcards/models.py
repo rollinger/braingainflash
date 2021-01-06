@@ -131,18 +131,21 @@ class PerformanceManager(models.Manager):
         # return self.filter(owner=user).order_by("?").first()
         return self.for_user(user).active().get_random_from()
 
-    def get_least_learned_object_for(self, user, limit=7):
+    def filter_topic(self, topic):
+        return self.filter(card__topic=topic)
+
+    def get_least_learned_object_for(self, owner, limit=7):
         # returns one of the least learned card performance objects
         return random.choice(
-            self.filter(owner=user, is_paused=False).order_by(
+            self.filter(owner=owner, is_paused=False).order_by(
                 "-priority", "learn_score"
             )[0:limit]
         )
 
-    def get_least_recalled_object_for(self, user, limit=7):
+    def get_least_recalled_object_for(self, owner, limit=7):
         # returns one of the least learned card performance objects
         return random.choice(
-            self.filter(owner=user, is_paused=False).order_by(
+            self.filter(owner=owner, is_paused=False).order_by(
                 "-priority", "recall_score"
             )[0:limit]
         )

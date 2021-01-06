@@ -1,13 +1,12 @@
 from django.urls import path
 
-from memo.flashcards.views import (
+from memo.flashcards.views import (  # performance_update_view, card_delete_view,    card_update_view,
     card_create_view,
-    card_delete_view,
     card_update_delete_view,
-    card_update_view,
-    performance_update_view,
+    test_cards_view,
     topic_create_view,
     topic_update_delete_view,
+    train_cards_view,
 )
 
 app_name = "flashcards"
@@ -39,20 +38,21 @@ urlpatterns = [
         view=card_update_delete_view,
         name="card_update_delete_view",
     ),
+    # Test & Train interface
+    path(
+        "train",
+        view=train_cards_view,
+        name="train_cards_view",
+    ),
+    path(
+        "recall",
+        view=test_cards_view,
+        name="test_cards_view",
+    ),
     # TODO / DELETE
-    path(
-        "manage/card/<uuid:unique_id>/update",
-        view=card_update_view,
-        name="card_update_view",
-    ),
-    path(
-        "manage/card/<uuid:unique_id>/delete",
-        view=card_delete_view,
-        name="card_delete_view",
-    ),
-    path(
-        "manage/settings/<uuid:unique_id>/update",
-        view=performance_update_view,
-        name="performance_update_view",
-    ),
+    # path(
+    #    "manage/settings/<uuid:unique_id>/update",
+    #    view=performance_update_view,
+    #    name="performance_update_view",
+    # ),
 ]

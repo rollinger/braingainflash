@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% load static i18n %}
 
-{% block title %} {% trans "Train Brain" %} {% endblock %}
+{% block title %} {% trans "Train Cards" %} {% endblock %}
 
 {% block content %}
 <div class="container">
 
   <div class="row mt-3">
     <div class="col-sm-12">
-      <h1>{% trans "Train Brain" %}</h1>
+      <h1>{% trans "Train Cards" %}</h1>
     </div>
   </div>
 
@@ -16,7 +16,7 @@
     <div class="col-sm-8">
       <center><strong>{% trans "Question:" %}</strong></center>
         <br>
-        {{ card_performance.memocard.question_text }}
+        {{ card_performance.card.front_text|safe }}
     </div>
   </div>
 
@@ -24,14 +24,14 @@
     <div class="col-sm-8">
       <center><strong>{% trans "Answer:" %}</strong></center>
         <br>
-        {{ card_performance.memocard.answer_text }}
+        {{ card_performance.card.back_text|safe }}
     </div>
   </div>
 
   <div class="row mb-3 justify-content-between">
 
     <div class="col-sm-3">
-      <a href="{% url 'cardset:memocard_update_view' unique_id=card_performance.memocard.unique_id %}"
+      <a href="{#% url 'cardset:memocard_update_view' unique_id=card_performance.memocard.unique_id %#}"
       role="button" class="btn btn-md btn-primary" title="{% trans 'Update Card' %}">
         {% trans 'Update Card' %}
       </a>

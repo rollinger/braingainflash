@@ -1,4 +1,55 @@
-== Alpha ==
+== Alpha == (Test App)
+OK Design model structure
+OK REFACTOR Code (Model names and derived identifiers...)
+OK Connect studygroup view with cardsets
+OK Implement Studygroups (studygroups) with permission, invite system & ranking system.
+    OK Initialize app and model
+    OK Add managing views for frontend
+        OK create OK edit OK delete OK join OK unjoin OK view
+OK Lifecycle Analysis & Implementation
+    OK Group:
+        OK Implement Group Permissions
+            OK can_create_group  => is_auth(user) & has_free_group_slot(user)
+            OK can_view_group    => is_auth(user) & is_group_member(user, group)
+            OK can_update_group  => is_auth(user) & is_group_admin(user, group)
+            OK can_delete_group  => is_auth(user) & is_group_admin(user, group)
+            OK can_join_group    => user.is_auth & user.is_not_group_member(user, group) & user.has_free_group_slot
+            OK can_leave_group   => user.is_auth & user.is_group_member(user, group) & not admin
+            OK can_manage_member => is_auth(user) & is_group_admin(user, group)
+            OK can_add_card      => is_auth(user) & is_group_editor(user, group) | is_group_admin(user, group)
+            OK can_add_topic     => is_auth(user) & is_group_editor(user, group) | is_group_admin(user, group)
+        OK Implement Group Lifecycle Views
+            OK CreateView
+            OK DetailView
+            OK UpdateView
+            OK DeleteView
+            OK JoinView
+            OK LeaveView
+            OK ManageMembershipView
+        OK Implement Group Lifecycle Templates
+    OK   Topic:
+        OK Implement Topic Permissions
+        OK Implement Topic Lifecycle Views
+            OK CreateView
+            OK DetailView
+            OK UpdateView
+            OK DeleteView
+        OK Implement Topic Lifecycle Templates
+    OK Card:
+        OK Implement Card Permissions
+        OK Implement Card Lifecycle Views
+            OK CreateView
+            OK DetailView
+            OK UpdateView
+            OK DeleteView
+        OK Implement Card Lifecycle Templates
+            OK Make partial _card_card.html toogle front_text & back_text
+    OK   Performance:
+        OK Implement Performance Permissions
+        OK Implement Performance Lifecycle Views
+            train
+            test
+        OK Implement Performance Lifecycle Templates
 
 == Proof of Concept ==
 OK Add Basic Workflow MemoSet CRUD to frontend
