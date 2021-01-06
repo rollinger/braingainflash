@@ -12,7 +12,8 @@ from django.views.generic import (
     RedirectView,
     UpdateView,
 )
-from flashcards.models import Performance
+from flashcards.forms import CardForm
+from flashcards.models import Performance, Topic
 from studygroups.forms import StudyGroupForm
 from studygroups.models import Membership, StudyGroup
 from utils.views import CustomRulesPermissionRequiredMixin
@@ -22,7 +23,7 @@ from utils.views import CustomRulesPermissionRequiredMixin
 class StudyGroupListView(ListView):
     model = StudyGroup
     template_name = "studygroups/group_list_view.html"
-    paginate_by = 2  # [multiples of 3 - 1 (2,5,8...)]
+    paginate_by = 5  # [multiples of 3 - 1 (2,5,8...)]
 
     def get_queryset(self, *args, **kwargs):
         # Returns group list for user
@@ -92,6 +93,20 @@ class StudyGroupDetailView(CustomRulesPermissionRequiredMixin, DetailView):
     slug_field = "slug"
     slug_url_kwarg = "slug"
     template_name = "studygroups/group_detail_view.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(StudyGroupDetailView, self).get_context_data(**kwargs)
+        # Add initialized card_create_form for use in _create_card_modal.html
+        group_topics = Topic.objects.filter(group=self.object)
+        card_create_form = CardForm(
+            initial={
+                "creator": self.request.user,
+                "group": self.object,
+            }
+        )
+        card_create_form.fields["topic"].queryset = group_topics
+        context["card_create_form"] = card_create_form
+        return context
 
 
 group_detail_view = StudyGroupDetailView.as_view()

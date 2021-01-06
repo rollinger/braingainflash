@@ -70,8 +70,8 @@
         <div class="dropdown-menu" aria-labelledby="group_actions">
 
           {% if can_manage_card %}
-            <a href="{% url 'flashcards:card_create_view' unique_group_id=group.unique_id %}"
-            class="dropdown-item" title="{% trans 'Add new card' %}">
+            <a class="dropdown-item text-success" href="#" data-toggle="modal"  title="{% trans 'Add new card' %}"
+            role="button" data-target="#group_create_card_modal">
               {% trans 'Add Card' %}
             </a>
           {% endif %}
@@ -118,7 +118,7 @@
   </div>
 </div>
 
-{% if not group.is_main_user_group and detail_view %}
+{% if detail_view and not group.is_main_user_group %}
   {% include "studygroups/partials/_group_manage_member_modal.html" with group=group can_manage_member=can_manage_member %}
 {% endif %}
 

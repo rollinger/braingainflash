@@ -1,0 +1,43 @@
+{% load static rules i18n %}
+
+<!-- Modal -->
+<div class="modal fade" id="group_create_card_modal" tabindex="-1" role="dialog"
+  aria-labelledby="group_manage_member_modal" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="create_card_modal">{% trans 'Add new card' %}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div class="container-fluid mt-3">
+          <div class="row">
+
+            <div class="col-xs-10">
+
+              <form id="card_create_form" method="post"
+                action="{% url 'flashcards:card_create_view' unique_group_id=group.unique_id%}">
+                {% csrf_token %}
+                {{ card_create_form.media }}
+                {{ card_create_form.as_p }}
+              </form>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
+          <button type="submit" form="card_create_form" class="btn btn-success">{% trans 'Add Card' %}</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
