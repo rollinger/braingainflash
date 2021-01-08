@@ -78,10 +78,18 @@
           {% endif %}
 
           {% if can_update_group %}
+
+            <a class="dropdown-item text-primary" href="#" data-toggle="modal"
+            title="{% trans 'Edit Group' %}" role="button"
+            data-target="#group_edit_modal">
+              {% trans 'Edit Group' %}
+            </a>
+            {% comment %}
             <a href="{% url 'studygroups:group_update_view' unique_id=group.unique_id %}"
             class="dropdown-item" title="{% trans 'Edit Study Group' %}">
               {% trans 'Edit Group' %}
             </a>
+            {% endcomment %}
           {% endif %}
 
           <div class="dropdown-divider"></div>
@@ -119,10 +127,22 @@
   </div>
 </div>
 
-{% if detail_view and not group.is_main_user_group %}
-  {% include "studygroups/partials/_group_manage_member_modal.html" with group=group can_manage_member=can_manage_member %}
-{% endif %}
+
 
 {% if detail_view %}
+
   {% include "studygroups/partials/_group_manage_topics_modal.html" with group=group can_manage_topic=can_manage_topic%}
+
+  {% if not group.is_main_user_group %}
+
+    {% include "studygroups/partials/_group_manage_member_modal.html" with group=group can_manage_member=can_manage_member %}
+
+  {% endif %}
+
+  {% if can_update_group %}
+
+    {% include "studygroups/partials/_edit_group_modal.html" with group=group group_edit_form=group_edit_form %}
+
+  {% endif %}
+
 {% endif %}

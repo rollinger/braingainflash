@@ -1,8 +1,6 @@
 from django import forms
 from flashcards.models import Card, Performance, Topic
 
-# from django.utils.translation import ugettext_lazy as _
-
 
 class CardForm(forms.ModelForm):
     class Meta:
@@ -33,6 +31,7 @@ class PerformanceForm(forms.ModelForm):
 
 
 class TrainGainForm(forms.Form):
+    # "topic",  topic = forms.ModelChoiceField(queryset=None, empty_label=_("All"), required=False)
     card_performance_id = forms.IntegerField(widget=forms.HiddenInput())
     outcome_int = forms.IntegerField(initial=0, widget=forms.HiddenInput())
     duration_sec = forms.IntegerField(initial=0, widget=forms.HiddenInput())

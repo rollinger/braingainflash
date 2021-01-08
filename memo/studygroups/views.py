@@ -53,6 +53,11 @@ class StudyGroupDirectoryView(ListView):
     def get_context_data(self, **kwargs):
         # Optional additional context data
         context = super(StudyGroupDirectoryView, self).get_context_data(**kwargs)
+        context["group_create_form"] = StudyGroupForm(
+            initial={
+                "creator": self.request.user,
+            }
+        )
         return context
 
 
@@ -106,6 +111,7 @@ class StudyGroupDetailView(CustomRulesPermissionRequiredMixin, DetailView):
         )
         card_create_form.fields["topic"].queryset = group_topics
         context["card_create_form"] = card_create_form
+        context["group_edit_form"] = StudyGroupForm(instance=self.object)
         return context
 
 

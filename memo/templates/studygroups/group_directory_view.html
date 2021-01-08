@@ -4,6 +4,9 @@
 {% block title %} {% trans "Group Directory" %} {% endblock %}
 
 {% block content %}
+
+{% test_rule 'can_create_studygroup' request.user as can_create_studygroup %}
+
 <div class="container">
 
   <div class="row mt-3">
@@ -13,18 +16,11 @@
     </div>
     <div class="col-sm-2">
 
-      {% test_rule 'can_create_studygroup' request.user as can_create_studygroup %}
       {% if can_create_studygroup %}
-        <a href="{% url 'studygroups:group_create_view' %}" role="button"
-          class="btn btn-block btn-success"
-          title="Create new study group">
+        <a class="btn btn-success" href="#" data-toggle="modal"
+        title="{% trans 'Create new study group' %}" role="button"
+        data-target="#create_group_modal">
           {% trans 'Create Group' %}
-        </a>
-      {% else %}
-        <a href="{% url 'studygroups:group_create_view' %}" role="button"
-          class="btn btn-block btn-success disabled"
-          title="Upgrade your plan">
-          {% trans 'Create Group (Upgrade)' %}
         </a>
       {% endif %}
 
@@ -52,4 +48,11 @@
   </div>
 
 </div>
+
+{% if can_create_studygroup %}
+
+  {% include "studygroups/partials/_create_group_modal.html" with group_create_form=group_create_form %}
+
+{% endif %}
+
 {% endblock content %}

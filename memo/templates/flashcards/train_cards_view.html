@@ -4,61 +4,71 @@
 {% block title %} {% trans "Train Cards" %} {% endblock %}
 
 {% block content %}
+
 <div class="container">
 
   <div class="row mt-3">
     <div class="col-sm-12">
-      <h1>{% trans "Train Cards" %}</h1>
-    </div>
-  </div>
 
-  <div class="row mb-3 justify-content-center">
-    <div class="col-sm-8">
-      <center><strong>{% trans "Question:" %}</strong></center>
-        <br>
-        {{ card_performance.card.front_text|safe }}
-    </div>
-  </div>
+      <div class="card mb-3 h-100 bg-light">
 
-  <div class="row mb-3 justify-content-center">
-    <div class="col-sm-8">
-      <center><strong>{% trans "Answer:" %}</strong></center>
-        <br>
-        {{ card_performance.card.back_text|safe }}
-    </div>
-  </div>
+        <div class="card-header">
+          <h1>{% trans "Training Cards" %}</h1>
+        </div>
 
-  <div class="row mb-3 justify-content-between">
+        <div class="card-body">
 
-    <div class="col-sm-3">
-      <a href="{#% url 'cardset:memocard_update_view' unique_id=card_performance.memocard.unique_id %#}"
-      role="button" class="btn btn-md btn-primary" title="{% trans 'Update Card' %}">
-        {% trans 'Update Card' %}
-      </a>
-    </div>
+          <div class="row mb-3 justify-content-center">
+            <div class="col-sm-8">
+              <center><strong>{% trans "Question:" %}</strong></center>
+                <br>
+                {{ card_performance.card.front_text|safe }}
+            </div>
+            <div class="col-sm-8">
+              <center><strong>{% trans "Answer:" %}</strong></center>
+                <br>
+                {{ card_performance.card.back_text|safe }}
+            </div>
 
-    <div class="col-sm-3">
+          </div>
 
-      <div class="btn-group mr-2" role="group" aria-label="Rate Performance">
-        <button type="button" class="btn btn-md btn-warning"
-          onclick="document.getElementById('id_outcome_int').value = 0; document.performance_rating.submit()">
-          {% trans 'Yet to learn...' %}
-        </button>
-        <button type="button" class="btn btn-md btn-success"
-          onclick="document.getElementById('id_outcome_int').value = 1; document.performance_rating.submit()">
-          {% trans 'Memorized!' %}
-        </button>
+        </div>
+
+        <div class="card-footer">
+
+          <div class="row mb-3 justify-content-between">
+
+            <div class="col-sm-3">
+              <form method="post" name="performance_rating">
+                {% csrf_token %}
+                {{ form.as_p }}
+              </form>
+            </div>
+
+            <div class="col-sm-3">
+
+              <div class="btn-group mr-2" role="group" aria-label="Rate Performance">
+                <button type="button" class="btn btn-md btn-warning"
+                  onclick="document.getElementById('id_outcome_int').value = 0; document.performance_rating.submit()">
+                  {% trans 'Yet to learn...' %}
+                </button>
+                <button type="button" class="btn btn-md btn-success"
+                  onclick="document.getElementById('id_outcome_int').value = 1; document.performance_rating.submit()">
+                  {% trans 'Memorized!' %}
+                </button>
+              </div>
+
+            </div>
+
+        </div>
+
       </div>
 
-      <form method="post" name="performance_rating">
-        {% csrf_token %}
-        {{ form.as_p }}
-      </form>
 
     </div>
   </div>
-
 </div>
+
 {% endblock content %}
 
 {% block javascript %}

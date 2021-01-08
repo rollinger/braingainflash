@@ -132,21 +132,34 @@ card_update_delete_view = UpdateDeleteCardView.as_view()
 class TrainCardsView(FormView):
     form_class = TrainGainForm
     template_name = "flashcards/train_cards_view.html"
-    success_url = reverse_lazy("flashcards:train_cards_view")
 
-    def get(self, request, *args, **kwargs):
-        # Get the least learned object and prepare form initial and context_data
-        obj = Performance.objects.get_least_learned_object_for(owner=self.request.user)
-        if not obj:
+    def topic(self):
+        # if "topic_unique_id" in self.request.GET:
+        # print(self.request.GET.get("topic_unique_id"))
+        # return Topic.objects.get(unique_id=self.request.GET.get("topic_unique_id"))
+        return None
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Get the least learned object (from a topic or all)
+        # and prepare form initial and context_data
+        current_topic = self.topic()
+        card_performance = Performance.objects.sort_least_learned_object(
+            owner=self.request.user, topic=current_topic
+        )
+        if not card_performance:
+            # No performance object redirect to group list
             return HttpResponseRedirect(reverse("studygroups:group_list_view"))
-        self.extra_context = {
-            "card_performance": obj,
-            "auto_redirect_timeout": obj.learn_timeout,  # REF
-        }
-        self.initial["card_performance_id"] = obj.pk
-        return super().get(self, request, *args, **kwargs)
+        # Prepare context and form
+        context["card_performance"] = card_performance
+        context["auto_redirect_timeout"] = context["card_performance"].learn_timeout
+        context["form"].fields["card_performance_id"].initial = card_performance.pk
+        # context["form"].fields["topic"].queryset = card_performance.card.group.topics
+        return context
 
     def form_valid(self, form):
+        # Set topic selected
+        # print(form.cleaned_data["topic"])
         # Add the training data to the MemoCardPerformance object and redirect
         card_performance = Performance.objects.get(
             pk=form.cleaned_data["card_performance_id"]
@@ -156,6 +169,13 @@ class TrainCardsView(FormView):
         )
         card_performance.save()
         return super().form_valid(form)
+
+    def get_success_url(self):
+        # Add topic as get param to redirect
+        # success_url = "%s?topic=%s" % (reverse("flashcards:train_cards_view"), )
+        # print(self.topic())
+        return reverse_lazy("flashcards:train_cards_view")
+        # super().get_success_url()
 
 
 train_cards_view = TrainCardsView.as_view()
