@@ -1,30 +1,32 @@
 {% load i18n %}
 
-<nav aria-label="Group Directory Navigation">
-  <ul class="pagination">
-    {% if page_obj.has_previous %}{% endif %}
+{% if page_obj.paginator.num_pages > 1 %}
+  <nav aria-label="Group Directory Navigation">
+    <ul class="pagination">
+      {% if page_obj.has_previous %}{% endif %}
+        <li class="page-item">
+          <a class="page-link" href="?page=1" aria-label="{% trans 'Start' %}">
+            <span aria-hidden="true">&laquo;</span>
+            <span class="sr-only">{% trans 'Start' %}</span>
+          </a>
+        </li>
+
+
+      {% for p_num in page_obj.paginator.page_range %}
+        <li class="page-item {% if p_num == page_obj.number %}active{% endif %}">
+          <a class="page-link" href="?page={{p_num}}">{{ p_num }}</a>
+        </li>
+      {% endfor %}
+
+
       <li class="page-item">
-        <a class="page-link" href="?page=1" aria-label="{% trans 'Start' %}">
-          <span aria-hidden="true">&laquo;</span>
-          <span class="sr-only">{% trans 'Start' %}</span>
+        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="{% trans 'End' %}">
+          <span aria-hidden="true">&raquo;</span>
+          <span class="sr-only">{% trans 'End' %}</span>
         </a>
       </li>
+      {% if page_obj.has_next %}{% endif %}
 
-
-    {% for p_num in page_obj.paginator.page_range %}
-      <li class="page-item {% if p_num == page_obj.number %}active{% endif %}">
-        <a class="page-link" href="?page={{p_num}}">{{ p_num }}</a>
-      </li>
-    {% endfor %}
-
-
-    <li class="page-item">
-      <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="{% trans 'End' %}">
-        <span aria-hidden="true">&raquo;</span>
-        <span class="sr-only">{% trans 'End' %}</span>
-      </a>
-    </li>
-    {% if page_obj.has_next %}{% endif %}
-
-  </ul>
-</nav>
+    </ul>
+  </nav>
+{% endif %}
