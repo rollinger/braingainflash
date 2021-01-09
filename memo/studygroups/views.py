@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -42,7 +43,7 @@ group_list_view = StudyGroupListView.as_view()
 class StudyGroupDirectoryView(ListView):
     model = StudyGroup
     template_name = "studygroups/group_directory_view.html"
-    paginate_by = 3
+    paginate_by = 3  # [multiples of 3 (3,6,9...)]
 
     def get_queryset(self, *args, **kwargs):
         # Returns public group list user is not a member
@@ -62,6 +63,41 @@ class StudyGroupDirectoryView(ListView):
 
 
 group_directory_view = StudyGroupDirectoryView.as_view()
+
+
+@method_decorator(login_required, name="dispatch")
+class StudyGroupDetailView(CustomRulesPermissionRequiredMixin, DetailView):
+    model = StudyGroup  # detail model
+    permission_required = "studygroups.view_studygroup"
+    slug_field = "slug"
+    slug_url_kwarg = "slug"
+    template_name = "studygroups/group_detail_view.html"
+    paginate_by = 4  # [multiples of 3 - 2: (1,4,7...)]
+
+    def get_context_data(self, **kwargs):
+        context = super(StudyGroupDetailView, self).get_context_data(**kwargs)
+        # Get the group's topics and cards
+        group_topics = Topic.objects.filter(group=self.object)
+        card_list = self.object.cards.all()
+        # Add card_create_form for use in _create_card_modal.html
+        card_create_form = CardForm(
+            initial={
+                "creator": self.request.user,
+                "group": self.object,
+            }
+        )
+        card_create_form.fields["topic"].queryset = group_topics
+        context["card_create_form"] = card_create_form
+        # Add card_edit_form for use in _edit_card_modal.html
+        context["group_edit_form"] = StudyGroupForm(instance=self.object)
+        # Paginator of the cards
+        paginator = Paginator(card_list, self.paginate_by)
+        page_obj = paginator.get_page(self.request.GET.get("page"))
+        context["page_obj"] = page_obj
+        return context
+
+
+group_detail_view = StudyGroupDetailView.as_view()
 
 
 @method_decorator(login_required, name="dispatch")
@@ -89,33 +125,6 @@ class StudyGroupCreateView(CustomRulesPermissionRequiredMixin, CreateView):
 
 
 group_create_view = StudyGroupCreateView.as_view()
-
-
-@method_decorator(login_required, name="dispatch")
-class StudyGroupDetailView(CustomRulesPermissionRequiredMixin, DetailView):
-    model = StudyGroup
-    permission_required = "studygroups.view_studygroup"
-    slug_field = "slug"
-    slug_url_kwarg = "slug"
-    template_name = "studygroups/group_detail_view.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(StudyGroupDetailView, self).get_context_data(**kwargs)
-        # Add initialized card_create_form for use in _create_card_modal.html
-        group_topics = Topic.objects.filter(group=self.object)
-        card_create_form = CardForm(
-            initial={
-                "creator": self.request.user,
-                "group": self.object,
-            }
-        )
-        card_create_form.fields["topic"].queryset = group_topics
-        context["card_create_form"] = card_create_form
-        context["group_edit_form"] = StudyGroupForm(instance=self.object)
-        return context
-
-
-group_detail_view = StudyGroupDetailView.as_view()
 
 
 @method_decorator(login_required, name="dispatch")

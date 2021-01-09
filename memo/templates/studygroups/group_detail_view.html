@@ -22,12 +22,18 @@
       </div>
     {% endif %}
 
-    {% for card in object.cards.all %}
+
+
+    {% for card in page_obj %}
       <div class="col-xs-12 col-md-6 col-lg-4 mt-3">
         {% include "flashcards/partials/_card_card.html" with card=card %}
       </div>
     {% endfor %}
 
+  </div>
+
+  <div class="row mt-3 justify-content-center">
+    {% include "utils/partials/_paginator.html" with page_obj=page_obj %}
   </div>
 
 </div>
