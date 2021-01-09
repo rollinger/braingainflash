@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load static i18n rules %}
+{% load static i18n rules crispy_forms_tags %}
 
 {% block title %} {% trans "Study Group" %} {% endblock %}
 
@@ -10,19 +10,29 @@
 
   <div class="row mt-3">
 
+      <div class="col-xs-12 col-md-8 col-lg-8 mt-3">
+        {#% csrf_token %#}
+        {#{ card_search_form.media }#}
+        {% crispy card_search_form card_search_form.helper %}
+      </div>
+
+      <div class="col-xs-12 col-md-4 col-lg-4 mt-3 text-center">
+        {% test_rule 'can_manage_card' request.user object as can_manage_card %}
+        {% if can_manage_card %}
+          <a class="btn btn-success btn-block" href="#" data-toggle="modal"  title="{% trans 'Add new card' %}"
+          role="button" data-target="#group_create_card_modal">
+            {% trans 'Add Card' %}
+          </a>
+        {% endif %}
+      </div>
+
+  <div>
+
+  <div class="row mt-3">
+
     <div class="col-xs-12 col-md-6 col-lg-4 mt-3">
       {% include "studygroups/partials/_group_card.html" with group=object detail_view=True group_edit_form=group_edit_form %}
     </div>
-
-
-    {% test_rule 'can_manage_card' request.user object as can_manage_card %}
-    {% if can_manage_card %}
-      <div class="col-xs-12 col-md-6 col-lg-4 mt-3">
-        {% include "flashcards/partials/_create_card_button.html" with group=object %}
-      </div>
-    {% endif %}
-
-
 
     {% for card in page_obj %}
       <div class="col-xs-12 col-md-6 col-lg-4 mt-3">

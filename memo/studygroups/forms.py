@@ -1,6 +1,8 @@
 from django import forms
 from studygroups.models import StudyGroup
 
+# from django.utils.translation import ugettext_lazy as _
+
 
 class StudyGroupForm(forms.ModelForm):
     class Meta:
