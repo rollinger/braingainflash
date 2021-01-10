@@ -131,21 +131,23 @@ class PerformanceManager(models.Manager):
         # return self.filter(owner=user).order_by("?").first()
         return self.for_user(user).active().get_random_from()
 
-    def sort_least_learned_object(self, owner, topic=None, limit=7):
+    def get_least_learned_object(self, owner, topic=None, limit=7):
         # returns one of the least learned card performance objects
         qs = self.filter(owner=owner, is_paused=False)
         if topic:
             qs.filter(card__topic=topic)
-        qs.order_by("-priority", "learn_score")
+        qs = qs.order_by("learn_score", "recall_score")  # ASC , "-priority",
+        # print(qs)
         return random.choice(qs[0:limit])
 
-    def get_least_recalled_object_for(self, owner, limit=7):
+    def get_least_recalled_object_for(self, owner, topic=None, limit=7):
         # returns one of the least learned card performance objects
-        return random.choice(
-            self.filter(owner=owner, is_paused=False).order_by(
-                "-priority", "recall_score"
-            )[0:limit]
-        )
+        qs = self.filter(owner=owner, is_paused=False)
+        if topic:
+            qs.filter(card__topic=topic)
+        qs = qs.order_by("recall_score")  # ASC , "-priority",
+        print(qs)
+        return random.choice(qs[0:limit])
 
 
 class Performance(UUIDMixin, TimestampMixin, models.Model):
@@ -194,7 +196,7 @@ class Performance(UUIDMixin, TimestampMixin, models.Model):
     )
     priority = models.CharField(
         _("Learning Priority"),
-        help_text=_("Default role of new member"),
+        help_text=_("Priority of the card to learn"),
         max_length=20,
         choices=LEARNING_PRIORITIES,
         default="normal",

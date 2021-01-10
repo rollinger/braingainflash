@@ -64,7 +64,7 @@ class PerformanceInline(admin.TabularInline):
         "priority",
     )
     readonly_fields = [
-        # "memocard",
+        # "card",
         # "owner",
         # "score",
     ]
@@ -163,7 +163,7 @@ class PerformanceAdmin(admin.ModelAdmin):
             None,
             {
                 "fields": (
-                    ("owner", "memocard"),
+                    ("owner", "card"),
                     ("card_front_text", "card_back_text"),
                     (
                         "learn_timeout",
@@ -209,7 +209,7 @@ class PerformanceAdmin(admin.ModelAdmin):
     card_front_text.short_description = "Front Side"
 
     def card_back_text(self, obj):
-        return obj.memocard.back_text
+        return obj.card.back_text
 
     card_back_text.short_description = "Back Side"
 

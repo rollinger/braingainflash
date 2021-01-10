@@ -144,8 +144,9 @@ class TrainCardsView(FormView):
         # Get the least learned object (from a topic or all)
         # and prepare form initial and context_data
         current_topic = self.topic()
-        card_performance = Performance.objects.sort_least_learned_object(
-            owner=self.request.user, topic=current_topic
+        card_performance = Performance.objects.get_least_learned_object(
+            owner=self.request.user,
+            topic=current_topic,
         )
         if not card_performance:
             # No performance object redirect to group list
@@ -189,7 +190,10 @@ class TestCardView(FormView):
 
     def get(self, request, *args, **kwargs):
         # Get the least recalled object and prepare form initial and context_data
-        obj = Performance.objects.get_least_recalled_object_for(owner=self.request.user)
+        obj = Performance.objects.get_least_recalled_object_for(
+            owner=self.request.user,
+            topic=None,
+        )
         if not obj:
             return HttpResponseRedirect(reverse("studygroups:group_list_view"))
         self.extra_context = {
