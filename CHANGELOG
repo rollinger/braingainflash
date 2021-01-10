@@ -1,3 +1,14 @@
+== Version 0.0.0 ==
+OK Edit & Create Group should go in modal (linked from Manage Group)
+OK Make paginate appear only below the list and only when num_pages > 1
+OK Group DetailView
+    OK   paginate
+    OK   search card by text / topic
+OK Design the train and recall templates to resemble cards
+OK test/train does not get all cards
+OK Fetch least learned and recalled
+OK Make Footer with Copyright (take from example)
+
 == Alpha == (Test App)
 OK Design model structure
 OK REFACTOR Code (Model names and derived identifiers...)

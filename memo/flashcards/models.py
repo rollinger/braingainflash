@@ -137,7 +137,7 @@ class PerformanceManager(models.Manager):
         if topic:
             qs.filter(card__topic=topic)
         qs = qs.order_by("priority", "learn_score", "recall_score")  # ASC ,
-        print(qs)
+        # print(qs)
         return random.choice(qs[0:limit])
 
     def get_least_recalled_object_for(self, owner, topic=None, limit=7):
@@ -146,7 +146,7 @@ class PerformanceManager(models.Manager):
         if topic:
             qs.filter(card__topic=topic)
         qs = qs.order_by("priority", "recall_score")  # ASC , "-priority",
-        print(qs)
+        # print(qs)
         return random.choice(qs[0:limit])
 
 
