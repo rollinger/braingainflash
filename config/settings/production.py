@@ -16,7 +16,7 @@ from .base import ROOT_DIR, env
 # https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["braingain.ai"])
+ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["www.braingain.ai"])
 # Equals to first entry of default domains
 DEFAULT_DOMAIN = "https://{}".format(ALLOWED_HOSTS[0])
 

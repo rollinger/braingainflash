@@ -24,7 +24,7 @@ from utils.views import CustomRulesPermissionRequiredMixin
 class StudyGroupListView(ListView):
     model = StudyGroup
     template_name = "studygroups/group_list_view.html"
-    paginate_by = 5  # [multiples of 3 - 1 (2,5,8...)]
+    paginate_by = 8  # [multiples of 3 - 1 (2,5,8...)]
 
     def get_queryset(self, *args, **kwargs):
         # Returns group list for user
@@ -43,7 +43,7 @@ group_list_view = StudyGroupListView.as_view()
 class StudyGroupDirectoryView(ListView):
     model = StudyGroup
     template_name = "studygroups/group_directory_view.html"
-    paginate_by = 3  # [multiples of 3 (3,6,9...)]
+    paginate_by = 9  # [multiples of 3 (3,6,9...)]
 
     def get_queryset(self, *args, **kwargs):
         # Returns public group list user is not a member
@@ -72,7 +72,7 @@ class StudyGroupDetailView(CustomRulesPermissionRequiredMixin, DetailView):
     slug_field = "slug"
     slug_url_kwarg = "slug"
     template_name = "studygroups/group_detail_view.html"
-    paginate_by = 5  # [multiples of 3 - 1: (2,5,8...)]
+    paginate_by = 8  # [multiples of 3 - 1: (2,5,8...)]
 
     def get_card_list(self):
         # Returns the card_list and filters by search and topic
