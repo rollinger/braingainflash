@@ -136,6 +136,9 @@ class UpdatePerformanceView(UpdateView):
     slug_field = "unique_id"
     slug_url_kwarg = "unique_id"
 
+    def get_success_url(self):
+        return self.get_object().card.group.get_absolute_url()
+
 
 performance_update_view = UpdatePerformanceView.as_view()
 
