@@ -1,5 +1,5 @@
 from django.contrib import admin
-from flashcards.models import Topic
+from flashcards.models import Card, Topic
 from studygroups.models import Membership, StudyGroup
 
 
@@ -7,7 +7,7 @@ class TopicsInline(admin.TabularInline):
     model = Topic
     fk_name = "group"
     ordering = ("-title",)
-    extra = 0
+    extra = 1
     fields = ("title",)
 
 
@@ -30,6 +30,14 @@ class MembershipInline(admin.TabularInline):
     ]
     autocomplete_fields = ["member"]
     # verbose_name_plural = "Predisposed by:"
+
+
+class CardsInline(admin.StackedInline):
+    model = Card
+    fk_name = "group"
+    ordering = ("-created_at",)
+    extra = 1
+    fields = ("topic", "front_text", "back_text")
 
 
 @admin.register(StudyGroup)
@@ -62,6 +70,7 @@ class StudyGroupAdmin(admin.ModelAdmin):
     inlines = [
         MembershipInline,
         TopicsInline,
+        CardsInline,
     ]
     fieldsets = (
         (

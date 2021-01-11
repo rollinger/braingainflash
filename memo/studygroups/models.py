@@ -76,7 +76,14 @@ class StudyGroup(UUIDMixin, TimestampMixin, models.Model):
         return "%s" % (self.name)
 
     def is_member(self, user):
+        # TODO: Refactor, determine usage, where?
         return True
+
+    def number_active_members(self):
+        return self.memberships.filter(approved=True, blocked=False).count()
+
+    def number_cards(self):
+        return self.cards.count()
 
     def get_absolute_url(self):
         # Returns path to update-view

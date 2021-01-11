@@ -39,6 +39,17 @@
   </div>
   <div class="card-footer">
 
+
+    <span class="badge badge-pill badge-light" title="{% trans 'Group Cards' %}">
+      {{group.number_cards}} cards
+    </span>
+
+    {% if not group.is_main_user_group %}
+    <span class="badge badge-pill badge-light" title="{% trans 'Group Members' %}">
+      {{group.number_active_members}} members
+    </span>
+    {% endif %}
+
     <div class="btn-group float-right" role="group" aria-label="Study Group Actions">
 
       {# Group Actions on group list view #}
