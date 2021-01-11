@@ -6,3 +6,7 @@ def settings_context(_request):
     # Note: we intentionally do NOT expose the entire settings
     # to prevent accidental leaking of sensitive information
     return {"DEBUG": settings.DEBUG}
+
+
+def default_domain(request):
+    return {"default_domain": settings.DEFAULT_DOMAIN}

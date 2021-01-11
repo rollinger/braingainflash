@@ -33,12 +33,21 @@
       {% if detail_view %}
         {{ group.description|safe }}
       {% else %}
-        {{ group.description|safe|truncatewords:7 }}
+        {{ group.description|safe|truncatewords:14 }}
       {% endif %}
     </p>
-  </div>
-  <div class="card-footer">
 
+
+
+  </div>
+
+  {% if not group.is_main_user_group and detail_view %}
+    <input type="text" class="form-control" id="share" disabled
+    value="{{ default_domain }}{{ group.get_invite_url }}"
+    title="{% trans 'Share & Invite Friends' %}">
+  {% endif %}
+
+  <div class="card-footer">
 
     <span class="badge badge-pill badge-light" title="{% trans 'Group Cards' %}">
       {{group.number_cards}} cards

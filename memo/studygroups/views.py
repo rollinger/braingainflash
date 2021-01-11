@@ -175,6 +175,18 @@ group_delete_view = StudyGroupDeleteView.as_view()
 
 
 @method_decorator(login_required, name="dispatch")
+class InviteStudyGroupRedirectView(RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        group = StudyGroup.objects.get(slug=self.kwargs["slug"])
+        return reverse_lazy(
+            "studygroups:group_join_view", kwargs={"unique_id": group.unique_id}
+        )
+
+
+group_invite_view = InviteStudyGroupRedirectView.as_view()
+
+
+@method_decorator(login_required, name="dispatch")
 class JoinStudyGroupRedirectView(RedirectView):
     url = reverse_lazy("studygroups:group_list_view")
 

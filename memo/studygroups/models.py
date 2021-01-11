@@ -85,6 +85,10 @@ class StudyGroup(UUIDMixin, TimestampMixin, models.Model):
     def number_cards(self):
         return self.cards.count()
 
+    def get_invite_url(self):
+        # Returns path to update-view
+        return reverse("studygroups:group_invite_view", kwargs={"slug": self.slug})
+
     def get_absolute_url(self):
         # Returns path to update-view
         return reverse("studygroups:group_detail_view", kwargs={"slug": self.slug})

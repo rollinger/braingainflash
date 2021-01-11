@@ -29,8 +29,8 @@ urlpatterns = [
     #
     # App url confs
     #
-    path("studygroup/", include("memo.studygroups.urls", namespace="studygroup")),
-    path("flashcard/", include("memo.flashcards.urls", namespace="flashcard")),
+    path("group/", include("memo.studygroups.urls", namespace="studygroup")),
+    path("card/", include("memo.flashcards.urls", namespace="flashcard")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # API URLS

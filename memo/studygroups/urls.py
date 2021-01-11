@@ -5,6 +5,7 @@ from memo.studygroups.views import (
     group_delete_view,
     group_detail_view,
     group_directory_view,
+    group_invite_view,
     group_join_view,
     group_leave_view,
     group_list_view,
@@ -30,6 +31,12 @@ urlpatterns = [
         "new/",
         view=group_create_view,
         name="group_create_view",
+    ),
+    # TODO:
+    path(
+        "welcome-to-<str:slug>",
+        view=group_invite_view,  #
+        name="group_invite_view",
     ),
     path(
         "join/<uuid:unique_id>",

@@ -192,6 +192,7 @@ TEMPLATES = [
                 "django.template.context_processors.tz",
                 "django.contrib.messages.context_processors.messages",
                 "memo.utils.context_processors.settings_context",
+                "memo.utils.context_processors.default_domain",
             ],
         },
     }
