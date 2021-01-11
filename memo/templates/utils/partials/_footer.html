@@ -1,12 +1,14 @@
 {% load static i18n %}
 
 {# make a footer like duckduck go: impressum|2 nice links|Tagline and send feedback #}
-<div class="container-fluid bg-light align-items-center justify-content-center">
-  <div class="row mt-3 mb-3">
+<div class="container-fluid bg-light">
+  <div class="row mt-3 mb-3 d-flex align-items-center justify-content-center">
     <div class="col-sm-3">
-      <a class="navbar-brand" href="{% url 'home' %}" title="{% trans 'Brain Gain' %}">
+      <a class="navbar-brand d-flex align-items-center justify-content-center"
+      href="{% url 'home' %}" title="{% trans 'Brain Gain' %}">
         <img class="align-self-center float-left mr-3" width="50px"
-          src="{{STATIC_URL}}images/Logo_v1_150x150.png"> Brain Gain
+          src="{{STATIC_URL}}images/Logo_v1_150x150.png">
+          Brain Gain
       </a>
       <br>
       <small>{% trans "Copyright Philipp Rollinger 2020-2021" %}</small>
@@ -17,7 +19,7 @@
     <div class="col-sm-3">
       {% trans 'Remember everything, easy!' %}
     </div>
-    <div class="col-sm-3">
+    <div class="col-sm-3 d-flex align-items-center justify-content-center">
       <a class="btn btn-sm btn-light" href="#">
         {% trans 'Send Feedback' %}
       </a>

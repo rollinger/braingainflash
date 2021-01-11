@@ -7,7 +7,7 @@ from django.views.generic import (  # DetailView, ListView;DeleteView,UpdateView
     FormView,
     UpdateView,
 )
-from flashcards.forms import CardForm, TopicForm, TrainGainForm
+from flashcards.forms import CardForm, PerformanceForm, TopicForm, TrainGainForm
 from flashcards.models import Card, Performance, Topic
 from studygroups.models import StudyGroup
 from utils.views import CustomRulesPermissionRequiredMixin
@@ -126,6 +126,18 @@ class UpdateDeleteCardView(CustomRulesPermissionRequiredMixin, UpdateView):
 
 
 card_update_delete_view = UpdateDeleteCardView.as_view()
+
+
+# CustomRulesPermissionRequiredMixin
+@method_decorator(login_required, name="dispatch")
+class UpdatePerformanceView(UpdateView):
+    model = Performance
+    form_class = PerformanceForm
+    slug_field = "unique_id"
+    slug_url_kwarg = "unique_id"
+
+
+performance_update_view = UpdatePerformanceView.as_view()
 
 
 @method_decorator(login_required, name="dispatch")

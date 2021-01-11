@@ -68,8 +68,9 @@
         {% endif %}
 
         {% if can_manage_performance %}
-          <a href="#"
-          class="dropdown-item" title="{% trans 'Settings' %}">
+          <a class="dropdown-item" href="#" data-toggle="modal"
+          title="{% trans 'Manage Learning Settings' %}" role="button"
+          data-target="#update_performance_{{card_performance.id}}_modal">
             {% trans 'Settings' %}
           </a>
         {% endif %}
@@ -79,6 +80,14 @@
   </div>
 </div>
 
-{% if can_manage_card %}
-  {% update_delete_card_modal card %}
-{% endif %}
+
+{% block modal %}
+
+  {% if can_manage_card %}
+    {% update_delete_card_modal card %}
+  {% endif %}
+  {% if can_manage_performance %}
+    {% update_performance_modal card_performance %}
+  {% endif %}
+
+{% endblock modal %}

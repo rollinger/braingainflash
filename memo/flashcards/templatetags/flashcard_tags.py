@@ -1,6 +1,6 @@
 from ckeditor.widgets import CKEditorWidget
 from django import template
-from flashcards.forms import CardForm
+from flashcards.forms import CardForm, PerformanceForm
 from flashcards.models import Performance
 
 register = template.Library()
@@ -24,3 +24,9 @@ def update_delete_card_modal(card):
         attrs={"id": "%d_id_back_text" % (card.id)}
     )
     return {"card": card, "card_update_delete_form": card_update_delete_form}
+
+
+@register.inclusion_tag("flashcards/templatetags/_update_performance_modal.html")
+def update_performance_modal(performance):
+    performance_form = PerformanceForm(instance=performance)
+    return {"performance": performance, "performance_form": performance_form}
