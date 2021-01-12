@@ -132,7 +132,8 @@ EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
 ANYMAIL = {
     "MAILGUN_API_KEY": "b8cfc63ae4085d4cdf5766f11146af1f-1b65790d-a5563707",  # env("MAILGUN_API_KEY"),
     "MAILGUN_SENDER_DOMAIN": "mg.braingain.ai",  # env("MAILGUN_DOMAIN"),
-    "MAILGUN_API_URL": "https://api.mailgun.net/v3",  # env("MAILGUN_API_URL", default="https://api.mailgun.net/v3"),
+    "MAILGUN_API_URL": "https://api.eu.mailgun.net/v3",  # env("MAILGUN_API_URL", default="https://api.mailgun.net/v3"),
+    "MAILGUN_WEBHOOK_SIGNING_KEY": "b8cfc63ae4085d4cdf5766f11146af1f-1b65790d-a5563707",
 }
 
 # django-compressor
