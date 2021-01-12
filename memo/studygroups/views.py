@@ -14,7 +14,7 @@ from django.views.generic import (
     UpdateView,
 )
 from flashcards.forms import CardForm, CardSearchForm
-from flashcards.models import Performance, Topic
+from flashcards.models import Performance
 from studygroups.forms import StudyGroupForm
 from studygroups.models import Membership, StudyGroup
 from utils.views import CustomRulesPermissionRequiredMixin
@@ -72,13 +72,13 @@ class StudyGroupDetailView(CustomRulesPermissionRequiredMixin, DetailView):
     slug_field = "slug"
     slug_url_kwarg = "slug"
     template_name = "studygroups/group_detail_view.html"
-    paginate_by = 8  # [multiples of 3 - 1: (2,5,8...)]
+    paginate_by = 2  # 8  # [multiples of 3 - 1: (2,5,8...)]
 
     def get_card_list(self):
         # Returns the card_list and filters by search and topic
         search_query = self.request.GET.get("search")
         topic_query = self.request.GET.get("topic")
-        card_list = self.object.cards.all()
+        card_list = self.object.cards
         if topic_query:
             card_list = card_list.filter(topic__unique_id=topic_query)
         if search_query:
@@ -86,12 +86,11 @@ class StudyGroupDetailView(CustomRulesPermissionRequiredMixin, DetailView):
                 Q(front_text__icontains=search_query)
                 | Q(back_text__icontains=search_query)
             )
-        return card_list
+        return card_list.all()
 
     def get_context_data(self, **kwargs):
         context = super(StudyGroupDetailView, self).get_context_data(**kwargs)
-        # Get the group's topics and card_list and filter by search
-        group_topics = Topic.objects.filter(group=self.object)
+        # Get the card_list and filter by search
         card_list = self.get_card_list()
         # Add card_create_form for use in _create_card_modal.html
         card_create_form = CardForm(
@@ -100,14 +99,14 @@ class StudyGroupDetailView(CustomRulesPermissionRequiredMixin, DetailView):
                 "group": self.object,
             }
         )
-        card_create_form.fields["topic"].queryset = group_topics
+        card_create_form.fields["topic"].queryset = self.object.topics
         context["card_create_form"] = card_create_form
         # Add card_edit_form for use in _edit_card_modal.html
         context["group_edit_form"] = StudyGroupForm(instance=self.object)
         # Add search_form to context
         context["card_search_form"] = CardSearchForm()
         context["card_search_form"].fields["topic"].choices = [("", _("All Topics"))]
-        for choice in group_topics.all():
+        for choice in self.object.topics.all():
             context["card_search_form"].fields["topic"].choices.append(
                 (choice.unique_id, choice)
             )

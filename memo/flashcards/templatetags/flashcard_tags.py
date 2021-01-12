@@ -1,7 +1,6 @@
 from ckeditor.widgets import CKEditorWidget
 from django import template
 from flashcards.forms import CardForm, PerformanceForm
-from flashcards.models import Performance
 
 register = template.Library()
 
@@ -9,7 +8,8 @@ register = template.Library()
 @register.simple_tag()
 def card_performance(user, card):
     # returns the card performance for this user or None
-    return Performance.objects.filter(owner=user, card=card).first()
+    # return Performance.objects.filter(owner=user, card=card).first()
+    return card.performances.filter(owner=user).first()
 
 
 @register.inclusion_tag("flashcards/templatetags/_update_delete_card_modal.html")
