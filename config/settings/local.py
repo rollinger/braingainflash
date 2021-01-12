@@ -13,7 +13,7 @@ SECRET_KEY = env(
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]
 # Equals to first entry of default domains
-DEFAULT_DOMAIN = "http://{}".format(ALLOWED_HOSTS[0])
+DEFAULT_DOMAIN = "https://{}".format(ALLOWED_HOSTS[0])
 
 # CACHES
 # ------------------------------------------------------------------------------

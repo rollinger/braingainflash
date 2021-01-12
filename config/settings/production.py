@@ -18,7 +18,7 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=["www.braingain.ai"])
 # Equals to first entry of default domains
-DEFAULT_DOMAIN = "http://{}".format(ALLOWED_HOSTS[0])
+DEFAULT_DOMAIN = "https://{}".format(ALLOWED_HOSTS[0])
 
 # DATABASES
 # ------------------------------------------------------------------------------
