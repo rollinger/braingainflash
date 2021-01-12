@@ -108,9 +108,7 @@ TEMPLATES[-1]["OPTIONS"]["loaders"] = [  # type: ignore[index] # noqa F405
 # EMAIL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#default-from-email
-DEFAULT_FROM_EMAIL = env(
-    "DJANGO_DEFAULT_FROM_EMAIL", default="postmaster@mg.braingain.ai"
-)
+DEFAULT_FROM_EMAIL = env("DJANGO_DEFAULT_FROM_EMAIL", default="hal9000@braingain.ai")
 # https://docs.djangoproject.com/en/dev/ref/settings/#server-email
 SERVER_EMAIL = env("DJANGO_SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-subject-prefix
@@ -130,10 +128,13 @@ INSTALLED_APPS += ["anymail"]  # noqa F405
 # https://anymail.readthedocs.io/en/stable/esps/mailgun/
 EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
 ANYMAIL = {
-    "MAILGUN_API_KEY": "b8cfc63ae4085d4cdf5766f11146af1f-1b65790d-a5563707",  # env("MAILGUN_API_KEY"),
-    "MAILGUN_SENDER_DOMAIN": "mg.braingain.ai",  # env("MAILGUN_DOMAIN"),
-    "MAILGUN_API_URL": "https://api.eu.mailgun.net/v3",  # env("MAILGUN_API_URL", default="https://api.mailgun.net/v3"),
-    "MAILGUN_WEBHOOK_SIGNING_KEY": "b8cfc63ae4085d4cdf5766f11146af1f-1b65790d-a5563707",
+    "MAILGUN_API_KEY": env("MAILGUN_API_KEY"),
+    "MAILGUN_SENDER_DOMAIN": env("MAILGUN_DOMAIN"),
+    "MAILGUN_API_URL": env("MAILGUN_API_URL", default="https://api.eu.mailgun.net/v3"),
+    "MAILGUN_WEBHOOK_SIGNING_KEY": env(
+        "MAILGUN_WEBHOOK_SIGNING_KEY",
+        default="b8cfc63ae4085d4cdf5766f11146af1f-1b65790d-a5563707",
+    ),
 }
 
 # django-compressor

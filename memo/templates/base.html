@@ -114,6 +114,10 @@
 
     </div>
 
+    {% block modal %}
+      {# load modals befor main content to speed up interactivity #}
+    {% endblock modal %}
+
     <div class="container">
 
       {% if messages %}
@@ -133,7 +137,7 @@
     {% endblock footer %}
 
 
-    {% block modal %}{% endblock modal %}
+
 
     <!-- Le javascript
     ================================================== -->
