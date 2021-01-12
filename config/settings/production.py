@@ -130,7 +130,7 @@ INSTALLED_APPS += ["anymail"]  # noqa F405
 # https://anymail.readthedocs.io/en/stable/esps/mailgun/
 EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"
 ANYMAIL = {
-    "MAILGUN_API_KEY": "4e37273b34205bb0eafb6a6b203b21c4-28d78af2-5e57ea7e",  # env("MAILGUN_API_KEY"),
+    "MAILGUN_API_KEY": "b8cfc63ae4085d4cdf5766f11146af1f-1b65790d-a5563707",  # env("MAILGUN_API_KEY"),
     "MAILGUN_SENDER_DOMAIN": "mg.braingain.ai",  # env("MAILGUN_DOMAIN"),
     "MAILGUN_API_URL": "https://api.mailgun.net/v3",  # env("MAILGUN_API_URL", default="https://api.mailgun.net/v3"),
 }
