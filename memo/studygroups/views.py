@@ -72,7 +72,7 @@ class StudyGroupDetailView(CustomRulesPermissionRequiredMixin, DetailView):
     slug_field = "slug"
     slug_url_kwarg = "slug"
     template_name = "studygroups/group_detail_view.html"
-    paginate_by = 2  # 8  # [multiples of 3 - 1: (2,5,8...)]
+    paginate_by = 8  # 8  # [multiples of 3 - 1: (2,5,8...)]
 
     def get_card_list(self):
         # Returns the card_list and filters by search and topic

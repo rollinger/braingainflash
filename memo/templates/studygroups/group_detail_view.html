@@ -21,6 +21,7 @@
           role="button" data-target="#group_create_card_modal">
             {% trans 'Add Card' %}
           </a>
+          {% include "flashcards/partials/_create_card_modal.html" with group=object card_create_form=card_create_form %}
         {% endif %}
       </div>
 
@@ -47,9 +48,3 @@
 </div>
 
 {% endblock content %}
-
-{% block modal %}
-  {% if can_manage_card %}
-    {% include "flashcards/partials/_create_card_modal.html" with group=object card_create_form=card_create_form %}
-  {% endif %}
-{% endblock modal %}
