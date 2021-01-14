@@ -328,9 +328,26 @@ CORS_URLS_REGEX = r"^/api/.*$"
 # ckeditor - https://github.com/django-ckeditor/django-ckeditor
 CKEDITOR_CONFIGS = {
     "default": {
-        "toolbar": "Basic",
         "height": 300,
-        "width": 600,
+        "width": "100%",
+        "toolbar": "Custom",
+        "toolbar_Custom": [
+            ["Bold", "Italic", "Underline"],
+            [
+                "NumberedList",
+                "BulletedList",
+                "-",
+                "Outdent",
+                "Indent",
+                "-",
+                "JustifyLeft",
+                "JustifyCenter",
+                "JustifyRight",
+                "JustifyBlock",
+            ],
+            ["Link", "Unlink"],
+            ["RemoveFormat", "Source"],
+        ],
     },
 }
 # Your stuff...
