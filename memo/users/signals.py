@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from flashcards.models import Topic
@@ -33,3 +33,11 @@ def user_created(sender, instance, **kwargs):
         general_topic, created = Topic.objects.get_or_create(
             group=main_study_group, title=INITIAL_TOPIC_NAME
         )
+
+
+# USER DELETION (post save)
+@receiver(pre_delete, sender=User)
+def user_before_delete(sender, instance, **kwargs):
+    # Delete the main_study_space of the deleted user
+    main_study_group = instance.get_main_user_group()
+    main_study_group.delete()

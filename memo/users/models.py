@@ -21,10 +21,22 @@ class User(AbstractUser):
         """
         return reverse("users:detail", kwargs={"username": self.username})
 
+    def get_main_user_group(self):
+        return (
+            self.memberships.filter(group__is_main_user_group=True, role="admin")
+            .first()
+            .group
+        )
+
     def studygroups(self):
         # returns all studygroups where the user is an approved member of.
-        # return Membership.objects.filter(member=self,approved=True)
-        return  # StudyGroup.objects.filter(memberships__member=self)
+        """
+        return StudyGroup.objects.filter(
+            memberships__member=self,
+            approved=True
+        )
+        """
+        return
 
     def has_free_group_slot(self):
         # How many groups are allowed in their plan and how much they have
