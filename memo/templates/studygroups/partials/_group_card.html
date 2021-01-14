@@ -1,4 +1,4 @@
-{% load static rules i18n %}
+{% load static rules i18n studygroup_tags %}
 
 {% test_rule 'can_view_group' request.user group as can_view_group %}
 {% if can_view_group and detail_view %}
@@ -23,10 +23,10 @@
   {% if can_view_group and not detail_view %}
     <a href="{% url 'studygroups:group_detail_view' slug=group.slug %}"
     class="" style="text-decoration: none; color:inherit;" title="{% trans 'View Study Group' %}">
-      <div class="card-header">{% trans 'Group' %}: {{ group.name }}</div>
+      <div class="card-header">{% group_icon group %}</div>
     </a>
   {% else %}
-    <div class="card-header">{% trans 'Group' %}: {{ group.name }}</div>
+    <div class="card-header">{% group_icon group %}</div>
   {% endif %}
   <div class="card-body">
     <p class="card-text">
@@ -36,9 +36,6 @@
         {{ group.description|safe|truncatewords:14 }}
       {% endif %}
     </p>
-
-
-
   </div>
 
   {% if not group.is_main_user_group and detail_view %}
@@ -85,7 +82,9 @@
         <button id="group_actions" type="button"
         class="btn btn-sm btn-dark dropdown-toggle" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage Group' %}">
-          {% trans 'Manage' %}
+          <img class="float-left mr-2" height="20px"
+          src="{% static 'images/icons/BrainGain_Utility_inverted.png' %}">
+          {#% trans 'Manage' %#}
         </button>
         <div class="dropdown-menu" aria-labelledby="group_actions">
 

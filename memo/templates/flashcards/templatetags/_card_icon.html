@@ -1,0 +1,22 @@
+{% load static i18n %}
+
+
+
+<span aria-hidden="true" class="pull-left"
+title="{% if performance.is_learned %}{% trans 'Card is learned!' %}{% else %}{% trans 'Card learning...' %}{% endif %}">
+  <img class="align-self-center float-left mr-3" height="{{max_height}}px"
+  {% if performance.is_learned %}
+  src="{% static 'images/icons/Card_learned.png' %}"
+  {% else %}
+  src="{% static 'images/icons/Card_unlearned.png' %}"
+  {% endif %}>
+  {% if performance.card.topic %}
+    <span class="badge badge-pill badge-info align-bottom">
+      {{ performance.card.topic.title }}
+    </span>
+  {% else %}
+    <span class="badge badge-pill badge-light">
+      {% trans 'Uncategorized' %}
+    </span>
+  {% endif %}
+</span>

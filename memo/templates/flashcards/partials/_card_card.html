@@ -9,31 +9,23 @@
 
 <div class="card mb-3 h-100 bg-light">
   <div class="card-header">
-
-    <ul class="nav nav-tabs card-header-tabs justify-content-end" id="myTab" role="tablist">
-
-      <li class="nav-item">
-        <a class="nav-link disabled" href="#">
-          {% if card.topic %}
-            <span class="badge badge-pill badge-info">
-              {{ card.topic.title }}
-            </span>
-          {% else %}
-            <span class="badge badge-pill badge-light">
-              {% trans 'Uncategorized' %}
-            </span>
-          {% endif %}
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link active" id="front-tab" data-toggle="tab" href="#front-{{card.id}}"
-        role="tab" aria-controls="front" aria-selected="true">{% trans 'Front' %}</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" id="back-tab" data-toggle="tab" href="#back-{{card.id}}"
-        role="tab" aria-controls="back" aria-selected="false">{% trans 'Back' %}</a>
-      </li>
-    </ul>
+    <div class="row">
+      <div class="col-sm-6">
+        {% card_icon card_performance %}
+      </div>
+      <div class="col-sm-6">
+        <ul class="nav nav-tabs card-header-tabs justify-content-end" id="myTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="front-tab" data-toggle="tab" href="#front-{{card.id}}"
+            role="tab" aria-controls="front" aria-selected="true">{% trans 'Front' %}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="back-tab" data-toggle="tab" href="#back-{{card.id}}"
+            role="tab" aria-controls="back" aria-selected="false">{% trans 'Back' %}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
   <div class="card-body">
 
@@ -70,7 +62,9 @@
       <button id="card_actions" type="button"
       class="btn btn-sm btn-dark dropdown-toggle" data-toggle="dropdown"
       aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage Card' %}">
-        {% trans 'Manage' %}
+        <img class="float-left mr-2" height="20px"
+        src="{% static 'images/icons/BrainGain_Utility_inverted.png' %}">
+        {#% trans 'Manage' %#}
       </button>
       <div class="dropdown-menu" aria-labelledby="card_actions">
 

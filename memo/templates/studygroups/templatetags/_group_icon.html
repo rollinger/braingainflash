@@ -1,0 +1,5 @@
+{% load static i18n %}
+
+<span aria-hidden="true" title="{% trans 'Study Group' %}: {{ group.name }}">
+  <img class="align-self-center float-left mr-3" height="{{max_height}}px" src="{% static 'images/icons/Group.png' %}">
+</span> {{ group.name }}

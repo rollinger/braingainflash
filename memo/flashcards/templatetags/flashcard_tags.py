@@ -12,6 +12,12 @@ def card_performance(user, card):
     return card.performances.filter(owner=user).first()
 
 
+@register.inclusion_tag("flashcards/templatetags/_card_icon.html")
+def card_icon(performance, max_height=35):
+    # Add a group icon
+    return {"performance": performance, "max_height": max_height}
+
+
 @register.inclusion_tag("flashcards/templatetags/_update_delete_card_modal.html")
 def update_delete_card_modal(card):
     # Add initialized card_create_form for use in _create_card_modal.html

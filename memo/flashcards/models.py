@@ -276,6 +276,12 @@ class Performance(UUIDMixin, TimestampMixin, models.Model):
             return _("Paused")
         return _("Active")
 
+    @property
+    def is_learned(self):
+        if self.recall_score > 90.0:
+            return True
+        return False
+
     def get_absolute_url(self):
         # Returns path to update-view
         # return reverse("memocardperformance_update_view", kwargs={"unique_id": self.unique_id})

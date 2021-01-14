@@ -1,3 +1,21 @@
+== Version 0.0.2.1 == Redo Recall/Train => GainView
+OK GainView
+    OK FormView with options:
+        - mode: train/recall
+        - group: user groups
+        - topic: group topic or all
+    OK View template
+    OK test function
+    OK remove old code
+OK BUGFIX: On user delete the membership get's deleted but NOT the main user space group. The main user group should be deleted and its content.
+OK Add to CKEditor: basics styling abilities
+OK Allow edit card from train view
+OK Make messages fade away
+OK Design/Improve Frontend with HTML/CSS Bootstrap 4
+    OK Add slim Footer with important links
+    OK Group card and card count and member count for group
+    OK Icons for Group, Card and Topic and Manage Button
+
 == Version 0.0.1.1 == Optimize GroupDetailView
 OK Redirect LogIn to Group List
 OK Make Frontpage describing braingain
