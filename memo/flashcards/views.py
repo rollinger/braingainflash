@@ -1,13 +1,15 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy  # what is the difference?
 from django.utils.decorators import method_decorator
+from django.utils.translation import ugettext_lazy as _
 from django.views.generic import (  # DetailView, ListView;DeleteView,UpdateView,
     CreateView,
     FormView,
     UpdateView,
 )
-from flashcards.forms import CardForm, PerformanceForm, TopicForm, TrainGainForm
+from flashcards.forms import BrainGainForm, CardForm, PerformanceForm, TopicForm
 from flashcards.models import Card, Performance, Topic
 from studygroups.models import StudyGroup
 from utils.views import CustomRulesPermissionRequiredMixin
@@ -144,91 +146,133 @@ performance_update_view = UpdatePerformanceView.as_view()
 
 
 @method_decorator(login_required, name="dispatch")
-class TrainCardsView(FormView):
-    form_class = TrainGainForm
-    template_name = "flashcards/train_cards_view.html"
+class BrainGainView(FormView):
+    """MAIN VIEW for training the cards"""
 
-    def topic(self):
-        # if "topic_unique_id" in self.request.GET:
-        # print(self.request.GET.get("topic_unique_id"))
-        # return Topic.objects.get(unique_id=self.request.GET.get("topic_unique_id"))
-        return None
+    form_class = BrainGainForm
+    template_name = "flashcards/brain_gain_view.html"
+    mode, group, topic = "recall", None, None
+    performance_object = None
+    get_params = ""
+
+    #
+    # GET
+    #
+    def get(self, request, *args, **kwargs):
+        # Get the parameters and performance_object
+        self.get_parameters()
+        self.performance_object = self.get_performance_object()
+        if not self.performance_object:
+            # Message and return to group if no performance object
+            messages.add_message(
+                self.request, messages.WARNING, _("No card was found to learn.")
+            )
+            return HttpResponseRedirect(reverse("flashcards:brain_gain_view"))
+        # render to response
+        return super().get(request, *args, **kwargs)
+
+    def get_parameters(self):
+        # Get the parameters and fetch objects
+        self.mode = self.request.GET.get("mode", "recall")
+        if "group" in self.request.GET:
+            self.group = StudyGroup.objects.filter(
+                unique_id=self.request.GET.get("group")
+            ).first()
+        if "topic" in self.request.GET:
+            self.topic = Topic.objects.filter(
+                unique_id=self.request.GET.get("topic")
+            ).first()
+        if self.group and self.topic and (self.topic not in self.group.topics.all()):
+            # topic is none if not a group topic
+            self.topic = None
+
+    def get_performance_object(self):
+        # Get the performance_object for mode, group and topic
+        card_performance = Performance.objects.get_performance_object_for(
+            owner=self.request.user,
+            mode=self.mode,
+            topic=self.topic,
+            group=self.group,
+        )
+        return card_performance
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Get the least learned object (from a topic or all)
-        # and prepare form initial and context_data
-        current_topic = self.topic()
-        card_performance = Performance.objects.get_least_learned_object(
-            owner=self.request.user,
-            topic=current_topic,
-        )
-        if not card_performance:
-            # No performance object redirect to group list
-            return HttpResponseRedirect(reverse("studygroups:group_list_view"))
-        # Prepare context and form
-        context["card_performance"] = card_performance
-        context["auto_redirect_timeout"] = context["card_performance"].learn_timeout
-        context["form"].fields["card_performance_id"].initial = card_performance.pk
-        # context["form"].fields["topic"].queryset = card_performance.card.group.topics
+        if self.performance_object:
+            # Prepare context and form
+            context["mode"] = self.mode
+            context["card_performance"] = self.performance_object
+            context["auto_redirect_timeout"] = context["card_performance"].learn_timeout
+            context["form"].fields[
+                "card_performance_id"
+            ].initial = self.performance_object.pk
         return context
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        # Change queryset of group and topic according to the self.requst.user and get params
+        # Set mode
+        form.fields["mode"].initial = self.mode
+        # Set group
+        form.fields["group"].queryset = StudyGroup.objects.filter(
+            memberships__member=self.request.user
+        )
+        if self.group:
+            form.fields["group"].initial = self.group.pk
+            # Limit topic to only group topics
+            form.fields["topic"].queryset = self.group.topics
+        else:
+            # Disable topic field
+            form.fields["topic"].widget.attrs["disabled"] = True
+            form.fields["topic"].queryset = Topic.objects.filter(
+                group__memberships__member=self.request.user
+            )
+        # Set topic initial
+        if self.topic:
+            form.fields["topic"].initial = self.topic.pk
+        return form
+
+    #
+    # POST
+    #
+    def post(self, request, *args, **kwargs):
+        # self.get_parameters()
+        # form valid
+        # prepare GET params
+        # Save datapoint
+        # get success_url
+        return super().post(request, *args, **kwargs)
+
     def form_valid(self, form):
-        # Set topic selected
-        # print(form.cleaned_data["topic"])
-        # Add the training data to the MemoCardPerformance object and redirect
-        card_performance = Performance.objects.get(
-            pk=form.cleaned_data["card_performance_id"]
-        )
-        card_performance.add_learning_datapoint(
-            form.cleaned_data["outcome_int"], form.cleaned_data["duration_sec"]
-        )
-        card_performance.save()
+        # Save the datapoint
+        if form.cleaned_data["save_datapoint"] is True:
+            self.save_performance_datapoint(form)
+        # Generate GET Params
+        self.get_params = "?mode=" + form.cleaned_data["mode"]
+        if form.cleaned_data["group"]:
+            self.get_params += "&group=%s" % form.cleaned_data["group"].unique_id
+        if form.cleaned_data["topic"]:
+            self.get_params += "&topic=%s" % form.cleaned_data["topic"].unique_id
         return super().form_valid(form)
 
     def get_success_url(self):
-        # Add topic as get param to redirect
-        # success_url = "%s?topic=%s" % (reverse("flashcards:train_cards_view"), )
-        # print(self.topic())
-        return reverse_lazy("flashcards:train_cards_view")
-        # super().get_success_url()
+        # Get the success url with the current modalities as GET params
+        return reverse_lazy("flashcards:brain_gain_view") + self.get_params
 
-
-train_cards_view = TrainCardsView.as_view()
-
-
-@method_decorator(login_required, name="dispatch")
-class TestCardView(FormView):
-    form_class = TrainGainForm
-    template_name = "flashcards/test_cards_view.html"
-    success_url = reverse_lazy("flashcards:test_cards_view")
-
-    def get(self, request, *args, **kwargs):
-        # Get the least recalled object and prepare form initial and context_data
-        obj = Performance.objects.get_least_recalled_object_for(
-            owner=self.request.user,
-            topic=None,
-        )
-        if not obj:
-            return HttpResponseRedirect(reverse("studygroups:group_list_view"))
-        self.extra_context = {
-            "card_performance": obj,
-            "auto_redirect_timeout": obj.recall_timeout,
-        }
-        self.initial["card_performance_id"] = obj.pk
-        self.initial["outcome_int"] = 0
-        return super().get(self, request, *args, **kwargs)
-
-    def form_valid(self, form):
+    def save_performance_datapoint(self, form):
         # Add the training data to the Performance object and redirect
         card_performance = Performance.objects.get(
             pk=form.cleaned_data["card_performance_id"]
         )
-        card_performance.add_recalling_datapoint(
-            form.cleaned_data["outcome_int"], form.cleaned_data["duration_sec"]
-        )
+        if form.cleaned_data["mode"] == "train":
+            card_performance.add_training_datapoint(
+                form.cleaned_data["outcome_int"], form.cleaned_data["duration_sec"]
+            )
+        elif form.cleaned_data["mode"] == "recall":
+            card_performance.add_recalling_datapoint(
+                form.cleaned_data["outcome_int"], form.cleaned_data["duration_sec"]
+            )
         card_performance.save()
-        return super().form_valid(form)
 
 
-test_cards_view = TestCardView.as_view()
+brain_gain_view = BrainGainView.as_view()

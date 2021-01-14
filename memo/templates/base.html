@@ -52,20 +52,14 @@
               -->
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'studygroups:group_list_view' %}">
-                  {% trans "Groups" %}
+                  {% trans "Brain" %}
                   <span class="sr-only">(current)</span>
                 </a>
               </li>
 
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'flashcards:train_cards_view' %}">
-                  {% trans "Train" %}
-                </a>
-              </li>
-
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'flashcards:test_cards_view' %}">
-                  {% trans "Recall" %}
+                <a class="nav-link" href="{% url 'flashcards:brain_gain_view' %}">
+                  {% trans "Gain" %}
                 </a>
               </li>
 

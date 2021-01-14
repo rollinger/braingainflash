@@ -127,27 +127,42 @@ class Card(UUIDMixin, TimestampMixin, models.Model):
 class PerformanceManager(models.Manager):
     def get_random_object_for(self, user):
         # returns a random card performance object
-        # TODO: exclude paused ones
-        # return self.filter(owner=user).order_by("?").first()
-        return self.for_user(user).active().get_random_from()
+        return self.filter(owner=user, is_paused=False).order_by("?").first()
 
-    def get_least_learned_object(self, owner, topic=None, limit=7):
+    def get_least_learned_object_list(self, owner, topic=None, group=None):
         # returns one of the least learned card performance objects
         qs = self.filter(owner=owner, is_paused=False)
+        if group:
+            qs = qs.filter(card__group=group)
         if topic:
-            qs.filter(card__topic=topic)
+            qs = qs.filter(card__topic=topic)
         qs = qs.order_by("priority", "learn_score", "recall_score")  # ASC ,
-        # print(qs)
-        return random.choice(qs[0:limit])
+        return qs
 
-    def get_least_recalled_object_for(self, owner, topic=None, limit=7):
+    def get_least_recalled_object_list(self, owner, topic=None, group=None):
         # returns one of the least learned card performance objects
         qs = self.filter(owner=owner, is_paused=False)
+        if group:
+            qs = qs.filter(card__group=group)
         if topic:
-            qs.filter(card__topic=topic)
+            qs = qs.filter(card__topic=topic)
         qs = qs.order_by("priority", "recall_score")  # ASC , "-priority",
-        # print(qs)
-        return random.choice(qs[0:limit])
+        return qs
+
+    def get_performance_object_for(self, owner, mode, topic=None, group=None, limit=7):
+        """Retrieves a performance object or none if no one found.
+        Entry point for the training of cards
+        Main AI Function... Later rewrite
+        """
+        qs = None
+        if mode == "train":
+            qs = self.get_least_learned_object_list(owner, topic, group)
+        elif mode == "recall":
+            qs = self.get_least_recalled_object_list(owner, topic, group)
+        # return one inside limit range or return None
+        if qs:
+            return random.choice(qs[0:limit])
+        return qs
 
 
 class Performance(UUIDMixin, TimestampMixin, models.Model):
@@ -303,7 +318,7 @@ class Performance(UUIDMixin, TimestampMixin, models.Model):
         if recall_trials > 0:
             self.recall_score = float(recall_total_outcome / recall_trials) * 100
 
-    def add_learning_datapoint(self, outcome_int, duration_sec):
+    def add_training_datapoint(self, outcome_int, duration_sec):
         # Adds a learning data point; .save() must be called separately
         timestamp = datetime.datetime.now()
         self.data["learning"].append((timestamp, outcome_int, duration_sec))

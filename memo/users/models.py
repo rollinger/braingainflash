@@ -3,6 +3,8 @@ from django.db.models import CharField
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+# from studygroups.models import StudyGroup
+
 
 class User(AbstractUser):
     """Default user for BrainGain."""
@@ -18,6 +20,11 @@ class User(AbstractUser):
 
         """
         return reverse("users:detail", kwargs={"username": self.username})
+
+    def studygroups(self):
+        # returns all studygroups where the user is an approved member of.
+        # return Membership.objects.filter(member=self,approved=True)
+        return  # StudyGroup.objects.filter(memberships__member=self)
 
     def has_free_group_slot(self):
         # How many groups are allowed in their plan and how much they have

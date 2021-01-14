@@ -1,3 +1,21 @@
+== Version 0.0.1.1 == Optimize GroupDetailView
+OK Redirect LogIn to Group List
+OK Make Frontpage describing braingain
+
+== Version 0.0.1 == "Everything works!"
+OK Connect braingain.ai
+OK Add Edit Settings modal on card
+OK Display recall score, is paused and priority on card (bottom-left)
+OK Invite System: link to join a studygroup => login if not auth
+    OK Show number of members and cards on group card
+    OK Group Card: show invite link to the group, for disemmanation
+    OK Check functionality
+OK Enable https
+OK connect mailgun for app
+OK Test Permissions work
+OK what happens after fresh signup or login
+OK mailgun?
+
 == Version 0.0.0 ==
 OK Edit & Create Group should go in modal (linked from Manage Group)
 OK Make paginate appear only below the list and only when num_pages > 1

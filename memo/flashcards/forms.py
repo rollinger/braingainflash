@@ -4,6 +4,7 @@ from crispy_forms.layout import Layout, Submit
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from flashcards.models import Card, Performance, Topic
+from studygroups.models import StudyGroup
 
 
 class CardForm(forms.ModelForm):
@@ -54,11 +55,33 @@ class CardSearchForm(forms.Form):
         )
 
 
-class TrainGainForm(forms.Form):
-    # "topic",  topic = forms.ModelChoiceField(queryset=None, empty_label=_("All"), required=False)
+class BrainGainForm(forms.Form):
+    mode = forms.ChoiceField(choices=(("train", _("Cycle")), ("recall", _("Recall"))))
+    group = forms.ModelChoiceField(
+        queryset=StudyGroup.objects.none(), empty_label=_("All Groups"), required=False
+    )
+    topic = forms.ModelChoiceField(
+        queryset=Topic.objects.none(), empty_label=_("All Topics"), required=False
+    )
     card_performance_id = forms.IntegerField(widget=forms.HiddenInput())
     outcome_int = forms.IntegerField(initial=0, widget=forms.HiddenInput())
     duration_sec = forms.IntegerField(initial=0, widget=forms.HiddenInput())
+    save_datapoint = forms.BooleanField(
+        initial=False, required=False, widget=forms.HiddenInput()
+    )
 
-    class Meta:
-        fields = ["card_performance_id", "outcome_int", "duration_sec"]
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.field_template = "bootstrap4/layout/inline_field.html"
+        self.helper.layout = Layout(
+            InlineField("mode", css_class=""),
+            InlineField("group", css_class=""),
+            InlineField("topic", css_class=""),
+            InlineField("card_performance_id", css_class=""),
+            InlineField("outcome_int", css_class=""),
+            InlineField("duration_sec", css_class=""),
+            InlineField("save_datapoint", css_class=""),
+            Submit("next", _("Next"), css_class="btn-primary"),
+        )

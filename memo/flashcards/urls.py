@@ -1,13 +1,12 @@
 from django.urls import path
 
 from memo.flashcards.views import (  # performance_update_view, card_delete_view,    card_update_view,
+    brain_gain_view,
     card_create_view,
     card_update_delete_view,
     performance_update_view,
-    test_cards_view,
     topic_create_view,
     topic_update_delete_view,
-    train_cards_view,
 )
 
 app_name = "flashcards"
@@ -41,14 +40,9 @@ urlpatterns = [
     ),
     # Test & Train interface
     path(
-        "train",
-        view=train_cards_view,
-        name="train_cards_view",
-    ),
-    path(
-        "recall",
-        view=test_cards_view,
-        name="test_cards_view",
+        "gain",
+        view=brain_gain_view,
+        name="brain_gain_view",
     ),
     # Manage Learning Settings
     path(
