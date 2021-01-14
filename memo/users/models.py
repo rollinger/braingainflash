@@ -29,7 +29,8 @@ class User(AbstractUser):
         )
 
     def studygroups(self):
-        # returns all studygroups where the user is an approved member of.
+        # returns all studygroups where the user is an approved member of
+        # TODO: difficult query
         """
         return StudyGroup.objects.filter(
             memberships__member=self,

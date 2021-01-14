@@ -236,11 +236,6 @@ class BrainGainView(FormView):
     # POST
     #
     def post(self, request, *args, **kwargs):
-        # self.get_parameters()
-        # form valid
-        # prepare GET params
-        # Save datapoint
-        # get success_url
         return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):

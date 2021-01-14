@@ -1,9 +1,12 @@
 {% extends "base.html" %}
-{% load static i18n crispy_forms_tags %}
+{% load static i18n rules flashcard_tags crispy_forms_tags %}
 
 {% block title %} {% trans "Gain" %} {% endblock %}
 
 {% block content %}
+
+{% test_rule 'can_manage_performance' request.user card_performance as can_manage_performance %}
+{% test_rule 'can_manage_card' request.user card_performance.card.group as can_manage_card %}
 
 <div class="container">
 
@@ -22,6 +25,7 @@
 
         <div class="card-header">
         </div>
+
         <div class="card-body">
           <div class="row mb-3 justify-content-center">
             <div class="col-sm-4">
@@ -41,10 +45,48 @@
             </div>
           </div>
         </div>
-        <div class="card-footer">
-        </div>
 
-      </div>
+        <div class="card-footer">
+
+          <div class="btn-group float-left" role="group" aria-label="Study Group Actions">
+            <button id="card_actions" type="button"
+            class="btn btn-sm btn-dark dropdown-toggle" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage' %}">
+              {% trans 'Manage' %}
+            </button>
+            <div class="dropdown-menu" aria-labelledby="card_actions">
+
+              {% if can_manage_card %}
+                <a class="dropdown-item" href="#" data-toggle="modal"
+                title="{% trans 'Manage Card' %}" role="button"
+                data-target="#update_delete_card_{{card_performance.card.id}}_modal">
+                  {% trans 'Edit Card' %}
+                </a>
+              {% endif %}
+
+              {% if can_manage_performance %}
+                <a class="dropdown-item" href="#" data-toggle="modal"
+                title="{% trans 'Manage Learning Settings' %}" role="button"
+                data-target="#update_performance_{{card_performance.id}}_modal">
+                  {% trans 'Settings' %}
+                </a>
+              {% endif %}
+
+            </div>
+
+          </div>
+
+          {% if can_manage_card %}
+            {% update_delete_card_modal card_performance.card %}
+          {% endif %}
+
+          {% if can_manage_performance %}
+            {% update_performance_modal card_performance %}
+          {% endif %}
+
+        </div> <!-- END card-footer -->
+
+      </div> <!-- END card -->
 
     </div>
 
@@ -118,8 +160,10 @@
 </div>
 {% endblock content %}
 
-
 {% block javascript %}
+
+  {{ block.super }}
+
   {% if mode == 'recall'%}
 
     <script type="text/javascript">
