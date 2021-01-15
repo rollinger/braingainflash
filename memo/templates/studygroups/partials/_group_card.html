@@ -17,7 +17,7 @@
   {% else %}
     <div class="card-header">{% group_icon group %}</div>
   {% endif %}
-  <div class="card-body">
+  <div class="card-body card-scrollable">
     <p class="card-text">
       {% if detail_view %}
         {{ group.description|safe }}

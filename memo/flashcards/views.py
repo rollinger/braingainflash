@@ -112,7 +112,7 @@ class UpdateDeleteCardView(CustomRulesPermissionRequiredMixin, UpdateView):
     template_name = "flashcards/card_update_form.html"
 
     def get_permission_object(self):
-        return self.get_object().group
+        return self.get_object().group.membership_for(self.request.user)
 
     def form_valid(self, form):
         if "delete" in form.data:
