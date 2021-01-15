@@ -137,7 +137,8 @@ class StudyGroupCreateView(CustomRulesPermissionRequiredMixin, CreateView):
     success_url = reverse_lazy("studygroups:group_list_view")
 
     def get_permission_object(self):
-        return self.get_object().membership_for(self.request.user)
+        # No membership permission object required
+        return None
 
     def form_valid(self, form):
         # save form
