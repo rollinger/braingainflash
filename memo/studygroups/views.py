@@ -203,15 +203,16 @@ class JoinStudyGroupRedirectView(RedirectView):
 
     def get(self, request, *args, **kwargs):
         # Get or create a membership and sets a message
+        #
         # TODO: CHECK if user.plan allows for addition of another group
+        # And redirect to upgrade_plan
         study_group = StudyGroup.objects.get(unique_id=self.kwargs["unique_id"])
-        if study_group.is_member(request.user):
-            membership, created = Membership.objects.get_or_create(
-                member=self.request.user,
-                group=study_group,
-                role=study_group.new_member_role,
-                approved=study_group.auto_approve_new_member,
-            )
+        membership, created = Membership.objects.get_or_create(
+            member=self.request.user,
+            group=study_group,
+            role=study_group.new_member_role,
+            approved=study_group.auto_approve_new_member,
+        )
         # Get or create performance objects for all cards|request.user
         for card in study_group.cards.all():
             p, c = Performance.objects.get_or_create(owner=request.user, card=card)
