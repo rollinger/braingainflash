@@ -16,6 +16,11 @@ class CardForm(forms.ModelForm):
             "group": forms.HiddenInput(),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.include_media = False  # To suppress multiple ckeditor loads
+
 
 class TopicForm(forms.ModelForm):
     class Meta:
