@@ -1,12 +1,21 @@
 {% extends "base.html" %}
-{% load static i18n rules flashcard_tags crispy_forms_tags %}
+{% load static %}
+{% load i18n %}
+{% load rules %}
+{% load studygroup_tags %}
+{% load flashcard_tags %}
+{% load crispy_forms_tags %}
+
 
 {% block title %} {% trans "Gain" %} {% endblock %}
 
 {% block content %}
 
+
+{% get_group_membership request.user card_performance.card.group as membership %}
+
 {% test_rule 'can_manage_performance' request.user card_performance as can_manage_performance %}
-{% test_rule 'can_manage_card' request.user card_performance.card.group as can_manage_card %}
+{% test_rule 'can_manage_card' request.user membership as can_manage_card %}
 
 <div class="container">
 

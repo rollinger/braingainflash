@@ -3,7 +3,6 @@
 
 {% card_performance request.user card as card_performance %}
 
-{% test_rule 'can_manage_card' request.user card.group as can_manage_card %}
 {% test_rule 'can_manage_performance' request.user card_performance as can_manage_performance %}
 
 

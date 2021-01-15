@@ -74,6 +74,9 @@ class StudyGroupDetailView(CustomRulesPermissionRequiredMixin, DetailView):
     template_name = "studygroups/group_detail_view.html"
     paginate_by = 8  # 8  # [multiples of 3 - 1: (2,5,8...)]
 
+    def get_permission_object(self):
+        return self.get_object().membership_for(self.request.user)
+
     def get_card_list(self):
         # Returns the card_list and filters by search and topic
         search_query = self.request.GET.get("search")
@@ -133,6 +136,9 @@ class StudyGroupCreateView(CustomRulesPermissionRequiredMixin, CreateView):
     template_name = "studygroups/group_create_view.html"
     success_url = reverse_lazy("studygroups:group_list_view")
 
+    def get_permission_object(self):
+        return self.get_object().membership_for(self.request.user)
+
     def form_valid(self, form):
         # save form
         # handle slug and membership for the user
@@ -156,6 +162,9 @@ class StudyGroupUpdateView(CustomRulesPermissionRequiredMixin, UpdateView):
     template_name = "studygroups/group_update_view.html"
     # success_url comes from object.get_absolute_url
 
+    def get_permission_object(self):
+        return self.get_object().membership_for(self.request.user)
+
 
 group_update_view = StudyGroupUpdateView.as_view()
 
@@ -168,6 +177,9 @@ class StudyGroupDeleteView(CustomRulesPermissionRequiredMixin, DeleteView):
     slug_url_kwarg = "unique_id"
     template_name = "studygroups/group_confirm_delete.html"
     success_url = reverse_lazy("studygroups:group_list_view")
+
+    def get_permission_object(self):
+        return self.get_object().membership_for(self.request.user)
 
 
 group_delete_view = StudyGroupDeleteView.as_view()
@@ -254,10 +266,13 @@ group_leave_view = LeaveStudyGroupRedirectView.as_view()
 @method_decorator(login_required, name="dispatch")
 class ManageMembershipRedirectView(CustomRulesPermissionRequiredMixin, RedirectView):
     permission_required = "studygroups.manage_studygroup_memberships"
+    # TODO: Refactor with SingleObjectMixin view to get the membership-to-manage by unique_id
 
     def get_permission_object(self):
-        unique_id = self.kwargs["unique_id"]
-        return Membership.objects.get(unique_id=unique_id).group
+        admin_membership = Membership.objects.get(
+            unique_id=self.kwargs["unique_id"]
+        ).group.membership_for(self.request.user)
+        return admin_membership
 
     def get(self, request, *args, **kwargs):
         # Manage the membership and sets a message

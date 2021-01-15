@@ -1,8 +1,10 @@
 {% extends "base.html" %}
-{% load static rules i18n %}
+{% load static %}
+{% load i18n %}
+{% load rules %}
+{% load studygroup_tags %}
 
 {% block title %} {% trans "My Groups" %} {% endblock %}
-
 
 
 {% block content %}
@@ -20,7 +22,8 @@
 
     {% for group in page_obj %}
       <div class="col-xs-12 col-md-6 col-lg-4 mt-3">
-        {% include "studygroups/partials/_group_card.html" with group=group %}
+        {% get_group_permissions request.user group as group_permissions %}
+        {% include "studygroups/partials/_group_card.html" with group=group group_permissions=group_permissions%}
       </div>
     {% endfor %}
 
