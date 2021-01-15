@@ -1,4 +1,4 @@
-{% load static rules i18n %}
+{% load static rules i18n crispy_forms_tags %}
 
 <!-- Modal -->
 <div class="modal fade" id="create_group_modal" tabindex="-1" role="dialog"
@@ -16,13 +16,11 @@
         <div class="container-fluid mt-3">
           <div class="row">
 
-            <div class="col-xs-10">
+            <div class="col-sm-12">
 
               <form id="group_edit_form" method="post"
                 action="{% url 'studygroup:group_create_view' %}">
-                {% csrf_token %}
-                {{ group_create_form.media }}
-                {{ group_create_form.as_p }}
+                {% crispy group_create_form group_create_form.helper %}
               </form>
 
             </div>

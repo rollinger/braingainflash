@@ -20,9 +20,6 @@
 
               <form id="card_{{card.id}}_update_delete_form" method="post"
                 action="{% url 'flashcards:card_update_delete_view' unique_id=card.unique_id %}">
-                {#% csrf_token %#}
-                {#{ card_update_delete_form.media }#}
-                {#{ card_update_delete_form.as_p }#}
                 {% crispy card_update_delete_form card_update_delete_form.helper %}
               </form>
 

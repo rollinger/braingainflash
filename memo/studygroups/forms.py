@@ -1,3 +1,4 @@
+from crispy_forms.helper import FormHelper
 from django import forms
 from studygroups.models import StudyGroup
 
@@ -21,3 +22,4 @@ class StudyGroupForm(forms.ModelForm):
             self.fields["is_publicly_available"].widget = forms.HiddenInput()
             self.fields["auto_approve_new_member"].widget = forms.HiddenInput()
             self.fields["new_member_role"].widget = forms.HiddenInput()
+        self.helper = FormHelper()

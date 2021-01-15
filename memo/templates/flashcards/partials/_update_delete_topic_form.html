@@ -3,13 +3,13 @@
   <form method="post" action="{% url 'flashcards:topic_update_delete_view' unique_id=topic.unique_id %}">
     {% csrf_token %}
     <div class="form-row align-items-center">
-      <div class="col-auto">
+      <div class="col-sm-8">
         <label class="sr-only" for="id_title">{% trans 'Titel' %}</label>
         <input type="text" class="form-control mb-2" name="title" id="id_title"
           value="{{topic.title}}">
         <input type="hidden" name="group" value="{{group.pk}}" id="id_group">
       </div>
-      <div class="col-auto">
+      <div class="col-sm-4">
         <div class="btn-group" role="group" aria-label="Basic example">
           <button type="submit" name="update" class="btn btn-primary" title="Update topic">
             {% trans 'Update' %}

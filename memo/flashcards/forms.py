@@ -33,11 +33,19 @@ class TopicForm(forms.ModelForm):
             "group": forms.HiddenInput(),
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+
 
 class PerformanceForm(forms.ModelForm):
     class Meta:
         model = Performance
         fields = ["is_paused", "priority", "learn_timeout", "recall_timeout"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
 
 
 class CardSearchForm(forms.Form):

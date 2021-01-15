@@ -1,9 +1,9 @@
-{% load static rules i18n %}
+{% load static rules i18n crispy_forms_tags %}
 
 <!-- Modal -->
 <div class="modal fade" id="update_performance_{{performance.id}}_modal" tabindex="-1" role="dialog"
   aria-labelledby="group_manage_member_modal" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
+  <div class="modal-dialog modal-sm" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="">{% trans 'Update Learning Settings' %}</h5>
@@ -20,9 +20,7 @@
 
               <form id="performance_{{performance.id}}_update_form" method="post"
                 action="{% url 'flashcards:performance_update_view' unique_id=performance.unique_id %}">
-                {% csrf_token %}
-                {{ performance_form.media }}
-                {{ performance_form.as_p }}
+                {% crispy performance_form performance_form.helper %}
               </form>
 
             </div>
