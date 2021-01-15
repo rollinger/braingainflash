@@ -77,7 +77,10 @@ class StudyGroup(UUIDMixin, TimestampMixin, models.Model):
 
     def is_member(self, user):
         # TODO: Refactor, determine usage, where?
-        return True
+        return self.memberships.filter(member=user).exists()
+
+    def membership_for(self, user):
+        return self.memberships.filter(member=user).first()
 
     def number_active_members(self):
         return self.memberships.filter(approved=True, blocked=False).count()
