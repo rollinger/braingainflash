@@ -1,3 +1,13 @@
+== Version 0.0.2.2 == Membership Rules
+OK Make all forms look bootstrapy and nice (crispy form)
+OK BUGFIX: CKEDITOR slows down page
+OK Add Privacy & data protection from friendcheck and link in footer
+OK Make external resources local
+OK Optimize Membership and Rules
+    template tag "get_group_permission(user,group)
+OK   BUGFIX Joining group fails silently
+OK Add Google Analytics to the mix
+
 == Version 0.0.2.1 == Redo Recall/Train => GainView
 OK GainView
     OK FormView with options:
