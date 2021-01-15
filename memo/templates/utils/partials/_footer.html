@@ -20,8 +20,16 @@
           src="{{STATIC_URL}}images/Logo_v1_150x150.png">
           Brain Gain
       </a>
-      <br>
-      <small>{% trans "Copyright Philipp Rollinger 2020-2021" %}</small>
+    </div>
+  </div>
+
+  <div class="row bg-dark text-light d-flex align-items-center justify-content-center">
+    <div class="col-sm-12 col-md-6">
+      <center><small>
+      <a class="" href="{% url 'privacy_policy' %}">{% trans 'Privacy Policy' %}</a> |
+      <a class="" href="{% url 'privacy_policy' %}">{% trans 'Terms and Conditions' %}</a> |
+      {% trans "Copyright Philipp Rollinger 2020-2021" %}
+      </small><center>
     </div>
   </div>
 </div>
