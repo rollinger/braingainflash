@@ -25,8 +25,9 @@ class CreateTopicView(CustomRulesPermissionRequiredMixin, CreateView):
     template_name = "flashcards/topic_create_form.html"
 
     def get_permission_object(self):
-        unique_id = self.kwargs["unique_group_id"]
-        return StudyGroup.objects.get(unique_id=unique_id)
+        return StudyGroup.objects.get(
+            unique_id=self.kwargs["unique_group_id"]
+        ).membership_for(self.request.user)
 
     def get_initial(self):
         return {
@@ -53,7 +54,7 @@ class UpdateDeleteTopicView(CustomRulesPermissionRequiredMixin, UpdateView):
     template_name = "flashcards/topic_update_form.html"
 
     def get_permission_object(self):
-        return self.get_object().group
+        return self.get_object().group.membership_for(self.request.user)
 
     def form_valid(self, form):
         if "delete" in form.data:
