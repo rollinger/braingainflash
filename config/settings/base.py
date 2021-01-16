@@ -328,8 +328,10 @@ CORS_URLS_REGEX = r"^/api/.*$"
 # ckeditor - https://github.com/django-ckeditor/django-ckeditor
 CKEDITOR_CONFIGS = {
     "default": {
+        "skin": "moono-lisa",
         "height": 300,
         "width": "100%",
+        "tabSpaces": 4,
         "toolbar": "Custom",
         "toolbar_Custom": [
             ["Bold", "Italic", "Underline"],
@@ -347,8 +349,14 @@ CKEDITOR_CONFIGS = {
             ],
             ["Link", "Unlink"],
             ["RemoveFormat", "Source"],
+            ["CodeSnippet"],
         ],
+        "extraPlugins": "codesnippet",
     },
 }
+# 'mathJaxLib': '//cdn.mathjax.org/mathjax/2.2-latest/MathJax.js?config=TeX-AMS_HTML',
+"""
+['codesnippetgeshi',],
+"""
 # Your stuff...
 # ------------------------------------------------------------------------------
