@@ -21,6 +21,9 @@
 
       <div class="col-xs-12 col-md-4 col-lg-4 mt-3 text-center">
         {% if group_permissions.can_manage_card %}
+
+          <a href="{% url 'flashcards:card_create_view' unique_group_id=object.unique_id%}">New card</a>
+
           <a class="btn btn-success btn-block" href="#" data-toggle="modal"  title="{% trans 'Add new card' %}"
           role="button" data-target="#group_create_card_modal">
             {% trans 'Add Card' %}

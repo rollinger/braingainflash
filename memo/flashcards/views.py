@@ -94,6 +94,9 @@ class CreateCardView(CreateView):
         return form
 
     def get_success_url(self):
+        messages.add_message(
+            self.request, messages.SUCCESS, _("Card successfully created!")
+        )
         return StudyGroup.objects.get(
             unique_id=self.kwargs["unique_group_id"]
         ).get_absolute_url()
