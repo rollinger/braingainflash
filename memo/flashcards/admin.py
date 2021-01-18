@@ -157,6 +157,7 @@ class PerformanceAdmin(admin.ModelAdmin):
         "card_front_text",
         "card_back_text",
     ]
+    search_fields = ["owner__username", "card__front_text", "card__back_text"]
     autocomplete_fields = ["owner", "card"]
     actions = ["reset_data"]
     fieldsets = (
