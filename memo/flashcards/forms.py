@@ -101,5 +101,5 @@ class BrainGainForm(forms.Form):
             InlineField("outcome_int", css_class=""),
             InlineField("duration_sec", css_class=""),
             InlineField("save_datapoint", css_class=""),
-            Submit("next", _("Next"), css_class="btn-primary"),
+            Submit("next", _("Filter"), css_class="btn-primary"),
         )
