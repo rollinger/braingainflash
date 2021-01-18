@@ -19,13 +19,17 @@
     </div>
     <div class="col-sm-4">
 
-      {% if can_create_studygroup %}
-        <a class="btn btn-success btn-block" href="#" data-toggle="modal"
-        title="{% trans 'Create new study group' %}" role="button"
-        data-target="#create_group_modal">
-          {% trans 'Create Study Group' %}
-        </a>
-      {% endif %}
+      {% comment %}
+        {# Currently disabled #}
+        {% if can_create_studygroup %}
+          <a class="btn btn-success btn-block" href="#" data-toggle="modal"
+          title="{% trans 'Create new study group' %}" role="button"
+          data-target="#create_group_modal">
+            {% trans 'Create Study Group' %}
+          </a>
+        {% endif %}
+
+      {% endcomment %}
 
     </div>
   </div>
