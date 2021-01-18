@@ -1,3 +1,19 @@
+== Version 0.0.2.3 ==
+OK cards max height 300px and card_body should be scrollable
+OK Remove defunct cardset app
+OK migrate to eu region
+OK !!! BUGFIX Join Group
+    https://www.braingain.ai/group/welcome-to-42-wolfsburg-c-lang-bootcamp
+    -> 500 error
+OK BUGFIX: Edit Group on GroupDetail not working
+OK Make crude bookkeeping for the project (in/out per month)
+OK Make "42 Wolfsburg C Lang Bootcamp" Studygroup with a set of C cards on production (keywords & norms)
+OK Add menues admin directory and handle empty directory
+OK OP Get first users...
+OK Unobstuctive changes to Interface
+OK Make delete card only for admin !!!
+OK Disable create group buttons
+
 == Version 0.0.2.2 == Membership Rules
 OK Make all forms look bootstrapy and nice (crispy form)
 OK BUGFIX: CKEDITOR slows down page
