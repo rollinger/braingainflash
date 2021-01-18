@@ -17,6 +17,7 @@
   overflow-y: scroll;
 }
 
-code {
+/* style on the pre code element*/
+pre {
   background-color: white;
 }
