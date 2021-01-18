@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
@@ -74,6 +75,17 @@ class StudyGroupDetailView(CustomRulesPermissionRequiredMixin, DetailView):
     template_name = "studygroups/group_detail_view.html"
     paginate_by = 8  # 8  # [multiples of 3 - 1: (2,5,8...)]
 
+    def get(self, request, *args, **kwargs):
+        if "submit_reset" in self.request.GET:
+            # redirect to group_detail_view with default form state
+            return HttpResponseRedirect(
+                reverse_lazy(
+                    "studygroups:group_detail_view",
+                    kwargs={"slug": self.get_object().slug},
+                )
+            )
+        return super().get(request, *args, **kwargs)
+
     def get_permission_object(self):
         return self.get_object().membership_for(self.request.user)
 
@@ -81,6 +93,7 @@ class StudyGroupDetailView(CustomRulesPermissionRequiredMixin, DetailView):
         # Returns the card_list and filters by search and topic
         search_query = self.request.GET.get("search")
         topic_query = self.request.GET.get("topic")
+        paused_query = self.request.GET.get("paused")
         card_list = self.object.cards
         if topic_query:
             card_list = card_list.filter(topic__unique_id=topic_query)
@@ -88,6 +101,11 @@ class StudyGroupDetailView(CustomRulesPermissionRequiredMixin, DetailView):
             card_list = card_list.filter(
                 Q(front_text__icontains=search_query)
                 | Q(back_text__icontains=search_query)
+            )
+        if paused_query != "all":
+            card_list = card_list.filter(
+                Q(performances__owner=self.request.user)
+                # & Q(performances__is_paused=paused_query)
             )
         return card_list.all()
 
@@ -106,17 +124,22 @@ class StudyGroupDetailView(CustomRulesPermissionRequiredMixin, DetailView):
         context["card_create_form"] = card_create_form
         # Add card_edit_form for use in _edit_card_modal.html
         context["group_edit_form"] = StudyGroupForm(instance=self.object)
-        # Add search_form to context
-        context["card_search_form"] = CardSearchForm()
-        context["card_search_form"].fields["topic"].choices = [("", _("All Topics"))]
-        for choice in self.object.topics.all():
-            context["card_search_form"].fields["topic"].choices.append(
-                (choice.unique_id, choice)
-            )
+        # Add card search form to context
+        context["card_search_form"] = self.get_card_search_form()
         paginator = Paginator(card_list, self.paginate_by)
         page_obj = paginator.get_page(self.request.GET.get("page"))
         context["page_obj"] = page_obj
         return context
+
+    def get_card_search_form(self):
+        # builds the card search form
+        card_search_form = CardSearchForm()
+        card_search_form.fields["topic"].choices = [("", _("All Topics"))]
+        for choice in self.object.topics.all():
+            card_search_form.fields["topic"].choices.append((choice.unique_id, choice))
+        card_search_form.fields["search"].initial = self.request.GET.get("search")
+        card_search_form.fields["topic"].initial = self.request.GET.get("topic")
+        return card_search_form
 
 
 group_detail_view = StudyGroupDetailView.as_view()

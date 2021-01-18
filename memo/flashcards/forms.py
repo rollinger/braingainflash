@@ -51,6 +51,9 @@ class PerformanceForm(forms.ModelForm):
 class CardSearchForm(forms.Form):
     search = forms.CharField(required=False)
     topic = forms.ChoiceField(required=False)
+    paused = forms.ChoiceField(
+        choices=(("all", _("All")), (False, _("Active")), (True, _("Inactive")))
+    )
 
     class Meta:
         fields = ["search", "topic"]
@@ -64,7 +67,9 @@ class CardSearchForm(forms.Form):
         self.helper.layout = Layout(
             InlineField("search", css_class=""),
             InlineField("topic", css_class="custom-select"),
-            Submit("submit", _("Filter"), css_class="btn-primary"),
+            InlineField("paused", css_class="custom-select"),
+            Submit("submit_filter", _("Filter"), css_class="btn-primary"),
+            Submit("submit_reset", _("Clear"), css_class="btn-secondary"),
         )
 
 
