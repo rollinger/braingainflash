@@ -19,11 +19,7 @@
   {% endif %}
   <div class="card-body card-scrollable">
     <p class="card-text">
-      {% if detail_view %}
-        {{ group.description|safe }}
-      {% else %}
-        {{ group.description|safe|truncatewords:14 }}
-      {% endif %}
+      {{ group.description|safe }}
     </p>
   </div>
 
