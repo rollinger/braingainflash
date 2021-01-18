@@ -22,6 +22,7 @@ class User(AbstractUser):
         return reverse("users:detail", kwargs={"username": self.username})
 
     def get_main_user_group(self):
+        # returns the main user group of self
         return (
             self.memberships.filter(group__is_main_user_group=True, role="admin")
             .first()

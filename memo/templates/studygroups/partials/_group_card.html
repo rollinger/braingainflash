@@ -71,7 +71,7 @@
         <button id="group_actions" type="button"
         class="btn btn-sm btn-dark dropdown-toggle" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage Group' %}">
-          <img class="float-left mr-2" height="20px"
+          <img class="float-left mr-2" height="18px"
           src="{% static 'images/icons/manage_settings_white_icon.png' %}">
           {#% trans 'Manage' %#}
         </button>
@@ -85,7 +85,7 @@
             </a>
           {% endif %}
 
-          {% if group_permissions.can_update_group %}
+          {% if group_permissions.can_update_studygroup %}
 
             <a class="dropdown-item text-primary" href="#" data-toggle="modal"
             title="{% trans 'Edit Group' %}" role="button"
