@@ -31,12 +31,14 @@
     <div class="tab-content" id="myTabContent">
       <div class="tab-pane fade show active" id="front-{{card.id}}" role="tabpanel" aria-labelledby="home-tab">
         <p class="card-text">
-          <i>{% trans 'Question' %}:</i> {{ card.front_text|safe }}
+          <h5>{% trans 'Question' %}:</h5>
+          {{ card.front_text|safe }}
         </p>
       </div>
       <div class="tab-pane fade" id="back-{{card.id}}" role="tabpanel" aria-labelledby="profile-tab">
         <p class="card-text">
-          <i>{% trans 'Answer' %}:</i> {{ card.back_text|safe }}
+          <h5>{% trans 'Answer' %}:</h5>
+          {{ card.back_text|safe }}
         </p>
       </div>
     </div>

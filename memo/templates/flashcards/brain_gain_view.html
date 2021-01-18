@@ -38,7 +38,7 @@
         <div class="card-body">
           <div class="row mb-3 justify-content-center">
             <div class="col-sm-4">
-              <center><strong>{% trans "Front" %}</strong></center>
+              <center><strong>{% trans "Front Side" %}</strong></center>
             </div>
             <div class="col-sm-8">
               {{ card_performance.card.front_text|safe }}
@@ -46,7 +46,7 @@
           </div>
           <div class="row mb-3 justify-content-center">
             <div class="col-sm-4">
-              <center><strong>{% trans "Back" %}</strong></center>
+              <center><strong>{% trans "Back Side" %}</strong></center>
             </div>
             <div class="col-sm-8"{% if mode == 'recall' %} style="visibility:hidden"{% endif%}
             id="correct_answer">
@@ -61,7 +61,9 @@
             <button id="card_actions" type="button"
             class="btn btn-sm btn-dark dropdown-toggle" data-toggle="dropdown"
             aria-haspopup="true" aria-expanded="false" title="{% trans 'Manage' %}">
-              {% trans 'Manage' %}
+              <img class="float-left mr-2" height="18px"
+              src="{% static 'images/icons/manage_settings_white_icon.png' %}">
+              {#% trans 'Manage' %#}
             </button>
             <div class="dropdown-menu" aria-labelledby="card_actions">
 
@@ -80,13 +82,12 @@
                   {% trans 'Settings' %}
                 </a>
               {% endif %}
-
             </div>
 
           </div>
 
           {% if can_manage_card %}
-            {% update_delete_card_modal card_performance.card %}
+            {% update_delete_card_modal card_performance.card include_media=True %}
           {% endif %}
 
           {% if can_manage_performance %}
@@ -215,3 +216,8 @@
 
   {% endif %}
 {% endblock javascript %}
+
+
+{% block modal %}
+
+{% endblock modal %}
