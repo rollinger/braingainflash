@@ -29,16 +29,28 @@
         </div>
 
       </div>
-      <div class="modal-footer d-flex justify-content-between">
-        {% comment %}
-        <button type="submit" name="delete" form="card_{{card.id}}_update_delete_form" class="btn btn-danger">
-          {% trans 'Delete' %}
-        </button>
-        {% endcomment %}
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
-        <button type="submit" name="update" form="card_{{card.id}}_update_delete_form" class="btn btn-success">
-          {% trans 'Update' %}
-        </button>
+      <div class="modal-footer justify-content-between">
+
+        <div class="col-sm-3">
+          {% if can_delete_card %}
+            <button type="submit" name="delete" form="card_{{card.id}}_update_delete_form"
+            class="btn btn-danger btn-block">
+              {% trans 'Delete' %}
+            </button>
+          {% endif %}
+        </div>
+        <div class="col-sm-3">
+          <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">
+            {% trans 'Close' %}
+          </button>
+        </div>
+        <div class="col-sm-3">
+          <button type="submit" name="update" form="card_{{card.id}}_update_delete_form"
+          class="btn btn-success btn-block">
+            {% trans 'Update' %}
+          </button>
+        </div>
+
       </div>
 
     </div>

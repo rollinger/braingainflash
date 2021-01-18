@@ -119,10 +119,15 @@ class UpdateDeleteCardView(CustomRulesPermissionRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         if "delete" in form.data:
-            self.object = self.get_object()
-            success_url = self.get_success_url()
-            self.object.delete()
-            return HttpResponseRedirect(success_url)
+            import rules
+
+            if rules.test_rule(
+                "can_delete_card", self.request.user, self.get_permission_object()
+            ):
+                self.object = self.get_object()
+                success_url = self.get_success_url()
+                self.object.delete()
+                return HttpResponseRedirect(success_url)
         elif "update" in form.data:
             # self.object = form.save() # double execution
             return super().form_valid(form)

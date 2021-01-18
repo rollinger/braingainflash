@@ -19,7 +19,7 @@ def card_icon(performance, max_height=35):
 
 
 @register.inclusion_tag("flashcards/templatetags/_update_delete_card_modal.html")
-def update_delete_card_modal(card, include_media=False):
+def update_delete_card_modal(card, can_delete_card=False, include_media=False):
     # Add initialized card_create_form for use in _create_card_modal.html
     card_update_delete_form = CardForm(instance=card)
     # Set include_media to True to allow for ckeditor load the js.
@@ -32,7 +32,11 @@ def update_delete_card_modal(card, include_media=False):
     card_update_delete_form.fields["back_text"].widget = CKEditorWidget(
         attrs={"id": "%d_id_back_text" % (card.id)}
     )
-    return {"card": card, "card_update_delete_form": card_update_delete_form}
+    return {
+        "card": card,
+        "card_update_delete_form": card_update_delete_form,
+        "can_delete_card": can_delete_card,
+    }
 
 
 @register.inclusion_tag("flashcards/templatetags/_update_performance_modal.html")

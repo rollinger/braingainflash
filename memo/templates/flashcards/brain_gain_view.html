@@ -16,6 +16,8 @@
 
 {% test_rule 'can_manage_performance' request.user card_performance as can_manage_performance %}
 {% test_rule 'can_manage_card' request.user membership as can_manage_card %}
+{% test_rule 'can_delete_card' request.user membership as can_delete_card %}
+
 
 <div class="container">
 
@@ -85,9 +87,8 @@
             </div>
 
           </div>
-
           {% if can_manage_card %}
-            {% update_delete_card_modal card_performance.card include_media=True %}
+            {% update_delete_card_modal card_performance.card can_delete_card include_media=True %}
           {% endif %}
 
           {% if can_manage_performance %}

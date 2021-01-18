@@ -94,7 +94,7 @@
 {% block modal %}
 
   {% if can_manage_card %}
-    {% update_delete_card_modal card %}
+    {% update_delete_card_modal card can_delete_card include_media=False %}
   {% endif %}
   {% if can_manage_performance %}
     {% update_performance_modal card_performance %}

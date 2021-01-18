@@ -33,6 +33,7 @@ def get_group_permissions(user, group):
         ),
         "can_manage_member": rules.test_rule("can_manage_member", user, membership),
         "can_manage_card": rules.test_rule("can_manage_card", user, membership),
+        "can_delete_card": rules.test_rule("can_delete_card", user, membership),
         "can_manage_topic": rules.test_rule("can_manage_topic", user, membership),
     }
     return permissions

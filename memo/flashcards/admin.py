@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import strip_tags
 
 from .models import Card, Performance, Topic
 
@@ -124,13 +125,13 @@ class PerformanceAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = (
         "owner",
-        "card",
+        "short_card_title",
         "recall_score",
         "learn_score",
         "is_paused",
         "priority",
     )
-    list_display_links = ("card",)
+    list_display_links = ("short_card_title",)
     list_editable = (
         "is_paused",
         "priority",
@@ -198,10 +199,10 @@ class PerformanceAdmin(admin.ModelAdmin):
         ),
     )
 
-    def model_str(self, obj):
-        return str(obj)
+    def short_card_title(self, obj):
+        return strip_tags(obj.card.front_text)[:30]
 
-    model_str.short_description = "Card Performance"
+    short_card_title.short_description = "Card"
 
     def card_front_text(self, obj):
         return obj.card.front_text
