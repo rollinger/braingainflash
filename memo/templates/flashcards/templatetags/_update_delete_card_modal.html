@@ -30,9 +30,11 @@
 
       </div>
       <div class="modal-footer d-flex justify-content-between">
+        {% comment %}
         <button type="submit" name="delete" form="card_{{card.id}}_update_delete_form" class="btn btn-danger">
           {% trans 'Delete' %}
         </button>
+        {% endcomment %}
         <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'Close' %}</button>
         <button type="submit" name="update" form="card_{{card.id}}_update_delete_form" class="btn btn-success">
           {% trans 'Update' %}
