@@ -1,3 +1,4 @@
+import rules
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
@@ -119,8 +120,6 @@ class UpdateDeleteCardView(CustomRulesPermissionRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         if "delete" in form.data:
-            import rules
-
             if rules.test_rule(
                 "can_delete_card", self.request.user, self.get_permission_object()
             ):
