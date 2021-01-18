@@ -1,10 +1,12 @@
 from crispy_forms.bootstrap import InlineField
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit
+from crispy_forms.layout import HTML, Div, Layout, Submit
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from flashcards.models import Card, Performance, Topic
+from flashcards.models import LEARNING_PRIORITIES, Card, Performance, Topic
 from studygroups.models import StudyGroup
+
+LEARNING_PRIORITIES = (("all", _("All")),) + LEARNING_PRIORITIES
 
 
 class CardForm(forms.ModelForm):
@@ -54,6 +56,16 @@ class CardSearchForm(forms.Form):
     paused = forms.ChoiceField(
         choices=(("all", _("All")), (False, _("Active")), (True, _("Inactive")))
     )
+    priority = forms.ChoiceField(
+        choices=LEARNING_PRIORITIES,  # (("all", _("All")),)
+    )
+    score_sort = forms.ChoiceField(
+        choices=(
+            ("no_sort", _("No Sort")),
+            ("asc", _("Ascending")),
+            ("dsc", _("Descending")),
+        )
+    )
 
     class Meta:
         fields = ["search", "topic"]
@@ -65,9 +77,18 @@ class CardSearchForm(forms.Form):
         self.helper.form_class = "form-inline"
         self.helper.field_template = "bootstrap4/layout/inline_field.html"
         self.helper.layout = Layout(
-            InlineField("search", css_class=""),
-            InlineField("topic", css_class="custom-select"),
-            # InlineField("paused", css_class="custom-select"),
+            Div(InlineField("search", css_class=""), css_class="w-100"),
+            InlineField("topic", css_class="custom-select", title=_("Filter by topic")),
+            InlineField(
+                "paused", css_class="custom-select", title=_("Filter by paused")
+            ),
+            InlineField(
+                "priority", css_class="custom-select", title=_("Filter by priority")
+            ),
+            HTML("<small>Sort Score:</small>"),
+            InlineField(
+                "score_sort", css_class="custom-select", title=_("Sort by score")
+            ),
             Submit("submit_filter", _("Filter"), css_class="btn-primary"),
             Submit("submit_reset", _("Clear"), css_class="btn-secondary"),
         )

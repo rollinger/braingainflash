@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponseRedirect
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import (
@@ -79,7 +79,7 @@ class StudyGroupDetailView(CustomRulesPermissionRequiredMixin, DetailView):
         if "submit_reset" in self.request.GET:
             # redirect to group_detail_view with default form state
             return HttpResponseRedirect(
-                reverse_lazy(
+                reverse(
                     "studygroups:group_detail_view",
                     kwargs={"slug": self.get_object().slug},
                 )
@@ -94,6 +94,8 @@ class StudyGroupDetailView(CustomRulesPermissionRequiredMixin, DetailView):
         search_query = self.request.GET.get("search")
         topic_query = self.request.GET.get("topic")
         paused_query = self.request.GET.get("paused")
+        priority_query = self.request.GET.get("priority")
+        score_sort = self.request.GET.get("score_sort")
         card_list = self.object.cards
         if topic_query:
             card_list = card_list.filter(topic__unique_id=topic_query)
@@ -105,8 +107,20 @@ class StudyGroupDetailView(CustomRulesPermissionRequiredMixin, DetailView):
         if paused_query != "all":
             card_list = card_list.filter(
                 Q(performances__owner=self.request.user)
-                # & Q(performances__is_paused=paused_query)
+                & Q(performances__is_paused=paused_query)
             )
+        if priority_query != "all":
+            card_list = card_list.filter(
+                Q(performances__owner=self.request.user)
+                & Q(performances__priority=priority_query)
+            )
+        if score_sort == "asc":
+            card_list = card_list.order_by("performances__recall_score")
+        elif score_sort == "dsc":
+            card_list = card_list.order_by("-performances__recall_score")
+        else:
+            card_list = card_list.order_by("-created_at")
+
         return card_list.all()
 
     def get_context_data(self, **kwargs):
@@ -139,6 +153,11 @@ class StudyGroupDetailView(CustomRulesPermissionRequiredMixin, DetailView):
             card_search_form.fields["topic"].choices.append((choice.unique_id, choice))
         card_search_form.fields["search"].initial = self.request.GET.get("search")
         card_search_form.fields["topic"].initial = self.request.GET.get("topic")
+        card_search_form.fields["paused"].initial = self.request.GET.get("paused")
+        card_search_form.fields["priority"].initial = self.request.GET.get("priority")
+        card_search_form.fields["score_sort"].initial = self.request.GET.get(
+            "score_sort"
+        )
         return card_search_form
 
 
