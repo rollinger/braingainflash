@@ -67,7 +67,7 @@ class CardSearchForm(forms.Form):
         self.helper.layout = Layout(
             InlineField("search", css_class=""),
             InlineField("topic", css_class="custom-select"),
-            InlineField("paused", css_class="custom-select"),
+            # InlineField("paused", css_class="custom-select"),
             Submit("submit_filter", _("Filter"), css_class="btn-primary"),
             Submit("submit_reset", _("Clear"), css_class="btn-secondary"),
         )
