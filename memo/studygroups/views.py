@@ -78,6 +78,7 @@ class StudyGroupDetailView(CustomRulesPermissionRequiredMixin, DetailView):
     def get(self, request, *args, **kwargs):
         if "submit_reset" in self.request.GET:
             # redirect to group_detail_view with default form state
+            # TODO: BUG clicking "clear" clears the form but results in an empty querset
             return HttpResponseRedirect(
                 reverse(
                     "studygroups:group_detail_view",
