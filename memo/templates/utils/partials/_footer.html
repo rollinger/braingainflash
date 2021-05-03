@@ -8,13 +8,17 @@
       </a>
     </div>
     <div class="col-sm-3">
-      {#% trans 'Our Sponsors:' %#}
+        <a class="navbar-brand d-flex align-items-center justify-content-center"
+        href="https://42wolfsburg.de" title="{% trans '42 Wolfsburg' %}">
+          <img class="align-self-center float-left mr-3" width="120px"
+            src="{{STATIC_URL}}images/sponsors/42Wolfsburg_Logo.png">
+        </a>
     </div>
     <div class="col-sm-3">
       {% trans 'Remember, Everything, Together!' %}
     </div>
     <div class="col-sm-3">
-      <a class="navbar-brand d-flex align-items-center justify-content-center"
+      <a class="navbar-brand d-flex align-items-center justify-content-center text-dark"
       href="{% url 'home' %}" title="{% trans 'Brain Gain' %}">
         <img class="align-self-center float-left mr-3" width="50px"
           src="{{STATIC_URL}}images/Logo_v1_150x150.png">
@@ -28,7 +32,7 @@
       <center><small>
       <a class="" href="{% url 'privacy_policy' %}">{% trans 'Privacy Policy' %}</a> |
       <a class="" href="{% url 'privacy_policy' %}">{% trans 'Terms and Conditions' %}</a> |
-      {% trans "Copyright Philipp Rollinger 2020-2021" %}
+      {% trans "Proudly build by 42 Wolfsburg Brains 2021" %}
       </small><center>
     </div>
   </div>
