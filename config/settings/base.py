@@ -80,9 +80,9 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "memo.users.apps.UsersConfig",
+    "memo.shareholder.apps.ShareholderConfig",
     "memo.studygroups.apps.StudyGroupsConfig",
     "memo.flashcards.apps.FlashCardsConfig",
-    # "memo.cardset.apps.CardSetConfig",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

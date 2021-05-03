@@ -63,6 +63,12 @@ class Task(UUIDMixin, TimestampMixin, models.Model):
     start_date = models.DateTimeField(_("Task's Start Date"), blank=True)
     closing_date = models.DateTimeField(_("Task's Deadline"), blank=True)
 
+    title = models.CharField(
+        _("Short Summary"),
+        default="Task: ...",
+        max_length=255,
+    )
+
     description = models.TextField(
         _("Description"), help_text=_("Task's description and goals"), max_length=5000
     )
@@ -163,8 +169,12 @@ class Review(UUIDMixin, TimestampMixin, models.Model):
 
     @property
     def start_date(self):
-        return self.task.closing_date
+        if self.task:
+            return self.task.start_date
+        return _("Not set")
 
     @property
     def closing_date(self):
-        return self.task.closing_date + timedelta(days=1)
+        if self.task:
+            return self.task.closing_date + timedelta(days=1)
+        return _("Not set")

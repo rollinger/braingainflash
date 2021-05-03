@@ -6,6 +6,7 @@ Task
     workload [in decimal hours]
     start_date []
     closing_date []
+    title
     description [jira/local task description and goals]
     feature_branch [optional name of feature branch in git]
     jira_url [optional]
