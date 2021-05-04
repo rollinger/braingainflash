@@ -257,8 +257,10 @@ class JoinStudyGroupRedirectView(RedirectView):
         membership, created = Membership.objects.get_or_create(
             member=self.request.user,
             group=study_group,
-            role=study_group.new_member_role,
-            approved=study_group.auto_approve_new_member,
+            defaults={
+                "role": study_group.new_member_role,
+                "approved": study_group.auto_approve_new_member,
+            },
         )
         # Get or create performance objects for all cards|request.user
         for card in study_group.cards.all():

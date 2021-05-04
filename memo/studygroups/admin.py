@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.translation import ugettext_lazy as _
 from flashcards.models import Card, Topic
 from studygroups.models import Membership, StudyGroup
 
@@ -49,6 +50,7 @@ class StudyGroupAdmin(admin.ModelAdmin):
         "auto_approve_new_member",
         "is_main_user_group",
         "is_publicly_available",
+        "get_card_count",
     )
     list_display_links = ("name",)
     list_filter = (
@@ -103,3 +105,8 @@ class StudyGroupAdmin(admin.ModelAdmin):
             },
         ),
     )
+
+    def get_card_count(self, obj):
+        return obj.number_cards()
+
+    get_card_count.short_description = _("Cards")
