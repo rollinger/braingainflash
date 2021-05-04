@@ -97,7 +97,10 @@ class StudyGroupDetailView(CustomRulesPermissionRequiredMixin, DetailView):
         paused_query = self.request.GET.get("paused")
         priority_query = self.request.GET.get("priority")
         score_sort = self.request.GET.get("score_sort")
-        card_list = self.object.cards
+        # Narrow down cards
+        card_list = self.object.cards.all()
+        if topic_query is None and search_query is None:
+            return card_list  # When search form is empty
         if topic_query:
             card_list = card_list.filter(topic__unique_id=topic_query)
         if search_query:
