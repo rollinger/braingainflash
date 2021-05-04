@@ -76,6 +76,7 @@ THIRD_PARTY_APPS = [
     "treebeard",
     "rules.apps.AutodiscoverRulesConfig",
     "ckeditor",
+    "import_export",
 ]
 
 LOCAL_APPS = [

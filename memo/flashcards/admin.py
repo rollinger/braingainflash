@@ -1,7 +1,67 @@
 from django.contrib import admin
+from django.contrib.auth import get_user_model
 from django.utils.html import strip_tags
+from import_export import fields, resources, widgets
+from import_export.admin import ImportExportModelAdmin
+from studygroups.models import StudyGroup
 
 from .models import Card, Performance, Topic
+
+User = get_user_model()
+
+
+class CardImportExportResource(resources.ModelResource):
+    creator_username = fields.Field(
+        column_name="creator_username",
+        attribute="creator",
+        widget=widgets.ForeignKeyWidget(User, "username"),
+    )
+    group_slug = fields.Field(
+        column_name="group_slug",
+        attribute="group",
+        widget=widgets.ForeignKeyWidget(StudyGroup, "slug"),
+    )
+    topic_title = fields.Field(
+        column_name="topic_title",
+        attribute="topic",
+        widget=widgets.ForeignKeyWidget(Topic, "title"),
+    )
+
+    class Meta:
+        model = Card
+        import_id_fields = ("group_slug", "front_text")
+        fields = (
+            "creator_username",
+            "group_slug",
+            "topic_title",
+            "front_text",
+            "back_text",
+        )
+
+    # Missing Topic Objects will be created
+    # see: https://github.com/django-import-export/django-import-export/issues/571#issuecomment-279714235
+    def import_field(self, field, obj, data):
+        field_name = self.get_field_name(field)
+        method = getattr(self, "clean_%s" % field_name, None)
+        if method is not None:
+            obj = method(field, obj, data)
+        super(CardImportExportResource, self).import_field(field, obj, data)
+
+    def clean_topic_title(self, field, obj, data):
+        group_slug = data["group_slug"]
+        topic_title = data["topic_title"]
+        group, created = StudyGroup.objects.get_or_create(slug=group_slug)
+        topic, created = Topic.objects.get_or_create(title=topic_title, group=group)
+        obj.topic_title = topic
+        return obj
+
+
+"""
+    def clean_group_slug(self, field, obj, data):
+        group, created = StudyGroup.objects.get_or_create(slug=data["group_slug"])
+        obj.group_slug = group
+        return obj
+"""
 
 
 class CardInline(admin.TabularInline):
@@ -72,7 +132,7 @@ class PerformanceInline(admin.TabularInline):
 
 
 @admin.register(Card)
-class CardAdmin(admin.ModelAdmin):
+class CardAdmin(ImportExportModelAdmin):
     save_on_top = True
     list_display = (
         "front_text",
@@ -90,6 +150,7 @@ class CardAdmin(admin.ModelAdmin):
     search_fields = ["front_text", "back_text", "topic", "group"]
     autocomplete_fields = ["group", "creator"]
     inlines = [PerformanceInline]
+    resource_class = CardImportExportResource
     fieldsets = (
         (
             None,

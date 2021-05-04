@@ -26,3 +26,4 @@ django-treebeard==4.3.1 # https://django-treebeard.readthedocs.io/en/latest/inde
 jsonfield==3.1.0 # https://github.com/rpkilby/jsonfield
 rules==2.2 # https://github.com/dfunckt/django-rules
 django-ckeditor==6.0.0 # https://github.com/django-ckeditor/django-ckeditor
+django-import-export==2.5.0 #https://github.com/django-import-export/django-import-export/releases
