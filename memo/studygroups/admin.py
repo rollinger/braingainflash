@@ -110,3 +110,32 @@ class StudyGroupAdmin(admin.ModelAdmin):
         return obj.number_cards()
 
     get_card_count.short_description = _("Cards")
+
+
+@admin.register(Membership)
+class MembershipAdmin(admin.ModelAdmin):
+    save_on_top = True
+    list_display = (
+        "group",
+        "member",
+        "role",
+        "approved",
+        "blocked",
+    )
+    list_display_links = ("member",)
+    list_filter = (
+        "approved",
+        "blocked",
+        "role",
+    )
+    readonly_fields = [
+        "id",
+        "unique_id",
+        "created_at",
+        "updated_at",
+    ]
+    search_fields = [
+        "group",
+        "member",
+    ]
+    autocomplete_fields = ["group", "member"]
