@@ -8,6 +8,8 @@ from utils.abstract_models import TimestampMixin, UUIDMixin
 
 User = get_user_model()
 
+SHAREHOLDER_PERM_GROUP = "Shareholder"
+PROJECT_LEAD_PERM_GROUP = "Project Lead"
 
 TASK_STATUS = (
     ("proposed", _("Task is proposed")),  # shareholder can propose tasks
@@ -43,6 +45,7 @@ class Task(UUIDMixin, TimestampMixin, models.Model):
         help_text=_("Creator of the task"),
         related_name="created_tasks",
         on_delete=models.CASCADE,
+        limit_choices_to={"groups__name": SHAREHOLDER_PERM_GROUP},
     )
 
     status = models.CharField(
@@ -80,6 +83,9 @@ class Task(UUIDMixin, TimestampMixin, models.Model):
 
     jira_url = models.URLField(_("URL to JIRA Task"), blank=True)
 
+    def __str__(self):
+        return "%s" % (self.title)
+
 
 class Assignment(UUIDMixin, TimestampMixin, models.Model):
     """
@@ -103,6 +109,7 @@ class Assignment(UUIDMixin, TimestampMixin, models.Model):
         help_text=_("Assignment Collaborator"),
         related_name="assignments",
         on_delete=models.CASCADE,
+        limit_choices_to={"groups__name": SHAREHOLDER_PERM_GROUP},
     )
 
     workload_share = models.PositiveSmallIntegerField(
@@ -118,8 +125,12 @@ class Assignment(UUIDMixin, TimestampMixin, models.Model):
     notes = models.TextField(
         _("Assignment Notes"),
         help_text=_("Information of the collaborators role and responsibilities"),
+        default="Project Lead",
         max_length=1000,
     )
+
+    def __str__(self):
+        return _("%s working on %s") % (self.collaborator, self.task.title)
 
 
 class Review(UUIDMixin, TimestampMixin, models.Model):
@@ -144,6 +155,7 @@ class Review(UUIDMixin, TimestampMixin, models.Model):
         help_text=_("Reviewer of the Task"),
         related_name="reviews_made",
         on_delete=models.CASCADE,
+        limit_choices_to={"groups__name": SHAREHOLDER_PERM_GROUP},
     )
 
     rating = models.CharField(
@@ -178,3 +190,10 @@ class Review(UUIDMixin, TimestampMixin, models.Model):
         if self.task:
             return self.task.closing_date + timedelta(days=1)
         return _("Not set")
+
+    def __str__(self):
+        return _("%s reviewed %s with %s") % (
+            self.reviewer,
+            self.task.title,
+            self.rating,
+        )

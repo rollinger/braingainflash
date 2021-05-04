@@ -1,5 +1,8 @@
 from django.contrib import admin
+from django.contrib.auth import get_user_model
 from shareholder.models import Assignment, Review, Task
+
+User = get_user_model()
 
 
 class AssignmentsInline(admin.TabularInline):
@@ -7,7 +10,7 @@ class AssignmentsInline(admin.TabularInline):
     fk_name = "task"
     ordering = ("-workload_share",)
     autocomplete_fields = ["collaborator"]
-    extra = 1
+    extra = 0
     fields = ("collaborator", "workload_share", "notes")
 
 
@@ -15,8 +18,9 @@ class ReviewInline(admin.StackedInline):
     model = Review
     fk_name = "task"
     ordering = ("-rating",)
+    autocomplete_fields = ["reviewer"]
     readonly_fields = ("workload", "start_date", "closing_date")
-    extra = 1
+    extra = 0
     fields = (
         ("reviewer", "rating"),
         "notes",
