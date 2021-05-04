@@ -56,14 +56,6 @@ class CardImportExportResource(resources.ModelResource):
         return obj
 
 
-"""
-    def clean_group_slug(self, field, obj, data):
-        group, created = StudyGroup.objects.get_or_create(slug=data["group_slug"])
-        obj.group_slug = group
-        return obj
-"""
-
-
 class CardInline(admin.TabularInline):
     model = Card
     show_change_link = True
