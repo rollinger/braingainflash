@@ -77,8 +77,7 @@ class Task(UUIDMixin, TimestampMixin, models.Model):
     )
 
     feature_branch = models.CharField(
-        _("GIT feature branch name"),
-        max_length=255,
+        _("GIT feature branch name"), max_length=255, blank=True
     )
 
     jira_url = models.URLField(_("URL to JIRA Task"), blank=True)
@@ -125,7 +124,7 @@ class Assignment(UUIDMixin, TimestampMixin, models.Model):
     notes = models.TextField(
         _("Assignment Notes"),
         help_text=_("Information of the collaborators role and responsibilities"),
-        default="Project Lead",
+        default="Task Lead",
         max_length=1000,
     )
 
