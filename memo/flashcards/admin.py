@@ -60,7 +60,7 @@ class CardInline(admin.TabularInline):
     model = Card
     show_change_link = True
     ordering = ("-created_at",)
-    extra = 1
+    extra = 0
     fields = ("front_text", "group", "creator")
 
 

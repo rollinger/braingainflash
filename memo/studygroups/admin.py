@@ -7,7 +7,7 @@ class TopicsInline(admin.TabularInline):
     model = Topic
     fk_name = "group"
     ordering = ("-title",)
-    extra = 1
+    extra = 0
     fields = ("title",)
 
 
@@ -36,7 +36,7 @@ class CardsInline(admin.StackedInline):
     model = Card
     fk_name = "group"
     ordering = ("-created_at",)
-    extra = 1
+    extra = 0
     fields = ("topic", "front_text", "back_text")
 
 
