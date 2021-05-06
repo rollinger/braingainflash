@@ -40,6 +40,7 @@ class TaskAdmin(admin.ModelAdmin):
         "closing_date",
         "workload",
     )
+    list_editables = ("status",)
     list_display_links = ("title",)
     list_filter = ("status",)
     readonly_fields = [
@@ -78,6 +79,16 @@ class TaskAdmin(admin.ModelAdmin):
                         "jira_url",
                     ),
                 )
+            },
+        ),
+        (
+            "Fulfillment Report",
+            {
+                "classes": ("collapsible",),
+                "fields": (
+                    "report_text",
+                    "report_file",
+                ),
             },
         ),
         (

@@ -82,6 +82,22 @@ class Task(UUIDMixin, TimestampMixin, models.Model):
 
     jira_url = models.URLField(_("URL to JIRA Task"), blank=True)
 
+    report_text = models.TextField(
+        _("Report"),
+        help_text=_("Report of the task's fulfillment."),
+        max_length=5000,
+        null=True,
+        blank=True,
+    )
+
+    report_file = models.FileField(
+        _("Report File"),
+        help_text=_("File upload for report of the task's fulfillment."),
+        upload_to="shareholder/task/reports/",
+        null=True,
+        blank=True,
+    )
+
     def __str__(self):
         return "%s" % (self.title)
 
