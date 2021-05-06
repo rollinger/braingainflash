@@ -88,3 +88,17 @@ class TaskAdmin(admin.ModelAdmin):
             },
         ),
     )
+
+    def changelist_view(self, request, extra_context=None):
+        # PR-060421: Make default list filter set to 'active' per default
+        # See: https://stackoverflow.com/a/3783930/2257930
+        test = request.META["HTTP_REFERER"].split(request.META["PATH_INFO"])
+        if test[-1] and not test[-1].startswith("?"):
+            if "status__exact" not in request.GET:
+                q = request.GET.copy()
+                q["status__exact"] = "active"
+                request.GET = q
+                request.META["QUERY_STRING"] = request.GET.urlencode()
+        return super(TaskAdmin, self).changelist_view(
+            request, extra_context=extra_context
+        )
