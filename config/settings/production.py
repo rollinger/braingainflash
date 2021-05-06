@@ -73,7 +73,8 @@ INSTALLED_APPS += ["storages"]  # noqa F405
 # Google Cloud Storage Bucket
 # FIX: Only needs the path to json, not wrapped in  from_service_account_file()
 # https://django-storages.readthedocs.io/en/latest/backends/gcloud.html
-GOOGLE_APPLICATION_CREDENTIALS = service_account.Credentials.from_service_account_file(
+# GOOGLE_APPLICATION_CREDENTIALS
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
     os.path.join(ROOT_DIR, "memo-a-299214-d110bc46a6f7.json")
 )
 GS_BUCKET_NAME = env("DJANGO_GCP_STORAGE_BUCKET_NAME")
