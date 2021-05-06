@@ -95,6 +95,10 @@ class Assignment(UUIDMixin, TimestampMixin, models.Model):
         verbose_name = _("Assignment")
         verbose_name_plural = _("Assignments")
         ordering = ("-workload_share",)
+        unique_together = (
+            "task",
+            "collaborator",
+        )
 
     task = models.ForeignKey(
         Task,
@@ -141,6 +145,10 @@ class Review(UUIDMixin, TimestampMixin, models.Model):
         verbose_name = _("Review")
         verbose_name_plural = _("Reviews")
         # ordering = ("-is_main_user_group", "name")
+        unique_together = (
+            "task",
+            "reviewer",
+        )
 
     task = models.ForeignKey(
         Task,
