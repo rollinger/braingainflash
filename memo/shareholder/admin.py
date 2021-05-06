@@ -39,8 +39,9 @@ class TaskAdmin(admin.ModelAdmin):
         "start_date",
         "closing_date",
         "workload",
+        "get_assigned_shareholder",
     )
-    list_editables = ("status",)
+    list_editable = ("status",)
     list_display_links = ("title",)
     list_filter = ("status",)
     readonly_fields = [
@@ -100,6 +101,15 @@ class TaskAdmin(admin.ModelAdmin):
         ),
     )
 
+    def get_assigned_shareholder(self, obj):
+        # PR-060421: display assignments usernames
+        workforce = ""
+        for assignment in obj.assignments.all():
+            workforce += assignment.collaborator.username + ", "
+        return workforce  # trip_tags(obj.card.front_text)[:30]
+
+    get_assigned_shareholder.short_description = "Workforce"
+
     def changelist_view(self, request, extra_context=None):
         # PR-060421: Make default list filter set to 'active' per default
         # See: https://stackoverflow.com/a/3783930/2257930
@@ -107,7 +117,7 @@ class TaskAdmin(admin.ModelAdmin):
         if test[-1] and not test[-1].startswith("?"):
             if "status__exact" not in request.GET:
                 q = request.GET.copy()
-                q["status__exact"] = "active"
+                q["status__exact"] = "pending"
                 request.GET = q
                 request.META["QUERY_STRING"] = request.GET.urlencode()
         return super(TaskAdmin, self).changelist_view(

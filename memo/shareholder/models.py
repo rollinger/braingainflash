@@ -57,7 +57,7 @@ class Task(UUIDMixin, TimestampMixin, models.Model):
     )
 
     workload = models.DecimalField(
-        "Workload in hour shares",
+        "Workload shares",
         max_digits=4,
         decimal_places=2,
         default=TASK_STANDARD_WORKLOAD,
