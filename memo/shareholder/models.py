@@ -220,3 +220,101 @@ class Review(UUIDMixin, TimestampMixin, models.Model):
             self.task.title,
             self.rating,
         )
+
+
+MONTH_CHOICE = (
+    (1, _("January")),
+    (2, _("February")),
+    (3, _("March")),
+    (4, _("April")),
+    (5, _("May")),
+    (6, _("June")),
+    (7, _("Juli")),
+    (8, _("August")),
+    (9, _("September")),
+    (10, _("October")),
+    (11, _("November")),
+    (12, _("December")),
+)
+
+
+class IncomePeriod(UUIDMixin, TimestampMixin, models.Model):
+    class Meta:
+        verbose_name = _("Income Period")
+        verbose_name_plural = _("Income Periods")
+        ordering = ("-year", "-month")
+        unique_together = (
+            "month",
+            "year",
+        )
+
+    year = models.PositiveSmallIntegerField(
+        _("Year"), help_text=_("The year the surplus was generated"), default=2021
+    )
+
+    month = models.PositiveSmallIntegerField(
+        _("Month"),
+        help_text=_("The month the surplus was generated"),
+        choices=MONTH_CHOICE,
+    )
+
+    surplus_total = models.DecimalField(
+        _("Total Surplus €"),
+        max_digits=12,
+        decimal_places=2,
+        default=0.0,
+    )
+
+    total_shares = models.DecimalField(
+        _("Total Shares at reporting time"),
+        max_digits=12,
+        decimal_places=2,
+        default=0.0,
+    )
+
+
+class Dividends(UUIDMixin, TimestampMixin, models.Model):
+    class Meta:
+        verbose_name = _("Dividends")
+        verbose_name_plural = _("Dividends")
+        ordering = ("-income_period", "-shareholder")
+        unique_together = (
+            "shareholder",
+            "income_period",
+        )
+
+    shareholder = models.ForeignKey(
+        User,
+        help_text=_("Shareholder receiving the dividends"),
+        related_name="dividends",
+        on_delete=models.CASCADE,
+        limit_choices_to={"groups__name": SHAREHOLDER_PERM_GROUP},
+    )
+
+    income_period = models.ForeignKey(
+        IncomePeriod,
+        help_text=_("Income Period the dividend relates to"),
+        related_name="shares",
+        on_delete=models.CASCADE,
+    )
+
+    task_share = models.DecimalField(
+        _("Total Share Hours for Tasks"),
+        max_digits=12,
+        decimal_places=2,
+        default=0.0,
+    )
+
+    review_share = models.DecimalField(
+        _("Total Share Hours for Reviews"),
+        max_digits=12,
+        decimal_places=2,
+        default=0.0,
+    )
+
+    amount = models.DecimalField(
+        _("Dividend Amount €"),
+        max_digits=12,
+        decimal_places=2,
+        default=0.0,
+    )
