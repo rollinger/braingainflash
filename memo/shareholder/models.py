@@ -14,7 +14,7 @@ PROJECT_LEAD_PERM_GROUP = "Project Lead"
 TASK_STATUS = (
     ("proposed", _("Task is proposed")),  # shareholder can propose tasks
     ("active", _("Task is active")),  # project lead can accept tasks
-    ("pending", _("Task is pending")),  # start_date makes task pending
+    ("working", _("Task is being build")),  # start_date makes task pending
     ("review", _("Task is under review")),  # closing_date puts task to review
     ("completed", _("Task is completed")),  # project lead can set tasks as completed
     ("failed", _("Task is failed")),  # project lead can set tasks as failed

@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from shareholder.models import Assignment, Review, Task
@@ -110,6 +112,15 @@ class TaskAdmin(admin.ModelAdmin):
 
     get_assigned_shareholder.short_description = "Workforce"
 
+    def get_form(self, request, obj=None, **kwargs):
+        # PR-060421: set datetime by default
+        # see: https://stackoverflow.com/a/14591348/2257930
+        form = super(TaskAdmin, self).get_form(request, obj, **kwargs)
+        now = datetime.now().replace(hour=12, minute=0, second=0, microsecond=0)
+        form.base_fields["start_date"].initial = now
+        form.base_fields["closing_date"].initial = now + timedelta(days=5)
+        return form
+
     def changelist_view(self, request, extra_context=None):
         # PR-060421: Make default list filter set to 'active' per default
         # See: https://stackoverflow.com/a/3783930/2257930
@@ -117,7 +128,7 @@ class TaskAdmin(admin.ModelAdmin):
         if test[-1] and not test[-1].startswith("?"):
             if "status__exact" not in request.GET:
                 q = request.GET.copy()
-                q["status__exact"] = "pending"
+                q["status__exact"] = "working"
                 request.GET = q
                 request.META["QUERY_STRING"] = request.GET.urlencode()
         return super(TaskAdmin, self).changelist_view(
