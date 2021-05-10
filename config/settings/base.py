@@ -76,6 +76,7 @@ THIRD_PARTY_APPS = [
     "treebeard",
     "rules.apps.AutodiscoverRulesConfig",
     "ckeditor",
+    "import_export_celery",
     "import_export",
 ]
 
@@ -293,6 +294,13 @@ CELERY_TASK_TIME_LIMIT = 5 * 60
 CELERY_TASK_SOFT_TIME_LIMIT = 60
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#beat-scheduler
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
+# Import Export Celery
+# https://github.com/auto-mat/django-import-export-celery
+IMPORT_EXPORT_CELERY_INIT_MODULE = "config.celery_app"
+IMPORT_EXPORT_CELERY_MODELS = {
+    "Winner": {"app_label": "flashcards", "model_name": "Card"}
+}
 # django-allauth
 # ------------------------------------------------------------------------------
 ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)

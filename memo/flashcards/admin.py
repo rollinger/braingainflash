@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.utils.html import strip_tags
 from import_export import fields, resources, widgets
 from import_export.admin import ImportExportModelAdmin
+from import_export_celery.admin_actions import create_export_job_action
 from studygroups.models import StudyGroup
 
 from .models import Card, Performance, Topic
@@ -142,6 +143,7 @@ class CardAdmin(ImportExportModelAdmin):
     search_fields = ["front_text", "back_text", "topic", "group"]
     autocomplete_fields = ["group", "creator"]
     inlines = [PerformanceInline]
+    actions = (create_export_job_action,)
     resource_class = CardImportExportResource
     fieldsets = (
         (
