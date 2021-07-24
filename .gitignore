@@ -276,3 +276,6 @@ memo/media/
 .env
 .envs/*
 !.envs/.local/
+
+memo-a-*.json
+

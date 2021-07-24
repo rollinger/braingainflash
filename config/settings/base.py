@@ -299,7 +299,11 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 # https://github.com/auto-mat/django-import-export-celery
 IMPORT_EXPORT_CELERY_INIT_MODULE = "config.celery_app"
 IMPORT_EXPORT_CELERY_MODELS = {
-    "Winner": {"app_label": "flashcards", "model_name": "Card"}
+    "Cards": {
+        "app_label": "flashcards",
+        "model_name": "Card",
+        "resource": "memo.flashcards.admin.CardImportExportResource",
+    }
 }
 # django-allauth
 # ------------------------------------------------------------------------------
