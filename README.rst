@@ -11,6 +11,7 @@ Online memorization tool optimizing your long term memorization and boosting you
      :alt: Black code style
 
 
+
 Settings
 --------
 
@@ -133,7 +134,3 @@ Heroku
 See detailed `cookiecutter-django Heroku documentation`_.
 
 .. _`cookiecutter-django Heroku documentation`: http://cookiecutter-django.readthedocs.io/en/latest/deployment-on-heroku.html
-
-
-
-
