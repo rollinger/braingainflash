@@ -116,6 +116,7 @@ class PerformanceInline(admin.TabularInline):
         "learn_score",
         "is_paused",
         "priority",
+        "data",
     )
     readonly_fields = [
         # "card",
@@ -131,6 +132,7 @@ class CardAdmin(ImportExportModelAdmin):
         "front_text",
         "group",
         "topic",
+        "good_one",
         "creator",
     )
     list_display_links = ("front_text",)
@@ -152,6 +154,7 @@ class CardAdmin(ImportExportModelAdmin):
                 "fields": (
                     "group",
                     "topic",
+                    "good_one",
                 )
             },
         ),

@@ -98,6 +98,10 @@ class Card(UUIDMixin, TimestampMixin, models.Model):
         on_delete=models.CASCADE,
     )
 
+    good_one = models.BooleanField(
+        default=True,
+    )
+
     #
     # Card Content
     #
